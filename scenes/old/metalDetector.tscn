@@ -1,0 +1,58 @@
+[gd_scene load_steps=8 format=3 uid="uid://ci431bm08wlwn"]
+
+[ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/baseItem.tscn" id="1_2h02r"]
+[ext_resource type="Script" uid="uid://dhq8wtbmg3guu" path="res://scripts/metal_detector.gd" id="2_3cebe"]
+[ext_resource type="AudioStream" uid="uid://qqu78l1knekr" path="res://sounds/beep.ogg" id="3_noaui"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6sh1g"]
+radius = 0.300593
+height = 1.13176
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fnmkh"]
+albedo_color = Color(0.345098, 0.360784, 1, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_u385d"]
+material = SubResource("StandardMaterial3D_fnmkh")
+radius = 0.08
+height = 0.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_qxpnx"]
+top_radius = 0.2
+bottom_radius = 0.05
+height = 0.1
+
+[node name="MetalDetector" instance=ExtResource("1_2h02r")]
+
+[node name="CollisionShape3D" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 0.253606, -0.967308, 0, 0.967308, 0.253606, -0.00140071, -0.274544, -0.344117)
+shape = SubResource("CapsuleShape3D_6sh1g")
+
+[node name="NamePivot" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.099088, 0)
+
+[node name="MetalDetectorLogic" type="Node3D" parent="." index="4"]
+script = ExtResource("2_3cebe")
+
+[node name="BeepSound" type="AudioStreamPlayer3D" parent="." index="5"]
+stream = ExtResource("3_noaui")
+
+[node name="TipLight" type="OmniLight3D" parent="." index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.349576, -1.02357)
+light_color = Color(1, 0.705882, 1, 1)
+light_energy = 0.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.198745, -0.619472)
+light_color = Color(0.247059, 0.580392, 1, 1)
+light_energy = 0.0
+omni_range = 1.0
+
+[node name="FullMesh" type="Node3D" parent="." index="9"]
+
+[node name="MeshHandle" type="MeshInstance3D" parent="FullMesh" index="0"]
+transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, -0.000472784, -0.325622, -0.275736)
+mesh = SubResource("CapsuleMesh_u385d")
+skeleton = NodePath("")
+
+[node name="MeshHead" type="MeshInstance3D" parent="FullMesh" index="1"]
+mesh = SubResource("CylinderMesh_qxpnx")

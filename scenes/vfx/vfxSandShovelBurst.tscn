@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://c1hkykbro3s6u"]
+
+[ext_resource type="Script" uid="uid://df4jo14af38i3" path="res://scripts/sand_shovel_burst.gd" id="1_hsp8r"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_21yft"]
+albedo_color = Color(1, 0.847059, 0.388235, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hsp8r"]
+material = SubResource("StandardMaterial3D_21yft")
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="Curve" id="Curve_21yft"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.598039, 0.502792), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[node name="SandShovelBurst" type="CPUParticles3D"]
+emitting = false
+amount = 15
+lifetime = 1.5
+one_shot = true
+explosiveness = 1.0
+mesh = SubResource("BoxMesh_hsp8r")
+direction = Vector3(1, 1, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 4.0
+scale_amount_curve = SubResource("Curve_21yft")
+script = ExtResource("1_hsp8r")

@@ -1,0 +1,75 @@
+[gd_scene load_steps=11 format=3 uid="uid://dd4m5o0jmwjr"]
+
+[ext_resource type="Script" uid="uid://drhmm5ufj7hue" path="res://scripts/pot.gd" id="1_tpmvx"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0x0id"]
+top_radius = 0.2
+bottom_radius = 0.2
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tpmvx"]
+albedo_color = Color(0.266667, 0.270588, 0.439216, 1)
+metallic = 0.79
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_tpmvx"]
+height = 0.5
+radius = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0x0id"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_mpq5e"]
+resource_local_to_scene = true
+lightmap_size_hint = Vector2i(17, 19)
+material = SubResource("StandardMaterial3D_0x0id")
+top_radius = 0.15
+bottom_radius = 0.1
+height = 1.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_e5jjy"]
+angle_min = 1.07288e-05
+angle_max = 1.07288e-05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8vpk7"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.517647)
+
+[sub_resource type="QuadMesh" id="QuadMesh_fk38n"]
+material = SubResource("StandardMaterial3D_8vpk7")
+size = Vector2(3, 4)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tpmvx"]
+
+[node name="Pot" type="Area3D"]
+collision_mask = 2
+script = ExtResource("1_tpmvx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(3.3319, 0, 0, 0, 0.380134, 0, 0, 0, 3.439, 0, 0, 0)
+mesh = SubResource("CylinderMesh_0x0id")
+surface_material_override/0 = SubResource("StandardMaterial3D_tpmvx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_tpmvx")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.86135, 0)
+billboard = 1
+text = "Waiting for ingredients..."
+font_size = 55
+
+[node name="LiquidMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(3.5275, 0, 0, 0, 0.442631, 0, 0, 0, 3.38557, 0, -0.0147943, 0)
+mesh = SubResource("CylinderMesh_mpq5e")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.14389, 0)
+emitting = false
+amount = 2
+amount_ratio = 0.7812
+process_material = SubResource("ParticleProcessMaterial_e5jjy")
+draw_pass_1 = SubResource("QuadMesh_fk38n")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." groups=["interactables"]]
+replication_config = SubResource("SceneReplicationConfig_tpmvx")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

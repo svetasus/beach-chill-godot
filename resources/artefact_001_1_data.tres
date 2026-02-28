@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://cyl06wi3q4t82"]
+
+[ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/item_data.gd" id="1_11i5h"]
+[ext_resource type="PackedScene" uid="uid://cfnysr8tej3fw" path="res://scenes/models/visArtefact_001_1.tscn" id="1_gbs7s"]
+[ext_resource type="Texture2D" uid="uid://b7f6mq0plwe5p" path="res://textures/artefact_001.png" id="1_lyn83"]
+
+[resource]
+script = ExtResource("1_11i5h")
+name = "artefact_001_1"
+display_name = "Bear statue Part 1"
+item_icon = ExtResource("1_lyn83")
+particle_color = Color(1, 0.858824, 0.235294, 1)
+scene = ExtResource("1_gbs7s")
+mass = 1.0
+collision_size = Vector3(0.2, 0.2, 0.2)
+is_tool = false
+is_collectible = true
+metadata/_custom_type_script = "uid://cslspwbckibw1"

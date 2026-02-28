@@ -1,0 +1,17 @@
+# Godot-specific ignores
+.godot/                # Local editor data, thumbnails, and imported textures
+.import/               # Only for Godot 3.x (Godot 4 uses .godot/imported)
+export_presets.cfg     # Contains export settings (can contain passwords/sensitive info)
+
+# Imported assets (Godot 4)
+# We keep the .import files, but ignore the internal data Godot generates from them
+.godot/imported/
+
+# Build artifacts
+build/
+dist/
+
+
+# OS specific
+.DS_Store
+Thumbs.db

@@ -1,0 +1,117 @@
+[gd_scene load_steps=15 format=3 uid="uid://7bo1jg4ha4dw"]
+
+[ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
+[ext_resource type="Texture2D" uid="uid://rkbpkmmptwbk" path="res://textures/tex_Water.jpg" id="2_42wun"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3j6ee"]
+albedo_color = Color(0.911744, 0.823696, 0.685418, 1)
+albedo_texture = ExtResource("1_66c2g")
+uv1_scale = Vector3(100, 100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_opwhv"]
+albedo_color = Color(1, 1, 1, 0.458824)
+albedo_texture = ExtResource("2_42wun")
+metallic = 0.5
+roughness = 0.1
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_lol2t"]
+ground_color = Color(0.256202, 0.445898, 0.881833, 1)
+
+[sub_resource type="Sky" id="Sky_muwu5"]
+sky_material = SubResource("PhysicalSkyMaterial_lol2t")
+
+[sub_resource type="Environment" id="Environment_t1vjb"]
+background_mode = 2
+sky = SubResource("Sky_muwu5")
+tonemap_mode = 2
+tonemap_exposure = 1.1
+fog_enabled = true
+fog_light_color = Color(0.354218, 0.535568, 0.909858, 1)
+fog_density = 0.007
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6qn38"]
+size = Vector3(1, 50, 200)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_66c2g"]
+size = Vector3(200, 1, 200)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_66c2g"]
+albedo_texture = ExtResource("1_66c2g")
+uv1_scale = Vector3(50, 50, 50)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_42wun"]
+material = SubResource("StandardMaterial3D_66c2g")
+top_radius = 35.0
+bottom_radius = 80.0
+height = 3.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dqc62"]
+albedo_texture = ExtResource("1_66c2g")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_6mrmg"]
+material = SubResource("StandardMaterial3D_dqc62")
+top_radius = 5.0
+bottom_radius = 5.0
+height = 1.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_dqc62"]
+height = 1.0
+radius = 5.0
+
+[node name="Level01Default" type="Node3D"]
+
+[node name="SandFloor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.999994, -0.00349065, 0, 0.00349065, 0.999994, 0, -0.5, 0)
+visible = false
+size = Vector3(200, 1, 200)
+material = SubResource("StandardMaterial3D_3j6ee")
+
+[node name="Ocean" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+size = Vector3(500, 0.5, 500)
+material = SubResource("StandardMaterial3D_opwhv")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 30.1693, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_t1vjb")
+
+[node name="InvWalls" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InvWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -102.829, 12.0481, 0)
+shape = SubResource("BoxShape3D_6qn38")
+
+[node name="InvFloor" type="StaticBody3D" parent="InvWalls"]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InvWalls/InvFloor"]
+transform = Transform3D(1, 0, 0, 0, 0.999994, -0.00349065, 0, 0.00349065, 0.999994, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_66c2g")
+
+[node name="Floor" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+mesh = SubResource("CylinderMesh_42wun")
+
+[node name="Design" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.80351)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Design"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.2444)
+mesh = SubResource("CylinderMesh_6mrmg")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Design"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.2985, 0.255053, 10.2444)
+mesh = SubResource("CylinderMesh_6mrmg")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Design"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.2333)
+shape = SubResource("CylinderShape3D_dqc62")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Design"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.33552, 0.252855, 10.2333)
+shape = SubResource("CylinderShape3D_dqc62")

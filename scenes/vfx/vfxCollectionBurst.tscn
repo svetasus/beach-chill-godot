@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://i5kgspynnwt0"]
+
+[ext_resource type="Script" uid="uid://by2jqc6tuiv0p" path="res://scenes/vfx/vfx_collection_burst.gd" id="1_pchxw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ol4i2"]
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_pchxw"]
+material = SubResource("StandardMaterial3D_ol4i2")
+radius = 0.025
+height = 0.05
+
+[sub_resource type="Curve" id="Curve_422wu"]
+_data = [Vector2(0, 0.99332), 0.0, 0.0, 0, 0, Vector2(0.536437, 0.699383), 0.0, 0.0, 0, 0, Vector2(0.991903, 0.000171185), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[node name="VfxCollectionBurst" type="CPUParticles3D"]
+emitting = false
+amount = 30
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+mesh = SubResource("SphereMesh_pchxw")
+spread = 100.0
+gravity = Vector3(0, -10, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+scale_amount_curve = SubResource("Curve_422wu")
+script = ExtResource("1_pchxw")

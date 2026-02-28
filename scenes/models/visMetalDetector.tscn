@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3 uid="uid://xelln2uquka5"]
+
+[ext_resource type="Script" uid="uid://dhq8wtbmg3guu" path="res://scripts/metal_detector.gd" id="1_rnwdl"]
+[ext_resource type="AudioStream" uid="uid://qqu78l1knekr" path="res://sounds/beep.ogg" id="2_cvchd"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nceh7"]
+albedo_color = Color(0.345098, 0.360784, 1, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_okkok"]
+material = SubResource("StandardMaterial3D_nceh7")
+radius = 0.08
+height = 0.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ykuq6"]
+top_radius = 0.2
+bottom_radius = 0.05
+height = 0.1
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nceh7"]
+radius = 0.300593
+height = 1.13176
+
+[node name="ToolMetalDetector" type="Node3D"]
+script = ExtResource("1_rnwdl")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="MeshHandle" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, -0.000472784, -0.325622, -0.275736)
+mesh = SubResource("CapsuleMesh_okkok")
+skeleton = NodePath("../MeshHead")
+
+[node name="MeshHead" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, 0, -0.391852, -0.66)
+mesh = SubResource("CylinderMesh_ykuq6")
+skeleton = NodePath("../MeshHandle")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 0.253606, -0.967308, 0, 0.967308, 0.253606, -0.00140071, -0.274544, -0.344117)
+shape = SubResource("CapsuleShape3D_nceh7")
+
+[node name="Functionality" type="Node3D" parent="."]
+
+[node name="BeepSound" type="AudioStreamPlayer3D" parent="Functionality"]
+stream = ExtResource("2_cvchd")
+
+[node name="TipLight" type="OmniLight3D" parent="Functionality"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35912, -0.892362)
+light_color = Color(1, 0.705882, 1, 1)
+omni_range = 3.0
+
+[node name="IndicatorLight" type="OmniLight3D" parent="Functionality"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.220867, -0.638317)
+light_color = Color(0.247059, 0.580392, 1, 1)
+light_energy = 0.0
+omni_range = 2.0

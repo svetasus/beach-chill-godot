@@ -1,0 +1,89 @@
+[gd_scene load_steps=16 format=3 uid="uid://ct6wef0wj1t8f"]
+
+[ext_resource type="Script" uid="uid://oofej86k011a" path="res://scripts/main.gd" id="1_o6xl0"]
+[ext_resource type="PackedScene" uid="uid://c4wtfvlv2judr" path="res://scenes/multiplayerMenu.tscn" id="3_85g3d"]
+[ext_resource type="Script" uid="uid://cst0k3a18pgdn" path="res://scripts/chat_ui.gd" id="4_choun"]
+[ext_resource type="PackedScene" uid="uid://b2a0i4itq3gyw" path="res://scenes/old/tomato.tscn" id="6_eb6dy"]
+[ext_resource type="Resource" uid="uid://k81noy3tielt" path="res://resources/shell_001_data.tres" id="7_a8y0u"]
+[ext_resource type="PackedScene" uid="uid://bxedtit4x0hn0" path="res://scenes/crate.tscn" id="7_trceg"]
+[ext_resource type="PackedScene" uid="uid://b4vfdesnosjey" path="res://scenes/treasurePoint.tscn" id="9_85g3d"]
+[ext_resource type="PackedScene" uid="uid://7bo1jg4ha4dw" path="res://scenes/levels/level01Default.tscn" id="11_ya4ey"]
+[ext_resource type="Resource" uid="uid://dqqv0qpqsbk76" path="res://resources/shell_002_data.tres" id="12_eb6dy"]
+[ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/baseItem.tscn" id="12_trceg"]
+[ext_resource type="Resource" uid="uid://bt0kw71g6ajwd" path="res://resources/metal_detector_01_data.tres" id="13_a8y0u"]
+[ext_resource type="Resource" uid="uid://cyl06wi3q4t82" path="res://resources/artefact_001_1_data.tres" id="13_trceg"]
+[ext_resource type="Resource" uid="uid://cmku0tmbr3t7v" path="res://resources/artefact_001_2_data.tres" id="14_a8y0u"]
+[ext_resource type="PackedScene" uid="uid://cokbrublcffh0" path="res://scenes/collectibleBasket.tscn" id="15_jbj1t"]
+[ext_resource type="Resource" uid="uid://b1hcfs0kip2o2" path="res://resources/shovel_01_data.tres" id="15_jkv2x"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_o6xl0")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MultiplayerMenu" parent="CanvasLayer" instance=ExtResource("3_85g3d")]
+
+[node name="Chat" type="LineEdit" parent="CanvasLayer"]
+visible = false
+offset_left = 288.0
+offset_top = 910.0
+offset_right = 1445.0
+offset_bottom = 1051.0
+script = ExtResource("4_choun")
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.37191, 1.78313, -0.929965)
+
+[node name="MultiplayerSpawner_Players" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://b4v64l3u3emau")
+spawn_path = NodePath("../PlayersContainer")
+
+[node name="PlayersContainer" type="Node3D" parent="."]
+
+[node name="MultiplayerSpawner_Items" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://b2a0i4itq3gyw", "uid://dehcb3u5yirmh", "uid://b4vfdesnosjey")
+spawn_path = NodePath("../ItemsContainer")
+
+[node name="ItemsContainer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1329, 0.509308, -5.02857)
+
+[node name="pinkshell" parent="." instance=ExtResource("6_eb6dy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.20994, 2.01882, -0.835963)
+data = ExtResource("7_a8y0u")
+
+[node name="Crate" parent="." instance=ExtResource("7_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.49036, 0.65, -6.30109)
+
+[node name="TreasurePoint2" parent="." instance=ExtResource("9_85g3d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2195, 0.3, 3.90124)
+
+[node name="TreasurePoint" parent="." instance=ExtResource("9_85g3d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41429, 0.15, 1.95062)
+
+[node name="Level01Default" parent="." instance=ExtResource("11_ya4ey")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.93131, 0, 17.1483)
+
+[node name="detector" parent="." instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.75615, 0.976185, 1.45888)
+data = ExtResource("13_a8y0u")
+
+[node name="shovel" parent="." instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.72713, 0.289333, -3.68686)
+data = ExtResource("15_jkv2x")
+
+[node name="blueshell" parent="." instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.51888, 0.368618, -0.712177)
+data = ExtResource("12_eb6dy")
+
+[node name="artefact1" parent="." instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.46157, 0.0681117, -2.3633)
+data = ExtResource("13_trceg")
+
+[node name="artefact2" parent="." instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.77322, 0.55747, 2.06899)
+data = ExtResource("14_a8y0u")
+
+[node name="CollectibleBasket" parent="." instance=ExtResource("15_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.12931, 0.184416, 8.28759)
+
+[connection signal="spawned" from="MultiplayerSpawner_Players" to="." method="_on_multiplayer_spawner_spawned"]
