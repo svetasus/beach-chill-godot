@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://bcnob5e7o3nmj"]
+
+[ext_resource type="Script" uid="uid://by2jqc6tuiv0p" path="res://scenes/vfx/vfx_collection_burst.gd" id="1_mmx6w"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mmx6w"]
+albedo_color = Color(0.596078, 0.345098, 0.294118, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mmx6w"]
+material = SubResource("StandardMaterial3D_mmx6w")
+size = Vector3(0.06, 0.06, 0.2)
+
+[sub_resource type="Curve" id="Curve_422wu"]
+_data = [Vector2(0, 0.99332), 0.0, 0.0, 0, 0, Vector2(0.536437, 0.699383), 0.0, 0.0, 0, 0, Vector2(0.991903, 0.000171185), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[node name="VfxCombineBurst" type="CPUParticles3D"]
+emitting = false
+amount = 30
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+mesh = SubResource("BoxMesh_mmx6w")
+spread = 70.0
+gravity = Vector3(0, -20, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 3.0
+scale_amount_curve = SubResource("Curve_422wu")
+script = ExtResource("1_mmx6w")

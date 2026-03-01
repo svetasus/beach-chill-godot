@@ -1,0 +1,89 @@
+[gd_scene load_steps=11 format=3 uid="uid://ci0lk6s1jfvc8"]
+
+[ext_resource type="Material" uid="uid://b6phied1ls275" path="res://resources/artifact_001_material.tres" id="1_47rm5"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_47rm5"]
+height = 1.2
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_431fj"]
+material = ExtResource("1_47rm5")
+top_radius = 0.3
+height = 0.8
+
+[sub_resource type="PrismMesh" id="PrismMesh_eq82x"]
+material = ExtResource("1_47rm5")
+size = Vector3(0.3, 0.3, 0.4)
+
+[sub_resource type="SphereMesh" id="SphereMesh_bdu43"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6rybn"]
+albedo_color = Color(0.121569, 0.619608, 0.835294, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_odks1"]
+material = SubResource("StandardMaterial3D_6rybn")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nys5h"]
+albedo_color = Color(0.219608, 0.203922, 0.247059, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_a2rk0"]
+material = SubResource("StandardMaterial3D_nys5h")
+radius = 0.04
+height = 0.15
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_lwuvn"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.08
+
+[node name="VisArtifact001" type="Node3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.127984, 0)
+shape = SubResource("CylinderShape3D_47rm5")
+
+[node name="Model" type="Node3D" parent="."]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, -0.371142, 0)
+
+[node name="body" type="MeshInstance3D" parent="Model"]
+mesh = SubResource("CylinderMesh_431fj")
+skeleton = NodePath("../..")
+
+[node name="paw_left" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(0.941794, 0, -0.336191, 0, 1, 0, 0.336191, 0, 0.941794, -0.33, -0.247, 0.488026)
+mesh = SubResource("PrismMesh_eq82x")
+
+[node name="paw_right" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(0.942057, 0, 0.335452, 0, 1, 0, -0.335452, 0, 0.942057, 0.330055, -0.246643, 0.487561)
+material_override = ExtResource("1_47rm5")
+mesh = SubResource("PrismMesh_eq82x")
+
+[node name="head" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66353, 0)
+material_override = ExtResource("1_47rm5")
+mesh = SubResource("SphereMesh_bdu43")
+
+[node name="eye_left" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.138498, 0.699616, 0.251086)
+mesh = SubResource("SphereMesh_odks1")
+
+[node name="eye_right" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.138, 0.7, 0.251)
+mesh = SubResource("SphereMesh_odks1")
+
+[node name="nose" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0.623906, 0.2894)
+mesh = SubResource("CapsuleMesh_a2rk0")
+
+[node name="ear_left" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.208826, 0.85181, 0)
+material_override = ExtResource("1_47rm5")
+mesh = SubResource("CylinderMesh_lwuvn")
+
+[node name="ear_right" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.209, 0.852, 0)
+material_override = ExtResource("1_47rm5")
+mesh = SubResource("CylinderMesh_lwuvn")

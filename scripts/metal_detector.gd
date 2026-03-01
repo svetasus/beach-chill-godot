@@ -57,6 +57,9 @@ func _process(delta):
 	# If we are not in the tree or networking isn't ready, skip
 	if not is_inside_tree(): return
 	
+	if not multiplayer or not multiplayer.has_multiplayer_peer():
+		return
+	
 	# WARNING: If this is a child of the BaseItem, 
 	# make sure the BaseItem gave authority to the player!
 	# If you want it to beep for everyone, remove the authority check.

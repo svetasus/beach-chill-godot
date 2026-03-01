@@ -15,7 +15,7 @@ size = Vector3(0.3, 0.3, 1)
 height = 1.2
 radius = 0.25
 
-[node name="VisArtefact0011" type="Node3D"]
+[node name="VisArtifact0011" type="Node3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("PrismMesh_7ybc7")

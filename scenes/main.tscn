@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://ct6wef0wj1t8f"]
+[gd_scene load_steps=17 format=3 uid="uid://ct6wef0wj1t8f"]
 
 [ext_resource type="Script" uid="uid://oofej86k011a" path="res://scripts/main.gd" id="1_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://c4wtfvlv2judr" path="res://scenes/multiplayerMenu.tscn" id="3_85g3d"]
@@ -11,10 +11,11 @@
 [ext_resource type="Resource" uid="uid://dqqv0qpqsbk76" path="res://resources/shell_002_data.tres" id="12_eb6dy"]
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/baseItem.tscn" id="12_trceg"]
 [ext_resource type="Resource" uid="uid://bt0kw71g6ajwd" path="res://resources/metal_detector_01_data.tres" id="13_a8y0u"]
-[ext_resource type="Resource" uid="uid://cyl06wi3q4t82" path="res://resources/artefact_001_1_data.tres" id="13_trceg"]
-[ext_resource type="Resource" uid="uid://cmku0tmbr3t7v" path="res://resources/artefact_001_2_data.tres" id="14_a8y0u"]
+[ext_resource type="Resource" uid="uid://cyl06wi3q4t82" path="res://resources/artifact_001_1_data.tres" id="13_trceg"]
+[ext_resource type="Resource" uid="uid://cmku0tmbr3t7v" path="res://resources/artifact_001_2_data.tres" id="14_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://cokbrublcffh0" path="res://scenes/collectibleBasket.tscn" id="15_jbj1t"]
 [ext_resource type="Resource" uid="uid://b1hcfs0kip2o2" path="res://resources/shovel_01_data.tres" id="15_jkv2x"]
+[ext_resource type="PackedScene" uid="uid://bio5ygciicsu6" path="res://scenes/artifactCombiner.tscn" id="16_jbj1t"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_o6xl0")
@@ -85,5 +86,8 @@ data = ExtResource("14_a8y0u")
 
 [node name="CollectibleBasket" parent="." instance=ExtResource("15_jbj1t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.12931, 0.184416, 8.28759)
+
+[node name="ArtifactCombiner" parent="." instance=ExtResource("16_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.56874, 0.140132, 6.65008)
 
 [connection signal="spawned" from="MultiplayerSpawner_Players" to="." method="_on_multiplayer_spawner_spawned"]
