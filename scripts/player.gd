@@ -551,6 +551,8 @@ func update_ghost_preview():
 		# 3. ROTATION: Keep it upright and apply scroll offset
 		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
 		
+		# 4. SCALE: Ensure the ghost is actual size (not shrunk by hand scale)
+		#carried_item.scale = Vector3.ONE
 	else:
 		# Fallback: If not looking at a surface, keep item in hand
 		var original_scale = carried_item.scale
