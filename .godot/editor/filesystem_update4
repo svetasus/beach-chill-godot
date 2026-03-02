@@ -27,3 +27,5 @@ res://scenes/models/visShovel.tscn
 res://scenes/models/visMetalDetector.tscn
 res://scripts/item_logic.gd
 res://scenes/levels/level01Default.tscn
+res://scripts/chat_ui.gd
+res://resources/ghost_item_material.tres

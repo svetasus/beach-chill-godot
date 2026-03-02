@@ -219,6 +219,9 @@ func check_interaction():
 func pick_up(item):
 	if not is_multiplayer_authority(): return
 	
+	if item == null:
+		return
+	
 	if item.freeze == true and item.get_multiplayer_authority() != multiplayer.get_unique_id():
 		print("CANNOT PICK UP: Someone else is already the boss of this!")
 		return
@@ -249,6 +252,9 @@ func pick_up(item):
 		item.top_level = true
 		placement_ray.add_exception(item)
 		
+		if carried_item.has_method("set_ghost_appearance") and get_held_tool() == null:
+			carried_item.set_ghost_appearance(true)
+		
 		# THE FIX: Tell the Synchronizer to stop sending position updates
 		# while we are manually controlling the transform.
 		if item.has_node("MultiplayerSynchronizer"):
@@ -257,28 +263,26 @@ func pick_up(item):
 		
 		if item.has_node("CollisionShape3D"):
 			item.get_node("CollisionShape3D").disabled = true
-		
-	if item.get_multiplayer_authority() == multiplayer.get_unique_id():
-		carried_item = item
+			
 		
 		# 1. DISABLE SYNC: Stop the network from fighting your manual movement
-		var sync = item.get_node_or_null("MultiplayerSynchronizer")
+		var sync = carried_item.get_node_or_null("MultiplayerSynchronizer")
 		if sync:
 			sync.set_process(false)
 			sync.set_physics_process(false)
 		
 		# 2. DISABLE COLLISION: So it doesn't hit your feet while carrying
-		if item.has_node("CollisionShape3D"):
-			item.get_node("CollisionShape3D").disabled = true
+		if carried_item.has_node("CollisionShape3D"):
+			carried_item.get_node("CollisionShape3D").disabled = true
 		
 		# 3. PHYSICS & TOP LEVEL: 
 		# Setting top_level = true means the item moves in Global Space, 
 		# not "relative" to your hand. This is essential for the Ghost Preview.
-		item.freeze = true
-		item.top_level = true 
+		carried_item.freeze = true
+		carried_item.top_level = true 
 		
 		# 4. INITIAL SNAP: Put it at the hand's position immediately
-		item.global_transform = hand.global_transform
+		carried_item.global_transform = hand.global_transform
 
 	print("SUCCESS: Picked up ", item.name)
 
@@ -297,7 +301,14 @@ func drop_item():
 	if tool: 
 		tool.update_proximity(null)
 	
+	
 	var item = carried_item
+	
+	if is_instance_valid(carried_item):
+		if carried_item.has_method("set_ghost_appearance"):
+			carried_item.set_ghost_appearance(false)
+		
+			
 	carried_item = null
 	rotation_offset = 0.0
 	
@@ -330,9 +341,15 @@ func throw_item():
 	if tool:
 		tool.update_proximity(null)
 		
+
 	
 	var item = carried_item
 	carried_item = null # This stops the _process snap-to-hand IMMEDIATELY
+	item.scale = Vector3.ONE
+	
+	if is_instance_valid(carried_item):
+		if carried_item.has_method("set_ghost_appearance"):
+			carried_item.set_ghost_appearance(false)
 	
 	# 1. CALCULATE DATA
 	var launch_dir = (-hand.global_transform.basis.z + Vector3(0, 0.3, 0)).normalized()
@@ -492,6 +509,11 @@ func _process(_delta):
 func update_ghost_preview():
 	if not carried_item: return
 	
+	# If it's a tool, keep it in hand (no ghost placement)
+	if get_held_tool() != null:
+		carried_item.global_transform = hand.global_transform
+		return
+	
 	# Use the RayCast to find the floor or other items
 	if placement_ray.is_colliding():
 		var hit_point = placement_ray.get_collision_point()
@@ -524,6 +546,9 @@ func update_ghost_preview():
 		
 		# 3. ROTATION: Keep it upright and apply scroll offset
 		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
+		
+		# 4. SCALE: Ensure the ghost is actual size (not shrunk by hand scale)
+		carried_item.scale = Vector3.ONE
 	else:
 		# Fallback: If not looking at a surface, keep item in hand
 		carried_item.global_transform = hand.global_transform

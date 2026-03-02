@@ -4,6 +4,7 @@ class_name Item
 # --- 1. DATA & MULTIPLAYER SYNC ---
 
 @export var data: ItemData : set = _set_data # Using a setter!
+@export var ghost_material: Material
 
 @export var data_path: String = "":
 	set(val):
@@ -24,7 +25,22 @@ class_name Item
 var item_name: String = "Item"
 var display_name: String = "Item"
 
+var is_ghost_mode: bool = false
+
 # --- 2. AUTHORITY & PHYSICS ---
+func set_ghost_appearance(active: bool):
+	is_ghost_mode = active
+	_apply_material_to_anchor($MeshAnchor, active)
+
+
+func _apply_material_to_anchor(node: Node, active: bool):
+	if node is MeshInstance3D:
+		# If active is true, we force the ghost material. 
+		# If false, we set it to null, which returns it to the original material.
+		node.material_override = ghost_material if active else null
+		
+	for child in node.get_children():
+		_apply_material_to_anchor(child, active)
 
 @rpc("any_peer", "call_local")
 func sync_authority(peer_id: int, should_freeze: bool, impulse: Vector3 = Vector3.ZERO, pos: Vector3 = Vector3.ZERO, rot_y: float = 0.0):
