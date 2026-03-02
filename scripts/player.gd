@@ -548,7 +548,7 @@ func update_ghost_preview():
 		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
 		
 		# 4. SCALE: Ensure the ghost is actual size (not shrunk by hand scale)
-		carried_item.scale = Vector3.ONE
+		#carried_item.scale = Vector3.ONE
 	else:
 		# Fallback: If not looking at a surface, keep item in hand
 		carried_item.global_transform = hand.global_transform

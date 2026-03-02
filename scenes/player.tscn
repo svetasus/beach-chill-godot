@@ -39,7 +39,7 @@ height = 0.06
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
 material = SubResource("StandardMaterial3D_4flbx")
-height = 2.2
+height = 2.5
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3vyb7"]
 radius = 0.2
@@ -128,7 +128,7 @@ mesh = SubResource("CylinderMesh_sweqy")
 skeleton = NodePath("../../..")
 
 [node name="Belly" type="MeshInstance3D" parent="Body"]
-transform = Transform3D(1, 0, 0, 0, 1.18659, 0, 0, 0, 1, 0, 0.360344, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.360344, 0)
 mesh = SubResource("CapsuleMesh_4flbx")
 
 [node name="Leg1" type="MeshInstance3D" parent="Body/Belly"]
