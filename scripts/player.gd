@@ -354,7 +354,7 @@ func throw_item():
 	get_tree().create_timer(0.3).timeout.connect(func():
 		if is_instance_valid(item):
 			# Hand back to server (1) so anyone can pick it up
-			item.sync_authority.rpc(1, false)
+			item.sync_authority.rpc(1, false, item.linear_velocity, item.global_position, item.global_rotation.y)
 	)
 
 
