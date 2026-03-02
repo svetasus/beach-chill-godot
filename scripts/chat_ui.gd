@@ -4,7 +4,7 @@ extends LineEdit
 func _input(event):
 	if event.is_action_pressed("chat"): # 'ui_accept' is usually the Enter key
 		var my_id = multiplayer.get_unique_id()
-		var my_player = get_node_or_null("/root/Main/" + str(my_id))
+		var my_player = get_node_or_null(Global.PLAYERS_CONTAINER_PATH + str(my_id))
 		
 		if not visible:
 			# 1. Show the chat box and focus it
@@ -25,7 +25,7 @@ func send_chat():
 	if text != "":
 		# Find the node that belongs to ME (the local player)
 		var my_id = multiplayer.get_unique_id()
-		var my_player = get_node("/root/Main/World/PlayersContainer/" + str(my_id))
+		var my_player = get_node(Global.PLAYERS_CONTAINER_PATH + str(my_id))
 		
 		if my_player:
 			# This is where we call the function we wrote in player.gd
@@ -37,7 +37,7 @@ func send_chat():
 	hide()
 	# Tell the player they can move again
 	var my_id = multiplayer.get_unique_id()
-	var my_player = get_node_or_null("/root/Main/" + str(my_id))
+	var my_player = get_node_or_null(Global.PLAYERS_CONTAINER_PATH + str(my_id))
 	if my_player: my_player.is_typing = false
 	
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
