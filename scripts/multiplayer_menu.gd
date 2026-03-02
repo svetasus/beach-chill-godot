@@ -41,16 +41,16 @@ func _on_join_button_pressed():
 	hide()
 
 func add_player(peer_id):
-	var player = preload("res://scenes/player.tscn").instantiate()
+	var player = preload(Global.PLAYER_SCENE_PATH).instantiate()
 	player.name = str(peer_id) # This name MUST be the ID for authority to work!
 	
 	
-	var container = get_node_or_null("/root/Main/PlayersContainer")
+	var container = get_node_or_null(Global.PLAYERS_CONTAINER_PATH)
 	if container:
 		container.add_child(player)
 	
 	# Move them to the spawn point AFTER adding to tree
-	var spawn_point = get_node_or_null("/root/Main/SpawnPoint")
+	var spawn_point = get_node_or_null(Global.PLAYERS_SPAWNPOINT_PATH)
 	if spawn_point:
 		player.global_position = spawn_point.global_position
 	

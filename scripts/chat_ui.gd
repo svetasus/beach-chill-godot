@@ -25,7 +25,7 @@ func send_chat():
 	if text != "":
 		# Find the node that belongs to ME (the local player)
 		var my_id = multiplayer.get_unique_id()
-		var my_player = get_node("/root/Main/PlayersContainer/" + str(my_id))
+		var my_player = get_node("/root/Main/World/PlayersContainer/" + str(my_id))
 		
 		if my_player:
 			# This is where we call the function we wrote in player.gd

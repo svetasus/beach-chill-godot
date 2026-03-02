@@ -32,62 +32,64 @@ offset_right = 1445.0
 offset_bottom = 1051.0
 script = ExtResource("4_choun")
 
-[node name="SpawnPoint" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.37191, 1.78313, -0.929965)
-
 [node name="MultiplayerSpawner_Players" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://b4v64l3u3emau")
-spawn_path = NodePath("../PlayersContainer")
-
-[node name="PlayersContainer" type="Node3D" parent="."]
+spawn_path = NodePath("../World/PlayersContainer")
 
 [node name="MultiplayerSpawner_Items" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://b2a0i4itq3gyw", "uid://dehcb3u5yirmh", "uid://b4vfdesnosjey")
-spawn_path = NodePath("../ItemsContainer")
-
-[node name="ItemsContainer" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1329, 0.509308, -5.02857)
-
-[node name="pinkshell" parent="." instance=ExtResource("6_eb6dy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.20994, 2.01882, -0.835963)
-data = ExtResource("7_a8y0u")
-
-[node name="Crate" parent="." instance=ExtResource("7_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.49036, 0.65, -6.30109)
-
-[node name="TreasurePoint2" parent="." instance=ExtResource("9_85g3d")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2195, 0.3, 3.90124)
-
-[node name="TreasurePoint" parent="." instance=ExtResource("9_85g3d")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41429, 0.15, 1.95062)
+_spawnable_scenes = PackedStringArray("uid://b4vfdesnosjey", "uid://dprek8xvxjxor")
+spawn_path = NodePath("../World/ItemsContainer")
 
 [node name="Level01Default" parent="." instance=ExtResource("11_ya4ey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.93131, 0, 17.1483)
 
-[node name="detector" parent="." instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.75615, 0.976185, 1.45888)
-data = ExtResource("13_a8y0u")
+[node name="World" type="Node3D" parent="."]
 
-[node name="shovel" parent="." instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.72713, 0.289333, -3.68686)
-data = ExtResource("15_jkv2x")
+[node name="SpawnPoint" type="Marker3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.37191, 1.78313, -0.929965)
 
-[node name="blueshell" parent="." instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.51888, 0.368618, -0.712177)
-data = ExtResource("12_eb6dy")
+[node name="Crate" parent="World" instance=ExtResource("7_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.49036, 0.65, -6.30109)
 
-[node name="artefact1" parent="." instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.46157, 0.0681117, -2.3633)
-data = ExtResource("13_trceg")
+[node name="PlayersContainer" type="Node3D" parent="World"]
 
-[node name="artefact2" parent="." instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.77322, 0.55747, 2.06899)
-data = ExtResource("14_a8y0u")
+[node name="ArtifactCombiner" parent="World" instance=ExtResource("16_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.56874, 0.140132, 6.65008)
 
-[node name="CollectibleBasket" parent="." instance=ExtResource("15_jbj1t")]
+[node name="CollectibleBasket" parent="World" instance=ExtResource("15_jbj1t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.12931, 0.184416, 8.28759)
 
-[node name="ArtifactCombiner" parent="." instance=ExtResource("16_jbj1t")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.56874, 0.140132, 6.65008)
+[node name="TreasurePoint2" parent="World" instance=ExtResource("9_85g3d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2195, 0.3, 3.90124)
+
+[node name="TreasurePoint" parent="World" instance=ExtResource("9_85g3d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41429, 0.15, 1.95062)
+
+[node name="ItemsContainer" type="Node3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1329, 0.509308, -5.02857)
+
+[node name="pinkshell" parent="World/ItemsContainer" instance=ExtResource("6_eb6dy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.92296, 1.50951, 4.19261)
+data = ExtResource("7_a8y0u")
+
+[node name="detector" parent="World/ItemsContainer" instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.889, 0.466877, 6.48745)
+data = ExtResource("13_a8y0u")
+
+[node name="shovel" parent="World/ItemsContainer" instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.86, -0.219975, 1.34171)
+data = ExtResource("15_jkv2x")
+
+[node name="blueshell" parent="World/ItemsContainer" instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.6518, -0.14069, 4.31639)
+data = ExtResource("12_eb6dy")
+
+[node name="artefact1" parent="World/ItemsContainer" instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.5945, -0.441196, 2.66527)
+data = ExtResource("13_trceg")
+
+[node name="artefact2" parent="World/ItemsContainer" instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.9061, 0.048162, 7.09756)
+data = ExtResource("14_a8y0u")
 
 [connection signal="spawned" from="MultiplayerSpawner_Players" to="." method="_on_multiplayer_spawner_spawned"]

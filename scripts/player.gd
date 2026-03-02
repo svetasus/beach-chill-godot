@@ -16,6 +16,10 @@ const DIG_DIST = 1.5
 # This variable will be synced across the network
 @export var eye_color: Color = Color.BLUE
 
+var rotation_offset: float = 0.0
+@export var rotation_speed: float = 0.5 # How fast it rotates with scroll
+
+
 var is_typing = false
 var carried_item = null
 var catch_cooldown = false
@@ -401,6 +405,7 @@ func _process(_delta):
 	update_action_ui()
 	
 	if carried_item:
+		
 		carried_item.global_transform = hand.global_transform
 		if carried_item.has_node("MultiplayerSynchronizer") and carried_item.get_node("MultiplayerSynchronizer").is_processing():
 			carried_item.get_node("MultiplayerSynchronizer").set_process(false)
