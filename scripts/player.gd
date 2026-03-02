@@ -17,6 +17,7 @@ const DIG_DIST = 1.5
 # This variable will be synced across the network
 @export var eye_color: Color = Color.BLUE
 
+
 var rotation_offset: float = 0.0
 @export var rotation_speed: float = 0.5 # How fast it rotates with scroll
 
@@ -26,9 +27,10 @@ var carried_item = null
 var catch_cooldown = false
 var last_hovered_item = null
 
-var nearby_treasures = [] # Change current_treasure to an Array
+var nearby_treasures: Array[Node3D] = [] # Change current_treasure to an Array
 var current_treasure = null # This will now be the NEAREST one
 var can_dig = false
+var jump_queued = false
 
 
 # Stores item names and their counts: {"Pink Shell": 3, "Old Coin": 1}
@@ -105,8 +107,10 @@ func _physics_process(delta: float) -> void:
 		velocity += get_gravity() * delta
 
 	# Handle jump.
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
+	if jump_queued:
+		jump_queued = false
+		if is_on_floor():
+			velocity.y = JUMP_VELOCITY
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
@@ -119,11 +123,6 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 		
-		
-	# NEW: If we are carrying something, make it follow our hand every frame
-	if carried_item:
-		carried_item.global_transform = hand.global_transform
-	
 	move_and_slide()
 	
 	
@@ -157,6 +156,9 @@ func _input(event):
 	if event is InputEventMouseButton and event.pressed:
 		if is_multiplayer_authority():
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	if event.is_action_pressed("jump") and not is_typing:
+		jump_queued = true
 	
 	if event.is_action_pressed("inventory"):
 		toggle_inventory()
@@ -370,6 +372,9 @@ func apply_eye_color(c):
 	
 @rpc("any_peer", "call_local")
 func receive_message(text: String):
+	if multiplayer.get_remote_sender_id() != get_multiplayer_authority():
+		return 
+		
 	$Nickname.text = text
 	$Nickname.modulate = Color.YELLOW # Highlight the text
 	
@@ -520,10 +525,8 @@ func update_ghost_preview():
 		# 3. ROTATION: Keep it upright and apply scroll offset
 		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
 	else:
-		# Fallback: If looking at the sky, keep item in the air in front of you
-		var forward = -get_viewport().get_camera_3d().global_transform.basis.z
-		carried_item.global_position = global_position + (forward * 2.0)
-		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
+		# Fallback: If not looking at a surface, keep item in hand
+		carried_item.global_transform = hand.global_transform
 	
 
 func update_action_ui():
