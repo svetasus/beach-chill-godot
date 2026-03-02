@@ -282,7 +282,9 @@ func pick_up(item):
 		carried_item.top_level = true 
 		
 		# 4. INITIAL SNAP: Put it at the hand's position immediately
+		var original_scale = carried_item.scale
 		carried_item.global_transform = hand.global_transform
+		carried_item.scale = original_scale
 
 	print("SUCCESS: Picked up ", item.name)
 
@@ -345,7 +347,6 @@ func throw_item():
 	
 	var item = carried_item
 	carried_item = null # This stops the _process snap-to-hand IMMEDIATELY
-	item.scale = Vector3.ONE
 	
 	if is_instance_valid(carried_item):
 		if carried_item.has_method("set_ghost_appearance"):
@@ -511,7 +512,9 @@ func update_ghost_preview():
 	
 	# If it's a tool, keep it in hand (no ghost placement)
 	if get_held_tool() != null:
+		var original_scale = carried_item.scale
 		carried_item.global_transform = hand.global_transform
+		carried_item.scale = original_scale
 		return
 	
 	# Use the RayCast to find the floor or other items
@@ -547,11 +550,11 @@ func update_ghost_preview():
 		# 3. ROTATION: Keep it upright and apply scroll offset
 		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
 		
-		# 4. SCALE: Ensure the ghost is actual size (not shrunk by hand scale)
-		carried_item.scale = Vector3.ONE
 	else:
 		# Fallback: If not looking at a surface, keep item in hand
+		var original_scale = carried_item.scale
 		carried_item.global_transform = hand.global_transform
+		carried_item.scale = original_scale
 	
 
 func update_action_ui():
