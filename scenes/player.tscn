@@ -82,6 +82,7 @@ mesh = SubResource("CapsuleMesh_onrkg")
 transform = Transform3D(1.61753, -4.59586e-08, -1.45481e-08, 7.38833e-08, 2.36352, 0.748167, 0, -0.462822, 1.46209, 0, -0.0746816, -0.473985)
 
 [node name="RayCast3D" type="RayCast3D" parent="Body/Head/Camera3D"]
+visible = false
 target_position = Vector3(0, 0, -4)
 collision_mask = 14
 
@@ -101,6 +102,10 @@ shape = SubResource("SphereShape3D_4flbx")
 transform = Transform3D(1, -2.08301e-08, -3.78156e-08, -3.87962e-08, -0.0492854, -0.998785, 1.8941e-08, 0.998785, -0.0492856, 2.22816e-09, -0.0764315, 0.489192)
 shape = SubResource("CylinderShape3D_4flbx")
 collision_mask = 4
+
+[node name="PlacementRay" type="RayCast3D" parent="Body/Head/Camera3D"]
+target_position = Vector3(0, 0, -5)
+collision_mask = 5
 
 [node name="Eye" type="MeshInstance3D" parent="Body/Head"]
 transform = Transform3D(1.61753, 0, 0, 0, 2.47911, 0, 0, 0, 1.5336, 0.140898, 0.183214, -0.48394)

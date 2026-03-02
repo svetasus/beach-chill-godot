@@ -9,6 +9,7 @@ const DIG_DIST = 1.5
 @onready var shapecast = $Body/Head/Camera3D/InteractionShape
 @onready var hand = $Body/Head/Camera3D/HandMarker
 @onready var action_label = $PlayerUI/ActionLabel
+@onready var placement_ray = $Body/Head/Camera3D/PlacementRay
 
 
 @export var mouse_sensitivity = 0.002
@@ -177,7 +178,15 @@ func _input(event):
 			# ONLY drop if we aren't trying to use a tool on a valid target
 			else:
 				drop_item()
-			
+		
+		
+	if event.is_action_pressed("rotate_item_right"):
+		# Rotate by 15 degrees clockwise
+		rotation_offset += deg_to_rad(15)
+		
+	if event.is_action_pressed("rotate_item_left"):
+		# Rotate by 15 degrees counter-clockwise
+		rotation_offset -= deg_to_rad(15)
 			
 	# NEW: Press Left Click (or a new 'throw' action) to yeet!
 	if event.is_action_pressed("throw") or event.is_action_pressed("ui_select"): 
@@ -212,6 +221,9 @@ func pick_up(item):
 		print("CANNOT PICK UP: Someone else is already the boss of this!")
 		return
 	
+	if item is RigidBody3D:
+		item.freeze = false
+	
 	var my_id = multiplayer.get_unique_id()
 	
 	# 1. TELL THE WORLD FIRST
@@ -232,6 +244,8 @@ func pick_up(item):
 	
 	if item.get_multiplayer_authority() == multiplayer.get_unique_id():
 		carried_item = item
+		item.top_level = true
+		placement_ray.add_exception(item)
 		
 		# THE FIX: Tell the Synchronizer to stop sending position updates
 		# while we are manually controlling the transform.
@@ -242,22 +256,39 @@ func pick_up(item):
 		if item.has_node("CollisionShape3D"):
 			item.get_node("CollisionShape3D").disabled = true
 		
-	# 3. SNAP TO HAND
-	item.global_transform = hand.global_transform
-	
-	print("SUCCESS: Picked up ", item.name, " as authority: ", my_id)
-	
-	item.freeze = true
-
+	if item.get_multiplayer_authority() == multiplayer.get_unique_id():
+		carried_item = item
 		
-	# NEW: If we just picked up a detector while standing on treasure, wake it up!
+		# 1. DISABLE SYNC: Stop the network from fighting your manual movement
+		var sync = item.get_node_or_null("MultiplayerSynchronizer")
+		if sync:
+			sync.set_process(false)
+			sync.set_physics_process(false)
+		
+		# 2. DISABLE COLLISION: So it doesn't hit your feet while carrying
+		if item.has_node("CollisionShape3D"):
+			item.get_node("CollisionShape3D").disabled = true
+		
+		# 3. PHYSICS & TOP LEVEL: 
+		# Setting top_level = true means the item moves in Global Space, 
+		# not "relative" to your hand. This is essential for the Ghost Preview.
+		item.freeze = true
+		item.top_level = true 
+		
+		# 4. INITIAL SNAP: Put it at the hand's position immediately
+		item.global_transform = hand.global_transform
+
+	print("SUCCESS: Picked up ", item.name)
+
+	# Handle your tool/treasure logic here...
 	if item.has_method("set_active_treasure") and current_treasure != null:
-		print("DEBUG: Picked up detector while ALREADY in treasure zone. Starting beeps...")
 		item.set_active_treasure(current_treasure)
 
 
 func drop_item():
 	if not is_multiplayer_authority(): return
+	
+	placement_ray.remove_exception(carried_item)
 	
 	# Stop tool logic
 	var tool = get_held_tool()
@@ -266,14 +297,26 @@ func drop_item():
 	
 	var item = carried_item
 	carried_item = null
+	rotation_offset = 0.0
 	
-	# 1. Enable collision
+	var final_pos = item.global_position
+	var final_rot = item.global_rotation.y
+	
+	item.top_level = false
 	if item.has_node("CollisionShape3D"):
 		item.get_node("CollisionShape3D").disabled = false
+		
+	if item is RigidBody3D:
+		item.freeze = false
+		item.linear_velocity = Vector3.ZERO
+		item.angular_velocity = Vector3.ZERO
+		# Snap it one last time to be sure
+		item.global_position = final_pos
+		item.global_rotation.y = final_rot
 	
 	# 2. KEEP authority as yourself! 
 	# Only unfreeze it, but don't give it back to ID 1.
-	item.sync_authority.rpc(multiplayer.get_unique_id(), false, Vector3.ZERO)
+	item.sync_authority.rpc(multiplayer.get_unique_id(), false, Vector3.ZERO, final_pos, final_rot)
 	
 	print("Dropped ", item.name)
 
@@ -305,7 +348,7 @@ func throw_item():
 	
 	# 4. ATOMIC RPC
 	var my_id = multiplayer.get_unique_id()
-	item.sync_authority.rpc(my_id, false, final_velocity)
+	item.sync_authority.rpc(my_id, false, final_velocity,Vector3.ZERO,0.0)
 	
 	# 5. HANDOVER
 	get_tree().create_timer(0.3).timeout.connect(func():
@@ -405,11 +448,9 @@ func _process(_delta):
 	update_action_ui()
 	
 	if carried_item:
+		update_ghost_preview()
 		
-		carried_item.global_transform = hand.global_transform
-		if carried_item.has_node("MultiplayerSynchronizer") and carried_item.get_node("MultiplayerSynchronizer").is_processing():
-			carried_item.get_node("MultiplayerSynchronizer").set_process(false)
-			carried_item.get_node("MultiplayerSynchronizer").set_physics_process(false)
+	
 	
 	nearby_treasures = nearby_treasures.filter(func(t): return is_instance_valid(t))
 	
@@ -440,6 +481,51 @@ func _process(_delta):
 			tool.update_proximity(current_treasure)
 			
 			
+			
+			
+			
+func update_ghost_preview():
+	if not carried_item: return
+	
+	# Use the RayCast to find the floor or other items
+	if placement_ray.is_colliding():
+		var hit_point = placement_ray.get_collision_point()
+		
+		# 1. Calculate the Y-offset (distance to 'feet')
+		var y_offset = 0.0
+		var total_aabb: AABB = AABB()
+		var first_mesh = true
+		
+		for child in carried_item.find_children("*", "VisualInstance3D"):
+			var mesh_aabb = child.get_aabb()
+			var child_transform = child.transform
+			var world_aabb = child_transform * mesh_aabb
+			
+			if first_mesh:
+				total_aabb = world_aabb
+				first_mesh = false
+			else:
+				total_aabb = total_aabb.merge(world_aabb)
+		
+		if not first_mesh:
+			var box_end: Vector3 = total_aabb.end
+			var box_size: Vector3 = total_aabb.size
+			var mesh_bottom_y = box_end.y - box_size.y
+		else:
+			y_offset = 0.5
+		
+		# 2. GLIDE: Set position at hit point + feet offset
+		carried_item.global_position = hit_point + Vector3(0, y_offset, 0)
+		
+		# 3. ROTATION: Keep it upright and apply scroll offset
+		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
+	else:
+		# Fallback: If looking at the sky, keep item in the air in front of you
+		var forward = -get_viewport().get_camera_3d().global_transform.basis.z
+		carried_item.global_position = global_position + (forward * 2.0)
+		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
+	
+
 func update_action_ui():
 	if not is_multiplayer_authority(): 
 		action_label.hide() # Hide UI for other players' versions of you

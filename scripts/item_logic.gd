@@ -27,7 +27,7 @@ var display_name: String = "Item"
 # --- 2. AUTHORITY & PHYSICS ---
 
 @rpc("any_peer", "call_local")
-func sync_authority(peer_id: int, should_freeze: bool, impulse: Vector3 = Vector3.ZERO):
+func sync_authority(peer_id: int, should_freeze: bool, impulse: Vector3 = Vector3.ZERO, pos: Vector3 = Vector3.ZERO, rot_y: float = 0.0):
 	if not is_node_ready():
 		await ready
 	# SAFETY: If the basket is already deleting this, stop syncing
@@ -40,21 +40,44 @@ func sync_authority(peer_id: int, should_freeze: bool, impulse: Vector3 = Vector
 		$MultiplayerSynchronizer.set_multiplayer_authority(peer_id)
 	
 	# 2. WAIT A TINY BIT (Deferred)
-	_apply_physics_state.call_deferred(should_freeze, impulse)
+	_apply_physics_state.call_deferred(should_freeze, impulse, pos, rot_y)
 
-func _apply_physics_state(should_freeze: bool, impulse: Vector3):
-	freeze = should_freeze
-	if not should_freeze:
-		sleeping = false
-		if impulse != Vector3.ZERO:
-			linear_velocity = impulse
-			# Added your original random rotation on throw
-			angular_velocity = Vector3(randf(), randf(), randf()) * 2.0
-	else:
+func _apply_physics_state(should_freeze: bool, impulse: Vector3, pos: Vector3, rot_y: float):
+
+	if should_freeze:
+		freeze = true
+		return # Exit early so we don't accidentally unfreeze below
+	
+	# 2. Handle the "Release" state (Dropping or Throwing)
+	sleeping = false
+	freeze = false
+	
+	# Move to the ghost/hand position
+	if pos != Vector3.ZERO:
+		global_position = pos
+		if impulse == Vector3.ZERO:
+			global_rotation = Vector3(0, rot_y, 0)
+			sleeping = true # Settle immediately for cozy placement
+		else:
+			# If it's a throw, let it keep its natural rotation from the air
+			global_rotation.y = rot_y
+
+	# Decide: Is this a Placement or a Physics Drop?
+	if impulse == Vector3.ZERO:
+		# This is a GENTLE placement (E key)
+		# We freeze it so it doesn't slide on other items
+		freeze = false
+		sleeping = true 
 		linear_velocity = Vector3.ZERO
 		angular_velocity = Vector3.ZERO
+	else:
+		# This is a THROW or a physics drop
+		# We UNFREEZE it so it can fall and react to gravity
+		freeze = false
+		linear_velocity = impulse
+		angular_velocity = Vector3(randf(), randf(), randf()) * 2.0
 
-# --- 3. INITIALIZATION & PROXIMITY ---
+
 
 func _ready():
 	# Ensuring the label starts with the correct text

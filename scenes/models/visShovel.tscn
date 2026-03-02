@@ -20,7 +20,7 @@ radius = 0.05
 height = 0.7
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_trwl4"]
-radius = 0.25
+radius = 0.23
 height = 1.1
 
 [node name="ToolShovel" type="Node3D"]

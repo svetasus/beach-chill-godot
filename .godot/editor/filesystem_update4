@@ -21,3 +21,9 @@ res://scenes/models/visArtifact_001.tscn
 res://scenes/models/visShell_001.tscn
 res://scenes/vfx/vfxCombineBurst.tscn
 res://scripts/player.gd
+res://scenes/models/visShell_002.tscn
+res://scenes/models/visArtifact_001_2.tscn
+res://scenes/models/visShovel.tscn
+res://scenes/models/visMetalDetector.tscn
+res://scripts/item_logic.gd
+res://scenes/levels/level01Default.tscn

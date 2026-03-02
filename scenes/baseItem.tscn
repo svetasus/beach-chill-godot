@@ -40,7 +40,7 @@ script = ExtResource("2_6muww")
 [node name="Name" type="Label3D" parent="NamePivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.428997, 0)
 billboard = 1
-text = "Ingredent"
+text = "Item"
 font_size = 28
 
 [node name="NameDetectionArea" type="Area3D" parent="."]
