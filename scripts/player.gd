@@ -541,6 +541,7 @@ func update_ghost_preview():
 			var box_end: Vector3 = total_aabb.end
 			var box_size: Vector3 = total_aabb.size
 			var mesh_bottom_y = box_end.y - box_size.y
+			y_offset = -mesh_bottom_y
 		else:
 			y_offset = 0.5
 		
