@@ -69,7 +69,7 @@ func _ready():
 		set_physics_process(true)
 		set_collision_layer_value(1, true)
 		set_collision_mask_value(1, true)
-		print("SUCCESS: I am the BOSS of ", name)
+		#print("SUCCESS: I am the BOSS of ", name)
 		
 		eye_color = Color(randf(), randf(), randf()) # Random RGB
 		apply_eye_color(eye_color)
@@ -165,7 +165,7 @@ func _input(event):
 	
 	if event.is_action_pressed("interact"): # You define "interact" in Input Map (e.g., 'E' key)
 		if not is_multiplayer_authority(): return
-		print("pressed interact;")
+		#print("pressed interact;")
 		if carried_item == null:
 			check_interaction()
 		else:
@@ -200,6 +200,8 @@ func _input(event):
 
 
 func check_interaction():
+	if not can_interact_here(): return
+	
 	if not is_multiplayer_authority(): return
 	if shapecast.is_colliding():
 		var target = shapecast.get_collider(0)
@@ -234,7 +236,7 @@ func pick_up(item):
 	# 1. TELL THE WORLD FIRST
 	# This triggers the 'sync_authority' function on EVERYONE'S computer.
 	if item.has_method("sync_authority"):
-		print("sync_auth found")
+		#print("sync_auth found")
 		item.sync_authority.rpc(my_id,true)
 	
 	# 2. WAIT: Give the network one physics frame to process the RPC
@@ -284,7 +286,7 @@ func pick_up(item):
 		# 4. INITIAL SNAP: Put it at the hand's position immediately
 		carried_item.global_transform = hand.global_transform
 
-	print("SUCCESS: Picked up ", item.name)
+	#print("SUCCESS: Picked up ", item.name)
 
 	# Handle your tool/treasure logic here...
 	if item.has_method("set_active_treasure") and current_treasure != null:
@@ -331,7 +333,7 @@ func drop_item():
 	# Only unfreeze it, but don't give it back to ID 1.
 	item.sync_authority.rpc(multiplayer.get_unique_id(), false, Vector3.ZERO, final_pos, final_rot)
 	
-	print("Dropped ", item.name)
+	#print("Dropped ", item.name)
 
 
 func throw_item():
@@ -456,8 +458,8 @@ func set_near_treasure(treasure, is_near: bool):
 	var tool = get_held_tool()
 	if tool:
 		print("PLAYER: Found tool: ", tool.name)
-	else:
-		print("PLAYER: No tool found in carried_item!")
+	#else:
+		#print("PLAYER: No tool found in carried_item!")
 		
 	if tool:
 		tool.update_proximity(current_treasure)
@@ -635,3 +637,19 @@ func toggle_inventory():
 		inv_ui.refresh_ui(collection) 
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+
+func can_interact_here() -> bool:
+	# 1. Get all overlapping areas at the player's feet
+	# (Assuming you have a small Area3D on the player to detect 'Zones')
+	var zones = $ZoneDetector.get_overlapping_areas()
+	
+	for zone in zones:
+		var tent = zone.get_parent()
+		if tent.has_method("can_player_modify"):
+			# If the bouncer says NO, we return false
+			if not tent.can_player_modify(multiplayer.get_unique_id()):
+				print("Hey! This isn't your tent!")
+				return false
+	return true

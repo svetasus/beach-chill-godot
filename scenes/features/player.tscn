@@ -1,0 +1,216 @@
+[gd_scene load_steps=19 format=3 uid="uid://b4v64l3u3emau"]
+
+[ext_resource type="Script" uid="uid://bop6eska7b3tl" path="res://scripts/player.gd" id="1_3vyb7"]
+[ext_resource type="Script" uid="uid://ipa8enh86p2g" path="res://scripts/inventory_ui.gd" id="2_g2els"]
+[ext_resource type="PackedScene" uid="uid://cbcwb7nuw340m" path="res://ui/inventorySlot.tscn" id="3_qhqgy"]
+[ext_resource type="Script" uid="uid://ck2hp6el2v8jf" path="res://scripts/notification_area.gd" id="4_qlg0r"]
+[ext_resource type="PackedScene" uid="uid://c1yiyhtvd41gy" path="res://scenes/features/userNotifPop.tscn" id="5_tuyoq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
+albedo_color = Color(0.731745, 0.926235, 0.904053, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_onrkg"]
+material = SubResource("StandardMaterial3D_4flbx")
+radius = 0.52
+height = 1.2
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_4flbx"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_4flbx"]
+height = 4.0
+radius = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_onrkg"]
+albedo_color = Color(0.227451, 0.215686, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_i3pqv"]
+material = SubResource("StandardMaterial3D_onrkg")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hqtel"]
+albedo_color = Color(0.282353, 0.0784314, 0.0627451, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_sweqy"]
+material = SubResource("StandardMaterial3D_hqtel")
+top_radius = 0.01
+bottom_radius = 0.01
+height = 0.06
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4flbx"]
+material = SubResource("StandardMaterial3D_4flbx")
+height = 2.5
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3vyb7"]
+radius = 0.2
+height = 0.5
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_onrkg"]
+radius = 0.4
+height = 1.5
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4flbx"]
+properties/0/path = NodePath(".:eye_color")
+properties/0/spawn = false
+properties/0/replication_mode = 1
+properties/1/path = NodePath("Nickname:text")
+properties/1/spawn = false
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:position")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:rotation")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath("Body/Head:rotation")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_t4epb"]
+height = 1.5
+radius = 0.7
+
+[node name="Player" type="CharacterBody3D" groups=["players"]]
+collision_layer = 2
+collision_mask = 13
+script = ExtResource("1_3vyb7")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.618226, 0, 0, 0, 0.40337, 0, 0, 0, 0.652061, 0, 0, 0)
+
+[node name="Head" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.89333, 0)
+mesh = SubResource("CapsuleMesh_onrkg")
+
+[node name="Camera3D" type="Camera3D" parent="Body/Head"]
+transform = Transform3D(1.61753, -4.59586e-08, -1.45481e-08, 7.38833e-08, 2.36352, 0.748167, 0, -0.462822, 1.46209, 0, -0.0746816, -0.473985)
+
+[node name="RayCast3D" type="RayCast3D" parent="Body/Head/Camera3D"]
+visible = false
+target_position = Vector3(0, 0, -4)
+collision_mask = 14
+
+[node name="HandMarker" type="Marker3D" parent="Body/Head/Camera3D"]
+transform = Transform3D(1, 1.42109e-14, 3.55271e-15, 0, 1, 0, 0, 0, 1, 2.03254e-08, -0.116411, -0.763642)
+
+[node name="CatchZone" type="Area3D" parent="Body/Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0529503, -0.167274)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body/Head/Camera3D/CatchZone"]
+transform = Transform3D(1, 7.10543e-15, 1.77636e-15, 0, 1, 0, 0, 0, 1, -6.10643e-09, -0.235797, 0.0659602)
+shape = SubResource("SphereShape3D_4flbx")
+
+[node name="InteractionShape" type="ShapeCast3D" parent="Body/Head/Camera3D"]
+transform = Transform3D(1, -2.08301e-08, -3.78156e-08, -3.87962e-08, -0.0492854, -0.998785, 1.8941e-08, 0.998785, -0.0492856, 2.22816e-09, -0.0764315, 0.489192)
+shape = SubResource("CylinderShape3D_4flbx")
+collision_mask = 4
+
+[node name="PlacementRay" type="RayCast3D" parent="Body/Head/Camera3D"]
+target_position = Vector3(0, 0, -5)
+collision_mask = 5
+
+[node name="Eye" type="MeshInstance3D" parent="Body/Head"]
+transform = Transform3D(1.61753, 0, 0, 0, 2.47911, 0, 0, 0, 1.5336, 0.140898, 0.183214, -0.48394)
+mesh = SubResource("SphereMesh_i3pqv")
+skeleton = NodePath("../../..")
+
+[node name="Eye2" type="MeshInstance3D" parent="Body/Head"]
+transform = Transform3D(1.61753, 0, 0, 0, 2.47911, 0, 0, 0, 1.5336, -0.116815, 0.186273, -0.505285)
+mesh = SubResource("SphereMesh_i3pqv")
+skeleton = NodePath("../Eye")
+
+[node name="Mouse" type="MeshInstance3D" parent="Body/Head"]
+transform = Transform3D(0.745189, -1.43565, 0, 2.20036, 1.14212, 0, 0, 0, 1.5336, -0.0379379, -0.0569644, -0.517651)
+mesh = SubResource("CylinderMesh_sweqy")
+skeleton = NodePath("../../..")
+
+[node name="Mouse2" type="MeshInstance3D" parent="Body/Head"]
+transform = Transform3D(0.759385, 1.4282, 0, -2.18893, 1.16387, 0, 0, 0, 1.5336, 0.0381932, -0.0569644, -0.517651)
+mesh = SubResource("CylinderMesh_sweqy")
+skeleton = NodePath("../../..")
+
+[node name="Belly" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.360344, 0)
+mesh = SubResource("CapsuleMesh_4flbx")
+
+[node name="Leg1" type="MeshInstance3D" parent="Body/Belly"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.373719, -0.840973, -0.23376)
+mesh = SubResource("CapsuleMesh_3vyb7")
+
+[node name="Leg2" type="MeshInstance3D" parent="Body/Belly"]
+transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, -0.26153, -0.840973, -0.23376)
+mesh = SubResource("CapsuleMesh_3vyb7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20888, 0)
+shape = SubResource("CapsuleShape3D_onrkg")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_4flbx")
+
+[node name="Nickname" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.11225, 0)
+billboard = 1
+text = "PLAYER"
+
+[node name="PlayerUI" type="CanvasLayer" parent="."]
+
+[node name="ActionLabel" type="Label" parent="PlayerUI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -180.0
+offset_right = 543.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 50
+
+[node name="InventoryUI" type="Control" parent="PlayerUI"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 393.0
+offset_top = 150.0
+offset_right = 1436.0
+offset_bottom = 872.0
+script = ExtResource("2_g2els")
+slot_prefab = ExtResource("3_qhqgy")
+
+[node name="PanelContainer" type="PanelContainer" parent="PlayerUI/InventoryUI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -375.5
+offset_right = 424.5
+offset_bottom = 600.0
+grow_horizontal = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PlayerUI/InventoryUI/PanelContainer"]
+layout_mode = 2
+
+[node name="ItemList" type="HBoxContainer" parent="PlayerUI/InventoryUI/PanelContainer/ScrollContainer"]
+layout_mode = 2
+
+[node name="NotificationArea" type="VBoxContainer" parent="PlayerUI"]
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+script = ExtResource("4_qlg0r")
+notification_prefab = ExtResource("5_tuyoq")
+
+[node name="ZoneDetector" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ZoneDetector"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.369869, 0)
+shape = SubResource("CylinderShape3D_t4epb")
