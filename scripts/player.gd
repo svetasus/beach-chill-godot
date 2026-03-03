@@ -520,26 +520,38 @@ func update_ghost_preview():
 		
 		# 1. Calculate the Y-offset (distance to 'feet')
 		var y_offset = 0.0
-		var total_aabb: AABB = AABB()
-		var first_mesh = true
+		var min_y = 0.0
+		var found_collision = false
 		
-		for child in carried_item.find_children("*", "VisualInstance3D"):
-			var mesh_aabb = child.get_aabb()
-			var child_transform = child.transform
-			var world_aabb = child_transform * mesh_aabb
+		# Helper to process a node's AABB in the item's local space
+		var item_inv_trans = carried_item.global_transform.affine_inverse()
+		
+		# Find all CollisionShape3D nodes (recursive) under MeshAnchor
+		var search_nodes = []
+		var anchor = carried_item.get_node_or_null("MeshAnchor")
+		if anchor:
+			search_nodes = anchor.find_children("*", "CollisionShape3D", true, false)
 			
-			if first_mesh:
-				total_aabb = world_aabb
-				first_mesh = false
-			else:
-				total_aabb = total_aabb.merge(world_aabb)
+		for node in search_nodes:
+			if node.shape:
+				var shape_mesh = node.shape.get_debug_mesh()
+				if shape_mesh:
+					var shape_aabb = shape_mesh.get_aabb()
+					# Transform AABB to item's local space
+					var local_trans = item_inv_trans * node.global_transform
+					var final_aabb = local_trans * shape_aabb
+					
+					if not found_collision:
+						min_y = final_aabb.position.y
+						found_collision = true
+					else:
+						min_y = min(min_y, final_aabb.position.y)
 		
-		if not first_mesh:
-			var box_end: Vector3 = total_aabb.end
-			var box_size: Vector3 = total_aabb.size
-			var mesh_bottom_y = box_end.y - box_size.y
-		else:
-			y_offset = 0.5
+		if found_collision:
+			y_offset = -min_y
+		
+		# Apply scale just in case the parent is scaled
+		y_offset *= carried_item.scale.y
 		
 		# 2. GLIDE: Set position at hit point + feet offset
 		carried_item.global_position = hit_point + Vector3(0, y_offset, 0)
@@ -547,8 +559,6 @@ func update_ghost_preview():
 		# 3. ROTATION: Keep it upright and apply scroll offset
 		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
 		
-		# 4. SCALE: Ensure the ghost is actual size (not shrunk by hand scale)
-		#carried_item.scale = Vector3.ONE
 	else:
 		# Fallback: If not looking at a surface, keep item in hand
 		carried_item.global_transform = hand.global_transform
