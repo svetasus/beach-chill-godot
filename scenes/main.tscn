@@ -37,8 +37,12 @@ _spawnable_scenes = PackedStringArray("uid://b4v64l3u3emau")
 spawn_path = NodePath("../World/PlayersContainer")
 
 [node name="MultiplayerSpawner_Items" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://b4vfdesnosjey", "uid://dprek8xvxjxor")
+_spawnable_scenes = PackedStringArray("uid://dprek8xvxjxor")
 spawn_path = NodePath("../World/ItemsContainer")
+
+[node name="MultiplayerSpawner_Treasures" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://b4vfdesnosjey")
+spawn_path = NodePath("../World/TreasuresContainer")
 
 [node name="Level01Default" parent="." instance=ExtResource("11_ya4ey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.93131, 0, 17.1483)
@@ -59,10 +63,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.56874, 0.140132, 6.65008)
 [node name="CollectibleBasket" parent="World" instance=ExtResource("15_jbj1t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.12931, 0.184416, 8.28759)
 
-[node name="TreasurePoint2" parent="World" instance=ExtResource("9_85g3d")]
+[node name="TreasuresContainer" type="Node3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="TreasurePoint2" parent="World/TreasuresContainer" instance=ExtResource("9_85g3d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2195, 0.3, 3.90124)
 
-[node name="TreasurePoint" parent="World" instance=ExtResource("9_85g3d")]
+[node name="TreasurePoint" parent="World/TreasuresContainer" instance=ExtResource("9_85g3d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41429, 0.15, 1.95062)
 
 [node name="ItemsContainer" type="Node3D" parent="World"]

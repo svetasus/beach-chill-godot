@@ -58,11 +58,10 @@ func _perform_spawn():
 	if not multiplayer.is_server(): return
 	
 	# 1. Visuals and Cleanup
-	_sync_deletion.rpc()
 	spawn_particles_visual.rpc(global_position)
 	
 	if loot_table.size() == 0: 
-		queue_free()
+		_sync_deletion.rpc()
 		return
 	
 	var selected_resource = loot_table.pick_random()
@@ -73,7 +72,11 @@ func _perform_spawn():
 	
 	# IMPORTANT: Add to the world BEFORE setting data
 	# This ensures the MultiplayerSpawner sees it
-	get_parent().add_child(loot_instance, true)
+	var items_container = get_tree().root.get_node_or_null(Global.ITEMS_CONTAINER_PATH)
+	if items_container:
+		items_container.add_child(loot_instance, true)
+	else:
+		get_parent().add_child(loot_instance, true)
 	
 	# 4. Initialize the Item
 	loot_instance.global_position = global_position + Vector3(0, 0.5, 0)
@@ -87,7 +90,7 @@ func _perform_spawn():
 	loot_instance.apply_central_impulse(pop_force)
 	
 	# 6. Delete the point
-	queue_free()
+	_sync_deletion.rpc()
 	
 		
 		
@@ -104,9 +107,9 @@ func _play_particles_locally(pos):
 @rpc("any_peer", "call_remote") # Changed from call_local to call_remote
 func spawn_particles_visual(pos):
 	_play_particles_locally(pos)
-	
-	
-@rpc("authority", "call_remote")
+
+
+@rpc("any_peer", "call_local", "reliable")
 func _sync_deletion():
 	queue_free()
 
