@@ -62,11 +62,17 @@ func _apply_physics_state(should_freeze: bool, impulse: Vector3, pos: Vector3, r
 
 	if should_freeze:
 		freeze = true
+		top_level = true
+		if has_node("CollisionShape3D"):
+			get_node("CollisionShape3D").disabled = true
 		return # Exit early so we don't accidentally unfreeze below
 	
 	# 2. Handle the "Release" state (Dropping or Throwing)
 	sleeping = false
 	freeze = false
+	top_level = false
+	if has_node("CollisionShape3D"):
+		get_node("CollisionShape3D").disabled = false
 	
 	# Move to the ghost/hand position
 	if pos != Vector3.ZERO:
