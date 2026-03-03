@@ -249,7 +249,6 @@ func pick_up(item):
 	
 	if item.get_multiplayer_authority() == multiplayer.get_unique_id():
 		carried_item = item
-		item.top_level = true
 		placement_ray.add_exception(item)
 		
 		if carried_item.has_method("set_ghost_appearance") and get_held_tool() == null:
@@ -260,9 +259,6 @@ func pick_up(item):
 		if item.has_node("MultiplayerSynchronizer"):
 			item.get_node("MultiplayerSynchronizer").set_process(false)
 			item.get_node("MultiplayerSynchronizer").set_physics_process(false)
-		
-		if item.has_node("CollisionShape3D"):
-			item.get_node("CollisionShape3D").disabled = true
 			
 		
 		# 1. DISABLE SYNC: Stop the network from fighting your manual movement
@@ -271,15 +267,10 @@ func pick_up(item):
 			sync.set_process(false)
 			sync.set_physics_process(false)
 		
-		# 2. DISABLE COLLISION: So it doesn't hit your feet while carrying
-		if carried_item.has_node("CollisionShape3D"):
-			carried_item.get_node("CollisionShape3D").disabled = true
-		
 		# 3. PHYSICS & TOP LEVEL: 
 		# Setting top_level = true means the item moves in Global Space, 
 		# not "relative" to your hand. This is essential for the Ghost Preview.
 		carried_item.freeze = true
-		carried_item.top_level = true 
 		
 		# 4. INITIAL SNAP: Put it at the hand's position immediately
 		carried_item.global_transform = hand.global_transform
@@ -315,10 +306,6 @@ func drop_item():
 	var final_pos = item.global_position
 	var final_rot = item.global_rotation.y
 	
-	item.top_level = false
-	if item.has_node("CollisionShape3D"):
-		item.get_node("CollisionShape3D").disabled = false
-		
 	if item is RigidBody3D:
 		item.freeze = false
 		item.linear_velocity = Vector3.ZERO
@@ -356,9 +343,6 @@ func throw_item():
 	var final_velocity = launch_dir * THROW_FORCE
 	
 	item.global_position = hand.global_position + (launch_dir * 0.5)
-	# 2. PHYSICS PREP
-	if item.has_node("CollisionShape3D"):
-		item.get_node("CollisionShape3D").disabled = false
 	
 	# 3. THE "DE-PARENTING" WAIT
 	# We wait for the physics engine to acknowledge the item is no longer 
