@@ -6,7 +6,7 @@ class_name Item
 @export var data: ItemData : set = _set_data # Using a setter!
 @export var ghost_material: Material
 
-@export var data_path: String = "":
+"""@export var data_path: String = "":
 	set(val):
 		var old_val = data_path
 		data_path = val
@@ -20,7 +20,7 @@ class_name Item
 			if res:
 				_set_data(res)
 		else:
-			print("    WARNING: data_path set to EMPTY string!")
+			print("    WARNING: data_path set to EMPTY string!")"""
 
 var item_name: String = "Item"
 var display_name: String = "Item"

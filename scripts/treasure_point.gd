@@ -13,7 +13,7 @@ func _ready():
 	pass
 
 func _on_body_entered(body):
-	print("Something entered the circle: ", body.name) 
+	#print("Something entered the circle: ", body.name) 
 	if body.is_in_group("players") and body.is_multiplayer_authority():
 		# Tell the player's detector to start beeping
 		body.set_near_treasure(self, true)

@@ -36,4 +36,3 @@ res://resources/artifact_001_2_data.tres
 res://scripts/item_logic.gd
 res://scripts/metal_detector.gd
 res://scripts/treasure_point.gd
-res://scenes/old/tomato.tscn
