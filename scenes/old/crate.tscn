@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bso7ybrh8k3i3"]
+[gd_scene load_steps=6 format=3 uid="uid://bxedtit4x0hn0"]
 
 [ext_resource type="Script" uid="uid://dmujqn31sstuh" path="res://scripts/crate.gd" id="1_uep05"]
 [ext_resource type="PackedScene" uid="uid://b2a0i4itq3gyw" path="res://scenes/old/tomato.tscn" id="2_mo0jf"]
