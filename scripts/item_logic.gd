@@ -192,6 +192,20 @@ func _find_shape_recursive(node):
 
 # --- 6. CLEANUP ---
 
+@rpc("any_peer", "call_local", "reliable")
+func destroy_item():
+	if not is_queued_for_deletion():
+		visible = false
+		collision_layer = 0
+		collision_mask = 0
+		freeze = true
+
+		# Give the RPC time to reach clients before actually deleting
+		if multiplayer.is_server():
+			get_tree().create_timer(0.1).timeout.connect(queue_free)
+		else:
+			queue_free()
+
 func _exit_tree():
 	# Prevent signal errors when items are combined/deleted
 	for sig in get_signal_list():

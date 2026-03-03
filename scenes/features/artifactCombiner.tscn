@@ -1,0 +1,47 @@
+[gd_scene load_steps=9 format=3 uid="uid://bio5ygciicsu6"]
+
+[ext_resource type="Script" uid="uid://dkfnbyms2yfqe" path="res://scripts/artifact_combiner.gd" id="1_f0cbo"]
+[ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="2_3jmie"]
+[ext_resource type="Script" uid="uid://b671fh65ycwbf" path="res://scripts/artifact_data.gd" id="2_w5t2g"]
+[ext_resource type="Resource" uid="uid://cusbt0rh2tqm3" path="res://resources/artifact_001_recipe.tres" id="3_ehuat"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ehuat"]
+size = Vector3(2, 1, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_w5t2g"]
+size = Vector3(2, 0.2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ehuat"]
+albedo_color = Color(0.427451, 0.239216, 0.247059, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ipgce"]
+material = SubResource("StandardMaterial3D_ehuat")
+size = Vector3(2, 0.2, 2)
+
+[node name="ArtifactCombiner" type="StaticBody3D" node_paths=PackedStringArray("spawn_point")]
+collision_mask = 0
+script = ExtResource("1_f0cbo")
+recipes = Array[ExtResource("2_w5t2g")]([ExtResource("3_ehuat")])
+spawn_point = NodePath("ItemSpawnPoint")
+item_scene = ExtResource("2_3jmie")
+
+[node name="DetectionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.383949, 0)
+shape = SubResource("BoxShape3D_ehuat")
+
+[node name="ItemSpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.706019, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_w5t2g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_ipgce")
+
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

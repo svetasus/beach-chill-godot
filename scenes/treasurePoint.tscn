@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b4vfdesnosjey"]
+[gd_scene load_steps=11 format=3 uid="uid://bkbssodeiddlj"]
 
 [ext_resource type="Script" uid="uid://cg3bk378v0eff" path="res://scripts/treasure_point.gd" id="1_4k1pr"]
 [ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/item_data.gd" id="2_gskep"]

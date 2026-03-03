@@ -81,12 +81,14 @@ func _combine(recipe: ArtifactData):
 			used_nodes.append(item)
 			temp_required.erase(item.data)
 	
-	# Delete ingredients (Spawner will sync this to clients)
+	# Delete ingredients
 	for node in used_nodes:
-		_delete_item_globally.rpc(node.name)
+		if node.has_method("destroy_item"):
+			node.destroy_item.rpc()
+		else:
+			node.queue_free() # Fallback
 		
 		items_in_zone.erase(node)
-		node.queue_free()
 	
 	# Instantiate result with a unique network name
 	var result_node = item_scene.instantiate()
@@ -112,21 +114,3 @@ func _combine(recipe: ArtifactData):
 		result_node.data = recipe.result_item
 		if result_node.has_method("update_from_data"):
 			result_node.update_from_data()
-
-@rpc("authority", "call_remote", "reliable")
-func _delete_item_globally(node_name: String):
-	# SAFETY CHECK: If the variable is null, try to find it again!
-	if items_container == null:
-		items_container = get_node_or_null(Global.ITEMS_CONTAINER_PATH)
-	
-	# If we STILL can't find the container, the path is likely wrong for the Client
-	if items_container == null:
-		print("ERROR: Client could not find ItemsContainer at path!")
-		return
-		
-	var item_to_delete = items_container.get_node_or_null(node_name)
-	if item_to_delete:
-		print("Client: Successfully deleted ghost item: ", node_name)
-		item_to_delete.queue_free()
-	else:
-		print("Client: Could not find node ", node_name, " to delete.")

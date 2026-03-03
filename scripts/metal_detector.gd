@@ -12,7 +12,7 @@ func _ready():
 		blink_light = _find_by_type(self, "OmniLight3D")
 
 	if blink_light and audio_player:
-		print("Detector: Light and Sound found via Type Scan.")
+		#print("Detector: Light and Sound found via Type Scan.")
 		blink_light.visible = false
 	else:
 		# This will help us see exactly what IS inside the scene
