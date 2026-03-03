@@ -186,6 +186,11 @@ func _find_shape_recursive(node):
 
 # --- 6. CLEANUP ---
 
+@rpc("any_peer", "call_local", "reliable")
+func destroy_item():
+	if not is_queued_for_deletion():
+		queue_free()
+
 func _exit_tree():
 	# Prevent signal errors when items are combined/deleted
 	for sig in get_signal_list():
