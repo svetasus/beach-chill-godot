@@ -162,7 +162,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 [node name="TentSpawnMarkers" type="Node3D" parent="Markers"]
 
 [node name="Marker3D" type="Marker3D" parent="Markers/TentSpawnMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.592, 1, -14.629)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5921, 0, -14.6288)
 
 [node name="Marker3D2" type="Marker3D" parent="Markers/TentSpawnMarkers"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.7755, 0, -19.7488)
@@ -170,7 +170,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.7755, 0, -19.7488)
 [node name="Ocean2" type="Node3D" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ocean2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 mesh = SubResource("PlaneMesh_5p50t")
 
 [node name="foamGPU" type="GPUParticles3D" parent="."]

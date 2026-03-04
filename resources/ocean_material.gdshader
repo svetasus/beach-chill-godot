@@ -4,7 +4,7 @@ shader_type spatial;
 uniform vec4 shallow_color : source_color = vec4(0.0, 1.0, 0.6, 0.8); // Emerald
 uniform vec4 deep_color : source_color = vec4(0.0, 0.3, 0.8, 0.9);    // Blue
 uniform vec4 foam_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform float gradient_depth = 2.0; // How far until it turns blue
+uniform float gradient_depth = 0.7; // How far until it turns blue
 
 // 2. TEXTURES
 uniform sampler2D noise_img; 
