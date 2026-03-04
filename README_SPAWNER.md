@@ -18,3 +18,19 @@ We created a new tool script: `scripts/item_spawn_point.gd`.
 
 ### How it works
 When the game starts, the Server will automatically instance the real `Item` scene at that Marker's location, apply the `ItemData` to it, and place it directly into the `ItemsContainer` (which is monitored by the `MultiplayerSpawner_Items`). The spawner then takes care of synchronizing this item to all clients (including late joiners!) and naturally synchronizes its destruction when crafted. The Marker will delete itself so the game hierarchy stays clean.
+
+---
+
+# Using TreasureSpawnPoint
+
+Treasure points follow the exact same logic as Item Spawn Points, ensuring that `MultiplayerSpawner` can network sync newly dug up loot to late joiners, while hiding the "invisible" dig spots from clients correctly.
+
+### How to use it
+1. You can place `TreasureSpawnPoint` markers in the main scene (under `World/Containers/TreasuresContainer`) or directly in level scenes.
+2. Add a `Marker3D` and attach the `scripts/treasure_spawn_point.gd` script.
+3. Configure the inspector variables:
+   - `loot_table`: An Array of `ItemData` resources that the treasure might drop.
+   - `base_item_scene`: The base `.tscn` that the loot uses (usually `baseItem.tscn`).
+   - `sand_particles`: The VFX `.tscn` to play when digging.
+   - `treasure_scene`: The actual `TreasurePoint` area `.tscn`.
+4. The server will instantiate the real `TreasurePoint` Area3D at runtime inside `Global.TREASURES_CONTAINER_PATH` and delete the marker.

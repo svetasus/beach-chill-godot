@@ -18,6 +18,8 @@
 [ext_resource type="Script" uid="uid://cant8isko5cln" path="res://scripts/item_spawn_point.gd" id="16_dp3eg"]
 [ext_resource type="PackedScene" uid="uid://bio5ygciicsu6" path="res://scenes/features/artifactCombiner.tscn" id="16_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://cmpknns23ho7" path="res://scenes/features/tentManager.tscn" id="17_muem4"]
+[ext_resource type="Script" path="res://scripts/treasure_spawn_point.gd" id="18_treasurespawnpoint"]
+[ext_resource type="PackedScene" uid="uid://c1hkykbro3s6u" path="res://scenes/vfx/vfxSandShovelBurst.tscn" id="19_sandparticles"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_o6xl0")
@@ -54,11 +56,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.12931, 0.184416, 8.28759)
 
 [node name="TreasuresContainer" type="Node3D" parent="World/Containers"]
 
-[node name="TreasurePoint2" parent="World/Containers/TreasuresContainer" instance=ExtResource("9_85g3d")]
+[node name="TreasureSpawnPoint2" type="Marker3D" parent="World/Containers/TreasuresContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2195, 0.3, 3.90124)
+script = ExtResource("18_treasurespawnpoint")
+loot_table = Array[Resource("res://scripts/item_data.gd")]([ExtResource("7_a8y0u"), ExtResource("12_eb6dy")])
+base_item_scene = ExtResource("12_trceg")
+sand_particles = ExtResource("19_sandparticles")
+treasure_scene = ExtResource("9_85g3d")
 
-[node name="TreasurePoint" parent="World/Containers/TreasuresContainer" instance=ExtResource("9_85g3d")]
+[node name="TreasureSpawnPoint" type="Marker3D" parent="World/Containers/TreasuresContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41429, 0.15, 1.95062)
+script = ExtResource("18_treasurespawnpoint")
+loot_table = Array[Resource("res://scripts/item_data.gd")]([ExtResource("7_a8y0u"), ExtResource("12_eb6dy")])
+base_item_scene = ExtResource("12_trceg")
+sand_particles = ExtResource("19_sandparticles")
+treasure_scene = ExtResource("9_85g3d")
 
 [node name="PlayersContainer" type="Node3D" parent="World/Containers"]
 

@@ -30,7 +30,7 @@ func spawn_tent_for_player(player_id: int):
 	print("DEBUG: Searching inside level: ", current_level.name)
 	
 	# Check the path strictly: Markers/TentSpawnMarkers
-	var markers_folder = current_level.get_node_or_null(Global.TENT_MAKERS_LEVEL_PATH)
+	var markers_folder = current_level.get_node_or_null(Global.TENT_MARKERS_LEVEL_PATH)
 	if markers_folder == null:
 		print("DEBUG ERROR: Could not find 'Markers/TentSpawnMarkers' inside ", current_level.name)
 		# PRINT THE ACTUAL CHILDREN TO HELP US FIND THE RIGHT PATH
