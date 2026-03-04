@@ -25,7 +25,7 @@ func deposit_item(item_node: Node3D, player_id: int):
 	inventory.append(path)
 	
 	# 2. Destroy the physical object globally
-	item_node.queue_free()
+	item_node.destroy_item.rpc()
 	print("SERVER: Item stored! Inventory size: ", inventory.size())
 
 # --- 2. WITHDRAWING (CLIENT ASKS SERVER) ---

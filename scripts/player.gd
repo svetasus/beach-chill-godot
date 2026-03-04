@@ -135,6 +135,9 @@ func _unhandled_input(event):
 	if not is_multiplayer_authority() or is_typing: return
 	
 	# This checks if the mouse is moving
+	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED: return
+
+	# This checks if the mouse is moving
 	if event is InputEventMouseMotion:
 		# 1. Rotate the whole player left and right (Y axis)
 		rotate_y(-event.relative.x * mouse_sensitivity)

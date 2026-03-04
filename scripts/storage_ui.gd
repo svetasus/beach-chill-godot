@@ -3,6 +3,8 @@ extends Control
 @onready var grid = $Panel/GridContainer
 var target_chest: Node3D
 
+var slot_prefab: PackedScene = preload("res://ui/inventorySlot.tscn")
+
 func setup(chest: Node3D):
 	target_chest = chest
 	refresh_inventory()
@@ -16,24 +18,59 @@ func refresh_inventory():
 	if target_chest == null or not "inventory" in target_chest:
 		return
 		
-	# 3. Create a button for every item in the chest's array
+	# 3. Aggregate items by data_path
+	var aggregated_items = {} # data_path -> { "count": X, "indices": [i1, i2], "resource": item_data }
 	for i in range(target_chest.inventory.size()):
 		var data_path = target_chest.inventory[i]
-		var item_data = load(data_path)
+		if not aggregated_items.has(data_path):
+			aggregated_items[data_path] = {
+				"count": 0,
+				"indices": [],
+				"resource": load(data_path)
+			}
+		aggregated_items[data_path]["count"] += 1
+		aggregated_items[data_path]["indices"].append(i)
+
+	# 4. Create a slot for each unique item type
+	for data_path in aggregated_items.keys():
+		var item_info = aggregated_items[data_path]
+		var item_data = item_info["resource"]
+		var count = item_info["count"]
+		var withdraw_index = item_info["indices"][0] # Just pull the first one in the list
 		
-		var btn = Button.new()
-		btn.custom_minimum_size = Vector2(64, 64)
+		var new_slot = slot_prefab.instantiate()
 		
-		# If your ItemData has an icon, show it! Otherwise, use the name.
-		if item_data and item_data.get("icon"):
-			btn.icon = item_data.icon
-			btn.expand_icon = true
-		else:
-			btn.text = "Item " + str(i)
+		# Set Icon
+		var icon_rect = new_slot.get_node("Icon")
+		if item_data and item_data.get("item_icon"):
+			icon_rect.texture = item_data.item_icon
+
+		# Set Count
+		var count_label = new_slot.get_node("Count")
+		count_label.text = "x" + str(count)
+
+		# Set Name / display_name
+		var display_name = data_path
+		if item_data and item_data.get("display_name"):
+			display_name = item_data.display_name
+		elif item_data and item_data.get("name"):
+			display_name = item_data.name
+
+		var name_label = new_slot.get_node_or_null("Name")
+		if name_label:
+			name_label.text = display_name
 			
-		# Connect the button click to the withdraw function
-		btn.pressed.connect(_on_item_clicked.bind(i))
-		grid.add_child(btn)
+		new_slot.tooltip_text = display_name
+
+		# Overlay a transparent button to make the slot clickable
+		var click_btn = Button.new()
+		click_btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		click_btn.flat = true
+		new_slot.add_child(click_btn)
+
+		click_btn.pressed.connect(_on_item_clicked.bind(withdraw_index))
+
+		grid.add_child(new_slot)
 
 func _on_item_clicked(index: int):
 	if target_chest:
@@ -49,3 +86,8 @@ func close_ui():
 	# Lock the mouse back to the game and destroy the menu
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	queue_free()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		get_viewport().set_input_as_handled()
+		close_ui()
