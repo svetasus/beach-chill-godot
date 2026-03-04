@@ -1,8 +1,9 @@
+GPUParticles3D
+MeshInstance3D
+Node3D
 Marker3D
 CollisionShape3D
 Area3D
-Node3D
-MeshInstance3D
 MultiplayerSynchronizer
 StaticBody3D
 MultiplayerSpawner

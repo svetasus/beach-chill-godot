@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://cws2g2sjnwdf8"]
+
+[ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_07ycr"]
+
+[resource]
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.960784, 0.694118, 1)
+albedo_texture = ExtResource("1_07ycr")
+emission_enabled = true
+emission = Color(0.659741, 0.461955, 0, 1)
+emission_energy_multiplier = 0.1
+uv1_scale = Vector3(50, 50, 50)
