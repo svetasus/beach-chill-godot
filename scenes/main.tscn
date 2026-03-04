@@ -53,12 +53,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.12931, 0.184416, 8.28759)
 
 [node name="TreasuresContainer" type="Node3D" parent="World/Containers"]
 
-[node name="TreasurePoint2" parent="World/Containers/TreasuresContainer" instance=ExtResource("9_85g3d")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2195, 0.3, 3.90124)
-
-[node name="TreasurePoint" parent="World/Containers/TreasuresContainer" instance=ExtResource("9_85g3d")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41429, 0.15, 1.95062)
-
 [node name="PlayersContainer" type="Node3D" parent="World/Containers"]
 
 [node name="ItemsContainer" type="Node3D" parent="World/Containers"]
