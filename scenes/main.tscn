@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://oofej86k011a" path="res://scripts/main.gd" id="1_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://c4wtfvlv2judr" path="res://scenes/features/multiplayerMenu.tscn" id="3_85g3d"]
 [ext_resource type="Script" uid="uid://cst0k3a18pgdn" path="res://scripts/chat_ui.gd" id="4_choun"]
-[ext_resource type="PackedScene" uid="uid://b2a0i4itq3gyw" path="res://scenes/old/tomato.tscn" id="6_eb6dy"]
 [ext_resource type="Resource" uid="uid://k81noy3tielt" path="res://resources/shell_001_data.tres" id="7_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://bxedtit4x0hn0" path="res://scenes/old/crate.tscn" id="7_trceg"]
 [ext_resource type="PackedScene" uid="uid://b4vfdesnosjey" path="res://scenes/features/treasurePoint.tscn" id="9_85g3d"]
@@ -15,6 +14,7 @@
 [ext_resource type="Resource" uid="uid://cmku0tmbr3t7v" path="res://resources/artifact_001_2_data.tres" id="14_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://cokbrublcffh0" path="res://scenes/features/collectibleBasket.tscn" id="15_jbj1t"]
 [ext_resource type="Resource" uid="uid://b1hcfs0kip2o2" path="res://resources/shovel_01_data.tres" id="15_jkv2x"]
+[ext_resource type="Script" uid="uid://cant8isko5cln" path="res://scripts/item_spawn_point.gd" id="16_dp3eg"]
 [ext_resource type="PackedScene" uid="uid://bio5ygciicsu6" path="res://scenes/features/artifactCombiner.tscn" id="16_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://cmpknns23ho7" path="res://scenes/features/tentManager.tscn" id="17_muem4"]
 
@@ -64,30 +64,41 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41429, 0.15, 1.95062)
 [node name="ItemsContainer" type="Node3D" parent="World/Containers"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1329, 0.509308, -5.02857)
 
-[node name="pinkshell" parent="World/Containers/ItemsContainer" instance=ExtResource("6_eb6dy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.92296, 1.50951, 4.19261)
-data = ExtResource("7_a8y0u")
-ghost_material = null
+[node name="pinkshell_marker" type="Marker3D" parent="World/Containers/ItemsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.31465, 0.523465, 4.2)
+script = ExtResource("16_dp3eg")
+item_data = ExtResource("7_a8y0u")
+item_scene = ExtResource("12_trceg")
 
-[node name="detector" parent="World/Containers/ItemsContainer" instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.889, 0.466877, 6.48745)
-data = ExtResource("13_a8y0u")
+[node name="detector_marker" type="Marker3D" parent="World/Containers/ItemsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.4965, 1, 2.9248)
+script = ExtResource("16_dp3eg")
+item_data = ExtResource("13_a8y0u")
+item_scene = ExtResource("12_trceg")
 
-[node name="shovel" parent="World/Containers/ItemsContainer" instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.86, -0.219975, 1.34171)
-data = ExtResource("15_jkv2x")
+[node name="shovel_marker" type="Marker3D" parent="World/Containers/ItemsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.522, 1, 2.00536)
+script = ExtResource("16_dp3eg")
+item_data = ExtResource("15_jkv2x")
+item_scene = ExtResource("12_trceg")
 
-[node name="blueshell" parent="World/Containers/ItemsContainer" instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.6518, -0.14069, 4.31639)
-data = ExtResource("12_eb6dy")
+[node name="blueshell_marker" type="Marker3D" parent="World/Containers/ItemsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8471, 1, 0)
+script = ExtResource("16_dp3eg")
+item_data = ExtResource("12_eb6dy")
+item_scene = ExtResource("12_trceg")
 
-[node name="artefact1" parent="World/Containers/ItemsContainer" instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.5945, -0.441196, 2.66527)
-data = ExtResource("13_trceg")
+[node name="artifact1_marker2" type="Marker3D" parent="World/Containers/ItemsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.182, 0.334686, 5.20704)
+script = ExtResource("16_dp3eg")
+item_data = ExtResource("13_trceg")
+item_scene = ExtResource("12_trceg")
 
-[node name="artefact2" parent="World/Containers/ItemsContainer" instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.9061, 0.048162, 7.09756)
-data = ExtResource("14_a8y0u")
+[node name="artifact2_marker3" type="Marker3D" parent="World/Containers/ItemsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.0489, 0.387741, 7.67044)
+script = ExtResource("16_dp3eg")
+item_data = ExtResource("14_a8y0u")
+item_scene = ExtResource("12_trceg")
 
 [node name="MultiplayerSpawners" type="Node3D" parent="."]
 
