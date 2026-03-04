@@ -172,17 +172,22 @@ func _input(event):
 		if carried_item == null:
 			check_interaction()
 		else:
-			var tool = get_held_tool()
-			
-			# If we have a shovel/tool and are near a treasure...
-			if tool and tool.can_interact_with(current_treasure):
-				tool.use_tool(current_treasure)
-			# ELSE IF we are looking at a treasure but NOT close enough to dig yet...
-			#elif current_treasure != null:
-			#	print("Too far to dig, doing nothing (prevents accidental drop)")
-			# ONLY drop if we aren't trying to use a tool on a valid target
+			# If we hold an item, but look at a storage chest, try to deposit it
+			var potential_target = get_interaction_target()
+			if potential_target and potential_target.has_method("deposit_item"):
+				check_interaction()
 			else:
-				drop_item()
+				var tool = get_held_tool()
+
+				# If we have a shovel/tool and are near a treasure...
+				if tool and tool.can_interact_with(current_treasure):
+					tool.use_tool(current_treasure)
+				# ELSE IF we are looking at a treasure but NOT close enough to dig yet...
+				#elif current_treasure != null:
+				#	print("Too far to dig, doing nothing (prevents accidental drop)")
+				# ONLY drop if we aren't trying to use a tool on a valid target
+				else:
+					drop_item()
 		
 		
 	if event.is_action_pressed("rotate_item_right"):
@@ -576,17 +581,24 @@ func update_action_ui():
 		# Use your existing interaction check (Raycast or Shapecast)
 		var potential_item = get_interaction_target() 
 		
-		if potential_item and potential_item is Item:
-			target_text = "[E] Take " + potential_item.display_name
+		if potential_item:
+			if potential_item is Item:
+				target_text = "[E] Take " + potential_item.display_name
+			elif potential_item.has_method("deposit_item"):
+				target_text = "[E] Open Storage"
 	else:
-		var tool = get_held_tool()
-		if tool :
-			print(tool.get_action_name())
-			#print("Found tool: ", tool.get_action_name(), " | Target: ", current_treasure)
-		if tool and tool.can_interact_with(current_treasure):
-			target_text = "[E] " + tool.get_action_name()
+		var potential_target = get_interaction_target()
+		if potential_target and potential_target.has_method("deposit_item"):
+			target_text = "[E] Store " + carried_item.display_name
 		else:
-			target_text = "[E] Drop " + carried_item.display_name
+			var tool = get_held_tool()
+			if tool :
+				print(tool.get_action_name())
+				#print("Found tool: ", tool.get_action_name(), " | Target: ", current_treasure)
+			if tool and tool.can_interact_with(current_treasure):
+				target_text = "[E] " + tool.get_action_name()
+			else:
+				target_text = "[E] Drop " + carried_item.display_name
 
 	# Only update if the text changed to avoid flickering
 	if action_label.text != target_text:
@@ -608,7 +620,7 @@ func get_interaction_target():
 		var collider = $Body/Head/Camera3D/InteractionShape.get_collider(0)
 		# Only return it if it's an item we can actually pick up
 		#print("Shapecast met ", shapecast.get_collider(0).name, " on Layer: ", shapecast.get_collider(0).collision_layer)
-		if collider is Item:
+		if collider is Item or collider.has_method("deposit_item"):
 			return collider
 	return null
 
