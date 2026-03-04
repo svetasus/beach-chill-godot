@@ -1,13 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://7bo1jg4ha4dw"]
 
-[ext_resource type="Script" path="res://scripts/treasure_spawn_point.gd" id="1_treasurespawnpoint"]
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
 [ext_resource type="Texture2D" uid="uid://rkbpkmmptwbk" path="res://textures/tex_Water.jpg" id="2_42wun"]
-[ext_resource type="Resource" uid="uid://k81noy3tielt" path="res://resources/shell_001_data.tres" id="3_shell1"]
-[ext_resource type="Resource" uid="uid://dqqv0qpqsbk76" path="res://resources/shell_002_data.tres" id="4_shell2"]
-[ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="5_baseitem"]
-[ext_resource type="PackedScene" uid="uid://c1hkykbro3s6u" path="res://scenes/vfx/vfxSandShovelBurst.tscn" id="6_sandparticles"]
-[ext_resource type="PackedScene" uid="uid://b4vfdesnosjey" path="res://scenes/features/treasurePoint.tscn" id="7_treasurepoint"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3j6ee"]
 albedo_color = Color(0.911744, 0.823696, 0.685418, 1)
@@ -133,21 +127,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5921, 0, -14.6288)
 
 [node name="Marker3D2" type="Marker3D" parent="Markers/TentSpawnMarkers"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.7755, 0, -19.7488)
-
-[node name="TreasureSpawnMarkers" type="Node3D" parent="Markers"]
-
-[node name="TreasureSpawnPoint" type="Marker3D" parent="Markers/TreasureSpawnMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2195, 0.3, 3.90124)
-script = ExtResource("1_treasurespawnpoint")
-loot_table = Array[Resource("res://scripts/item_data.gd")]([ExtResource("3_shell1"), ExtResource("4_shell2")])
-base_item_scene = ExtResource("5_baseitem")
-sand_particles = ExtResource("6_sandparticles")
-treasure_scene = ExtResource("7_treasurepoint")
-
-[node name="TreasureSpawnPoint2" type="Marker3D" parent="Markers/TreasureSpawnMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41429, 0.15, 1.95062)
-script = ExtResource("1_treasurespawnpoint")
-loot_table = Array[Resource("res://scripts/item_data.gd")]([ExtResource("3_shell1"), ExtResource("4_shell2")])
-base_item_scene = ExtResource("5_baseitem")
-sand_particles = ExtResource("6_sandparticles")
-treasure_scene = ExtResource("7_treasurepoint")

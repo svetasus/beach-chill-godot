@@ -33,13 +33,20 @@ func _spawn_treasure():
 	treasure_instance.name = "TreasurePoint_" + str(get_instance_id())
 
 	# Add it to the correct container watched by MultiplayerSpawner
-	var container = get_tree().root.get_node_or_null(Global.TREASURES_CONTAINER_PATH)
+	var container = get_node_or_null(Global.TREASURES_CONTAINER_PATH)
+	if not container:
+		container = get_tree().root.get_node_or_null(Global.TREASURES_CONTAINER_PATH)
+
 	if container:
 		container.add_child(treasure_instance, true)
 	else:
 		print("TreasureSpawnPoint: Could not find TreasuresContainer at %s" % Global.TREASURES_CONTAINER_PATH)
 		# Fallback to current parent if container not found
 		get_parent().add_child(treasure_instance, true)
+
+	# Ensure the spawned treasure maintains its required group so the MetalDetector can find it
+	if not treasure_instance.is_in_group("treasures"):
+		treasure_instance.add_to_group("treasures")
 
 	# Apply transform
 	treasure_instance.global_transform = global_transform
