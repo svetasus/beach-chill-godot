@@ -58,11 +58,12 @@ func spawn_tent_for_player(player_id: int):
 	if tents_container == null:
 		tents_container = get_node_or_null(Global.TENTS_CONTAINER_PATH)
 		
-	tents_container.add_child(tent, true)
 	tent.global_transform = target_marker.global_transform
 	
 	if tent.has_method("set_tent_owner"):
 		tent.set_tent_owner(player_id)
+
+	tents_container.add_child(tent, true)
 	
 	active_tents[player_id] = tent
 	print("--- TENT DEBUG SUCCESS: Tent_", player_id, " spawned at ", target_marker.name, " ---")
