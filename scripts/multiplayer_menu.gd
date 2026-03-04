@@ -17,6 +17,7 @@ func _on_host_button_pressed():
 	
 	# 2. Tell the game to run 'add_player' when someone joins
 	multiplayer.peer_connected.connect(add_player)
+	multiplayer.peer_disconnected.connect(remove_player)
 	
 	# 3. Add YOURSELF (the host) to the game
 	add_player(multiplayer.get_unique_id())
@@ -54,6 +55,20 @@ func add_player(peer_id):
 	if spawn_point:
 		player.global_position = spawn_point.global_position
 	
+	var tent_manager = get_tree().root.get_node_or_null("Main/TentManager")
+	if tent_manager:
+		tent_manager.spawn_tent_for_player(peer_id)
 		
 	
 	print("Spawned player ", peer_id, " at ", player.global_position)
+
+func remove_player(peer_id: int):
+	var container = get_node_or_null(Global.PLAYERS_CONTAINER_PATH)
+	if container:
+		var player = container.get_node_or_null(str(peer_id))
+		if player:
+			player.queue_free()
+
+	var tent_manager = get_tree().root.get_node_or_null("Main/TentManager")
+	if tent_manager:
+		tent_manager.remove_tent(peer_id)
