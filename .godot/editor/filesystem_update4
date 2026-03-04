@@ -34,3 +34,9 @@ res://scripts/tent_manager.gd
 res://resources/ocean_material.tres
 res://resources/ocean_material.gdshader
 res://resources/sand_material.tres
+res://scenes/features/storageChest.tscn
+res://scenes/features/storage_chest.gd
+res://scripts/player.gd
+res://scenes/features/storageUI.tscn
+res://scenes/features/storage_ui.gd
+res://scripts/storage_chest.gd

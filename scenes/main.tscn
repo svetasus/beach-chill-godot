@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://ct6wef0wj1t8f"]
+[gd_scene load_steps=19 format=3 uid="uid://ct6wef0wj1t8f"]
 
 [ext_resource type="Script" uid="uid://oofej86k011a" path="res://scripts/main.gd" id="1_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://c4wtfvlv2judr" path="res://scenes/features/multiplayerMenu.tscn" id="3_85g3d"]
@@ -14,6 +14,7 @@
 [ext_resource type="Resource" uid="uid://cmku0tmbr3t7v" path="res://resources/artifact_001_2_data.tres" id="14_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://cokbrublcffh0" path="res://scenes/features/collectibleBasket.tscn" id="15_jbj1t"]
 [ext_resource type="Resource" uid="uid://b1hcfs0kip2o2" path="res://resources/shovel_01_data.tres" id="15_jkv2x"]
+[ext_resource type="PackedScene" uid="uid://bupw5dclt1xdb" path="res://scenes/features/storageChest.tscn" id="16_0ld40"]
 [ext_resource type="Script" uid="uid://cant8isko5cln" path="res://scripts/item_spawn_point.gd" id="16_dp3eg"]
 [ext_resource type="PackedScene" uid="uid://bio5ygciicsu6" path="res://scenes/features/artifactCombiner.tscn" id="16_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://cmpknns23ho7" path="res://scenes/features/tentManager.tscn" id="17_muem4"]
@@ -98,6 +99,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.916, 0.897049, 2.64187)
 script = ExtResource("16_dp3eg")
 item_data = ExtResource("14_a8y0u")
 item_scene = ExtResource("12_trceg")
+
+[node name="StorageChest" parent="World" instance=ExtResource("16_0ld40")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.45587, 0.551528, 2.88646)
 
 [node name="MultiplayerSpawners" type="Node3D" parent="."]
 

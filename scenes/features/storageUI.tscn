@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://fsmukwhgbabq"]
+
+[ext_resource type="Script" uid="uid://bqxycdp37hv0j" path="res://scripts/storage_ui.gd" id="1_cec7o"]
+
+[node name="StorageUi" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_cec7o")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 619.0
+offset_top = 153.0
+offset_right = 1405.0
+offset_bottom = 634.0
+
+[node name="GridContainer" type="GridContainer" parent="Panel"]
+layout_mode = 0
+offset_right = 784.0
+offset_bottom = 355.0
+
+[node name="Button" type="Button" parent="Panel"]
+layout_mode = 0
+offset_left = 268.0
+offset_top = 412.0
+offset_right = 501.0
+offset_bottom = 459.0
+text = "close
+"

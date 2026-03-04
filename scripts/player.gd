@@ -21,6 +21,9 @@ const DIG_DIST = 1.5
 var rotation_offset: float = 0.0
 @export var rotation_speed: float = 0.5 # How fast it rotates with scroll
 
+@export var chest_ui_scene: PackedScene # Drag your new ChestUI.tscn here!
+
+var current_ui: Control = null
 
 var is_typing = false
 var carried_item = null
@@ -216,6 +219,19 @@ func check_interaction():
 			target.interact(self)
 		elif target.is_in_group("interactables"):
 			pick_up(target)
+			
+		if target.has_method("deposit_item"):
+		# Scenario A: We are holding an item -> STORE IT
+			if carried_item != null:
+				# Tell the Server to do the storage math
+				_rpc_request_deposit.rpc_id(1, target.get_path(), carried_item.get_path())
+				# Drop it locally so our hand is empty
+				carried_item = null 
+				#_remove_ghost()
+			
+			# Scenario B: Our hands are empty -> OPEN UI
+			else:
+				open_chest_ui(target)
 
 
 func pick_up(item):
@@ -637,3 +653,39 @@ func can_interact_here() -> bool:
 				print("Hey! This isn't your tent!")
 				return false
 	return true
+	
+	
+	
+	# Send the request to the Server
+@rpc("any_peer", "call_local")
+func _rpc_request_deposit(chest_path: NodePath, item_path: NodePath):
+	if not multiplayer.is_server(): return
+	
+	var chest = get_node_or_null(chest_path)
+	var item = get_node_or_null(item_path)
+	var sender_id = multiplayer.get_remote_sender_id()
+	
+	if chest and item:
+		chest.deposit_item(item, sender_id)
+		
+		
+		
+func open_chest_ui(chest_node: Node3D):
+	# Don't open it if it's already open
+	if current_ui != null and is_instance_valid(current_ui):
+		return
+		
+	if chest_ui_scene == null:
+		print("ERROR: chest_ui_scene is not assigned in the inspector!")
+		return
+		
+	# 1. Instantiate the UI
+	current_ui = chest_ui_scene.instantiate()
+	add_child(current_ui)
+	
+	# 2. Pass the chest reference to the UI
+	if current_ui.has_method("setup"):
+		current_ui.setup(chest_node)
+		
+	# 3. Unlock the mouse so the player can click the grid
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
