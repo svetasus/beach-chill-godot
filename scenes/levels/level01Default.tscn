@@ -165,7 +165,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.592, 1, -14.629)
 
 [node name="Marker3D2" type="Marker3D" parent="Markers/TentSpawnMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.776, 1, -19.749)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.7755, 0, -19.7488)
 
 [node name="Ocean2" type="Node3D" parent="."]
 

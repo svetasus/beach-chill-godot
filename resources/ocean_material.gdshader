@@ -43,29 +43,37 @@ void fragment() {
     vec2 refraction_offset = vec2(combined_noise) * refraction_strength;
     vec3 refraction_color = texture(screen_texture, SCREEN_UV + refraction_offset).rgb;
     
+	
     // --- THE EMERALD GRADIENT ---
     // Mix Shallow Green and Deep Blue based on how deep the sand is
-    float color_mix = clamp(water_depth / gradient_depth, 0.0, 1.0);
-    vec3 water_base = mix(shallow_color.rgb, deep_color.rgb, color_mix);
+    
 
     // --- FOAM MASK ---
     float wavy_foam_range = foam_range + (combined_noise * 0.15); 
     float foam_mask = clamp(1.0 - (water_depth / wavy_foam_range), 0.0, 1.0);
     foam_mask = pow(foam_mask, 2.0);
     
+	float ripple_mask = smoothstep(0.0, 0.5, water_depth);
     // --- MIXING EVERYTHING ---
     // Mix distorted sand with our green/blue water base
-    vec3 water_with_refraction = mix(refraction_color, water_base, 0.6);
+    //vec3 water_with_refraction = mix(refraction_color, water_base, 0.6);
 	
-	float sharp_noise = pow(combined_noise, 2.0); 
-    vec3 vivid_water = mix(water_with_refraction, vec3(1.0), sharp_noise * 0.4);
+	float sharp_noise = pow(combined_noise, 3.0) * ripple_mask; 
+	
+	float color_mix = clamp(water_depth / gradient_depth, 0.0, 1.0);
+    vec3 water_base = mix(shallow_color.rgb, deep_color.rgb, color_mix);
+	
+    vec3 vivid_water = mix(water_base, vec3(1.0), sharp_noise * 0.5);
+	
+	float refraction_factor = mix(0.3, 0.7, color_mix); 
+    vec3 final_water = mix(refraction_color, vivid_water, refraction_factor);
     
     // Final Color: Refraction + Base Color + Foam on top
-    ALBEDO = mix(vivid_water, foam_color.rgb, foam_mask);
+    ALBEDO = mix(final_water, foam_color.rgb, foam_mask);
     
     // --- THE GLOW (Emission) ---
     // This makes the noise ripples "shine" like they are radioactive
-    EMISSION = (combined_noise * glow_intensity) * shallow_color.rgb;
+    EMISSION = (sharp_noise * glow_intensity) * water_base;
     
     ALPHA = mix(shallow_color.a, deep_color.a, color_mix) + foam_mask;
     ROUGHNESS = 0.1; 
