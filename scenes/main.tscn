@@ -62,40 +62,39 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41429, 0.15, 1.95062)
 [node name="PlayersContainer" type="Node3D" parent="World/Containers"]
 
 [node name="ItemsContainer" type="Node3D" parent="World/Containers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1329, 0.509308, -5.02857)
 
 [node name="pinkshell_marker" type="Marker3D" parent="World/Containers/ItemsContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.31465, 0.523465, 4.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.81825, 1.032773, -0.82857)
 script = ExtResource("16_dp3eg")
 item_data = ExtResource("7_a8y0u")
 item_scene = ExtResource("12_trceg")
 
 [node name="detector_marker" type="Marker3D" parent="World/Containers/ItemsContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.4965, 1, 2.9248)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.3636, 1.509308, -2.10377)
 script = ExtResource("16_dp3eg")
 item_data = ExtResource("13_a8y0u")
 item_scene = ExtResource("12_trceg")
 
 [node name="shovel_marker" type="Marker3D" parent="World/Containers/ItemsContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.522, 1, 2.00536)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3891, 1.509308, -3.02321)
 script = ExtResource("16_dp3eg")
 item_data = ExtResource("15_jkv2x")
 item_scene = ExtResource("12_trceg")
 
 [node name="blueshell_marker" type="Marker3D" parent="World/Containers/ItemsContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8471, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.7142, 1.509308, -5.02857)
 script = ExtResource("16_dp3eg")
 item_data = ExtResource("12_eb6dy")
 item_scene = ExtResource("12_trceg")
 
 [node name="artifact1_marker2" type="Marker3D" parent="World/Containers/ItemsContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.182, 0.334686, 5.20704)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0491, 0.843994, 0.17847)
 script = ExtResource("16_dp3eg")
 item_data = ExtResource("13_trceg")
 item_scene = ExtResource("12_trceg")
 
 [node name="artifact2_marker3" type="Marker3D" parent="World/Containers/ItemsContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.0489, 0.387741, 7.67044)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.916, 0.897049, 2.64187)
 script = ExtResource("16_dp3eg")
 item_data = ExtResource("14_a8y0u")
 item_scene = ExtResource("12_trceg")
