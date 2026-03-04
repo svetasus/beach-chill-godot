@@ -1,0 +1,3 @@
+StandardMaterial3D
+ItemData
+ArtifactData
