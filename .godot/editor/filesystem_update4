@@ -39,3 +39,4 @@ res://scenes/features/UI/inventorySlot.tscn
 res://scenes/features/UI/userNotifPop.tscn
 res://scripts/global.gd
 res://scripts/storage_ui.gd
+res://scripts/player.gd
