@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://cxwxxb12345"]
+
+[ext_resource type="Script" uid="uid://df7w0c22345" path="res://scripts/tent_rules_block.gd" id="1_rules"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_block"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_block"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_rules"]
+properties/0/path = NodePath(".:is_private")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="TentRulesBlock" type="StaticBody3D"]
+collision_layer = 4
+collision_mask = 6
+script = ExtResource("1_rules")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_block")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_block")
+
+[node name="RulesLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+pixel_size = 0.01
+text = "Private"
+font_size = 32
+outline_size = 5
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_rules")
