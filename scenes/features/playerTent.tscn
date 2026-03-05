@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bssf45p8hu43w"]
+[gd_scene load_steps=16 format=3 uid="uid://bssf45p8hu43w"]
 
 [ext_resource type="Script" uid="uid://b6rrpow7wx152" path="res://scripts/player_tent.gd" id="1_th7oj"]
 
@@ -52,11 +52,18 @@ size = Vector3(4, 2, 4)
 [sub_resource type="BoxMesh" id="BoxMesh_th7oj"]
 size = Vector3(0.1, 0.1, 4)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_52xpw"]
+albedo_color = Color(0.571116, 0.284561, 0.225404, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_guw58"]
+material = SubResource("StandardMaterial3D_52xpw")
+size = Vector3(1, 0.1, 1)
+
 [node name="PlayerTent" type="Node3D"]
 script = ExtResource("1_th7oj")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 0)
 collision_layer = 8
 collision_mask = 2
 
@@ -81,7 +88,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.264, -2)
 shape = SubResource("BoxShape3D_fuu75")
 
 [node name="Area3D" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 0)
 collision_layer = 8
 collision_mask = 2
 
@@ -93,9 +100,10 @@ shape = SubResource("BoxShape3D_52xpw")
 replication_config = SubResource("SceneReplicationConfig_th7oj")
 
 [node name="Model" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 0)
 
 [node name="Tent" type="Node3D" parent="Model"]
+visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Model/Tent"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
@@ -114,7 +122,7 @@ mesh = SubResource("BoxMesh_52xpw")
 skeleton = NodePath("../..")
 
 [node name="Borders" type="Node3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Model/Borders"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.83463, -3.5, 0)
@@ -139,3 +147,10 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -3.
 layers = 8
 mesh = SubResource("BoxMesh_th7oj")
 skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.3, 1.146)
+mesh = SubResource("BoxMesh_guw58")
+
+[node name="storageMarker" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15623, 0, -1.10328)
