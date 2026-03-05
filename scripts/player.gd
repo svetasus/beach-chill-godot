@@ -578,6 +578,9 @@ func update_action_ui():
 	if not is_multiplayer_authority(): 
 		action_label.hide() # Hide UI for other players' versions of you
 		return
+	if current_ui != null and is_instance_valid(current_ui):
+		action_label.hide()
+		return
 	# Safety check in case the label isn't found
 	var target_text = ""
 	if carried_item == null:
