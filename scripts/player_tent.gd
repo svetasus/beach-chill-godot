@@ -7,7 +7,10 @@ func _ready():
 		$Area3D.body_entered.connect(_on_area_body_entered)
 		$Area3D.body_exited.connect(_on_area_body_exited)
 
-	_update_barrier(true)
+	var is_private = true
+	if has_node("TentRulesBlock"):
+		is_private = $TentRulesBlock.is_private
+	_update_barrier(is_private)
 
 # This is the "Bouncer" function
 func can_player_modify(player_id: int) -> bool:
@@ -58,6 +61,7 @@ func _on_area_body_exited(body):
 			$Model/Tent.show()
 
 func _update_barrier(is_private: bool):
+	if not is_inside_tree(): return
 	if has_node("TentBarrier"):
 		if is_private and multiplayer.get_unique_id() != owner_id:
 			$TentBarrier.set_collision_layer_value(1, true)
