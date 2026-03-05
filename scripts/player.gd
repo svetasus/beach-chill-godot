@@ -161,7 +161,9 @@ func _input(event):
 	# If I click the screen, grab the mouse again
 	if event is InputEventMouseButton and event.pressed:
 		if is_multiplayer_authority():
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/InventoryUI != null and $PlayerUI/InventoryUI.visible)
+			if not is_ui_open:
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 	if event.is_action_pressed("jump") and not is_typing:
 		jump_queued = true
@@ -578,9 +580,13 @@ func update_action_ui():
 	if not is_multiplayer_authority(): 
 		action_label.hide() # Hide UI for other players' versions of you
 		return
-	# Safety check in case the label isn't found
+
+	action_label.show()
 	var target_text = ""
-	if carried_item == null:
+
+	if current_ui != null and is_instance_valid(current_ui):
+		target_text = ""
+	elif carried_item == null:
 		# Use your existing interaction check (Raycast or Shapecast)
 		var potential_item = get_interaction_target() 
 		
