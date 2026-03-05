@@ -32,18 +32,9 @@ func set_tent_owner(new_id: int):
 	if has_node("NameLabel"):
 		$NameLabel.text = "Player " + str(owner_id) + "'s Tent"
 
-	# Spawn a StorageChest for the tent, only on the server
-	if multiplayer.is_server():
-		var chest_scene = load("res://scenes/features/storageChest.tscn")
-		if chest_scene:
-			var chest = chest_scene.instantiate()
-			chest.name = "StorageChest_" + str(owner_id)
-			chest.owner_id = owner_id
-
-			var storage_marker = get_node_or_null("storageMarker")
-			if storage_marker:
-				# Add it directly to the tent so it despawns with the tent
-				storage_marker.add_child(chest, true)
+	var storage_chest = get_node_or_null("storageMarker/StorageChest")
+	if storage_chest:
+		storage_chest.owner_id = owner_id
 
 func _on_area_body_entered(body):
 	if body.is_multiplayer_authority() and body.multiplayer.get_unique_id() == body.name.to_int():
