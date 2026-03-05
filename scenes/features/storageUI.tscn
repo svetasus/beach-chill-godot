@@ -15,6 +15,7 @@ offset_right = 1405.0
 offset_bottom = 634.0
 
 [node name="GridContainer" type="GridContainer" parent="Panel"]
+columns = 5
 layout_mode = 0
 offset_right = 784.0
 offset_bottom = 355.0
