@@ -161,6 +161,8 @@ mesh = SubResource("BoxMesh_guw58")
 [node name="storageMarker" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15623, 0, -1.10328)
 
+[node name="StorageChest" parent="storageMarker" instance=ExtResource("3_chest")]
+
 [node name="NameLabel" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 3.0)
 pixel_size = 0.02
