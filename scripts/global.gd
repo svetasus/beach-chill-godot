@@ -12,3 +12,4 @@ const TENT_MARKERS_LEVEL_PATH: String = "Markers/TentSpawnMarkers"
 const TREASURE_MARKERS_LEVEL_PATH: String = "Markers/TreasureSpawnMarkers"
 
 const PLAYER_SCENE_PATH: String = "res://scenes/features/player.tscn"
+const INVENTORY_SLOT_PATH: String = "res://scenes/features/UI/inventorySlot.tscn"
