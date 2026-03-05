@@ -15,10 +15,10 @@ offset_right = 1405.0
 offset_bottom = 634.0
 
 [node name="GridContainer" type="GridContainer" parent="Panel"]
-columns = 5
 layout_mode = 0
 offset_right = 784.0
 offset_bottom = 355.0
+columns = 5
 
 [node name="Button" type="Button" parent="Panel"]
 layout_mode = 0
@@ -28,4 +28,5 @@ offset_right = 501.0
 offset_bottom = 459.0
 text = "close
 "
+
 [connection signal="pressed" from="Panel/Button" to="." method="_on_close_button_pressed"]
