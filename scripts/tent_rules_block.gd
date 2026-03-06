@@ -5,7 +5,6 @@ extends StaticBody3D
 	set(value):
 		is_private = value
 		_update_label()
-		_update_tent_collision()
 
 @onready var label = $RulesLabel
 
@@ -13,7 +12,9 @@ extends StaticBody3D
 func interact(player):
 	if player.multiplayer.get_unique_id() == owner_id:
 		# Toggle the rules
-		_rpc_toggle_rules.rpc_id(1)
+		var parent_tent = get_parent()
+		if parent_tent and parent_tent.has_method("_rpc_toggle_rules"):
+			parent_tent._rpc_toggle_rules.rpc_id(1)
 	else:
 		print("Only the tent owner can change the rules!")
 
@@ -23,14 +24,6 @@ func get_interaction_text() -> String:
 		return "[E] Change rules"
 	else:
 		return ""
-
-@rpc("any_peer", "call_local")
-func _rpc_toggle_rules():
-	if not multiplayer.is_server(): return
-	var sender_id = multiplayer.get_remote_sender_id()
-	if sender_id == owner_id:
-		is_private = !is_private
-		# the MultiplayerSynchronizer handles syncing `is_private` to everyone
 
 func _update_label():
 	if not is_node_ready(): return
@@ -43,8 +36,3 @@ func _update_label():
 
 func _ready():
 	_update_label()
-
-func _update_tent_collision():
-	var parent_tent = get_parent()
-	if parent_tent and parent_tent.has_method("_update_barrier"):
-		parent_tent._update_barrier(is_private)
