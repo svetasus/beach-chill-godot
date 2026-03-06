@@ -58,7 +58,10 @@ func spawn_tent_for_player(player_id: int):
 	if tents_container == null:
 		tents_container = get_node_or_null(Global.TENTS_CONTAINER_PATH)
 		
-	tent.global_transform = target_marker.global_transform
+	# Setting both global_position and global_rotation explicitly to ensure synchronization
+	# and proper rotation application across the network.
+	tent.global_position = target_marker.global_position
+	tent.global_rotation = target_marker.global_rotation
 	
 	if tent.has_method("set_tent_owner"):
 		tent.set_tent_owner(player_id)
