@@ -56,7 +56,7 @@ func _spawn_in_area(area: AutospawnArea):
 			)
 			var global_pos = collision_shape.global_transform * local_pos
 
-			var ground_pos = _get_ground_position(global_pos, box.size.y)
+			var ground_pos = _get_ground_position(global_pos, 100.0) # Using a large fixed distance to guarantee floor hit
 			if ground_pos != Vector3.ZERO:
 				var item_data = area.spawn_profile.items.pick_random()
 				_spawn_item(area.item_scene, item_data, ground_pos)
@@ -71,7 +71,7 @@ func _spawn_in_area(area: AutospawnArea):
 			)
 			var global_pos = collision_shape.global_transform * local_pos
 
-			var ground_pos = _get_ground_position(global_pos, box.size.y)
+			var ground_pos = _get_ground_position(global_pos, 100.0) # Using a large fixed distance to guarantee floor hit
 			if ground_pos != Vector3.ZERO:
 				_spawn_treasure(area.treasure_profile, ground_pos)
 
