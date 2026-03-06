@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cxwxxb12345"]
 
-[ext_resource type="Script" uid="uid://df7w0c22345" path="res://scripts/tent_rules_block.gd" id="1_rules"]
+[ext_resource type="Script" uid="uid://bc4e0nomewrwc" path="res://scripts/tent_rules_block.gd" id="1_rules"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_block"]
 size = Vector3(0.5, 0.5, 0.5)
@@ -23,5 +23,4 @@ mesh = SubResource("BoxMesh_block")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
 pixel_size = 0.01
 text = "Private"
-font_size = 32
 outline_size = 5

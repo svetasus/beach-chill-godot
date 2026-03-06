@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bssf45p8hu43w"]
+[gd_scene load_steps=18 format=3 uid="uid://bssf45p8hu43w"]
 
 [ext_resource type="Script" uid="uid://b6rrpow7wx152" path="res://scripts/player_tent.gd" id="1_th7oj"]
 [ext_resource type="PackedScene" uid="uid://cxwxxb12345" path="res://scenes/features/tentRulesBlock.tscn" id="2_rules"]
@@ -150,28 +150,28 @@ mesh = SubResource("BoxMesh_th7oj")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.3, 1.146)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.25, 1.146)
 mesh = SubResource("BoxMesh_guw58")
 
 [node name="storageMarker" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15623, 0, -1.10328)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.764572, 1, -1.2792)
 
 [node name="StorageChest" parent="storageMarker" instance=ExtResource("3_chest")]
 
 [node name="NameLabel" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 3.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 3)
 pixel_size = 0.02
 text = "Player's Tent"
-font_size = 64
+font_size = 28
 outline_size = 10
 
 [node name="TentRulesBlock" parent="." instance=ExtResource("2_rules")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.25, -1.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2083, 0.8, -1)
 
 [node name="TentBarrier" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 2.0)
-collision_layer = 1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 2)
 collision_mask = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TentBarrier"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0198567, 0, -2.04391)
 shape = SubResource("BoxShape3D_52xpw")
