@@ -36,7 +36,7 @@ properties/2/path = NodePath(".:driver_id")
 properties/2/spawn = true
 properties/2/replication_mode = 2
 
-[node name="Cart" type="CharacterBody3D"]
+[node name="Cart" type="CharacterBody3D" groups=["carts"]]
 collision_layer = 2
 collision_mask = 4
 script = ExtResource("1_1uyiy")
