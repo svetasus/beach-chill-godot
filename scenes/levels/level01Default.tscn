@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://dnw1sundtvpw0" path="res://scripts/autospawn_area.gd" id="6_ic7dp"]
 [ext_resource type="Resource" uid="uid://b6fkh3ijbv1h3" path="res://resources/spawn_profiles/spawn_profile_default.tres" id="7_gqja0"]
 [ext_resource type="Resource" uid="uid://d22djgxra57mn" path="res://resources/spawn_profiles/treasure_profile_default.tres" id="8_uyy6t"]
+[ext_resource type="Script" uid="uid://ceivn3q267l5s" path="res://scripts/tent_spawn_point.gd" id="tent_sp_script"]
+[ext_resource type="PackedScene" uid="uid://2grmyq3aohgo" path="res://scenes/features/playerTent.tscn" id="tent_scene"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3j6ee"]
 albedo_color = Color(0.911744, 0.823696, 0.685418, 1)
@@ -176,9 +178,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 [node name="TentSpawnMarkers" type="Node3D" parent="Markers"]
 
 [node name="Marker3D" type="Marker3D" parent="Markers/TentSpawnMarkers"]
+script = ExtResource("tent_sp_script")
+tent_scene = ExtResource("tent_scene")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.8649, 0, -3.19676)
 
 [node name="Marker3D2" type="Marker3D" parent="Markers/TentSpawnMarkers"]
+script = ExtResource("tent_sp_script")
+tent_scene = ExtResource("tent_scene")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.7755, 0, -19.7488)
 
 [node name="Ocean2" type="Node3D" parent="."]
