@@ -595,6 +595,8 @@ func update_action_ui():
 				target_text = "[E] Take " + potential_item.display_name
 			elif potential_item.has_method("deposit_item"):
 				target_text = "[E] Open Storage"
+			elif potential_item.has_method("get_interaction_text"):
+				target_text = potential_item.get_interaction_text()
 	else:
 		var potential_target = get_interaction_target()
 		if potential_target and potential_target.has_method("deposit_item"):
@@ -629,7 +631,7 @@ func get_interaction_target():
 		var collider = $Body/Head/Camera3D/InteractionShape.get_collider(0)
 		# Only return it if it's an item we can actually pick up
 		#print("Shapecast met ", shapecast.get_collider(0).name, " on Layer: ", shapecast.get_collider(0).collision_layer)
-		if collider is Item or collider.has_method("deposit_item"):
+		if collider is Item or collider.has_method("deposit_item") or collider.has_method("get_interaction_text"):
 			return collider
 	return null
 
