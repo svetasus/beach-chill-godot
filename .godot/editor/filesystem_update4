@@ -1,0 +1,9 @@
+res://scenes/main.tscn
+res://resources/materials/ocean_material.gdshader
+res://resources/materials/ocean_material.tres
+res://scenes/features/treasurePoint.tscn
+res://scenes/levels/level01Default.tscn
+res://scripts/item_logic.gd
+res://scripts/player.gd
+res://scenes/features/cart.tscn
+res://scenes/features/cart.gd

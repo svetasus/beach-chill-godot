@@ -214,21 +214,12 @@ func _input(event):
 
 func check_interaction():
 	if not can_interact_here(): return
-	
 	if not is_multiplayer_authority(): return
+	
 	if shapecast.is_colliding():
 		var target = shapecast.get_collider(0)
 		
-		# NEW GUARD: If someone else is already the boss of this item and it's 'frozen' (held), ignore it!
-		if target is Item and target.freeze == true:
-			print("Someone is already holding this!")
-			return
-
-		# ... rest of your existing logic (Crates, etc.)
-		if target.has_method("interact"):
-			target.interact(self)
-		elif target.is_in_group("interactables"):
-			pick_up(target)
+		
 			
 		if target.has_method("deposit_item"):
 		# Scenario A: We are holding an item -> STORE IT
@@ -242,6 +233,27 @@ func check_interaction():
 			# Scenario B: Our hands are empty -> OPEN UI
 			else:
 				open_chest_ui(target)
+		
+		elif target.has_method("deposit_item_cart"):
+		# Scenario A: Holding an item -> Put it in the cart
+			if carried_item != null:
+				_rpc_request_cart_deposit.rpc_id(1, target.get_path(), carried_item.get_path())
+				carried_item = null
+				
+			# Scenario B: Empty hands -> Toggle grabbing the cart
+			else:
+				_rpc_toggle_cart_grab.rpc_id(1, target.get_path())
+				
+		# NEW GUARD: If someone else is already the boss of this item and it's 'frozen' (held), ignore it!
+		elif target is Item and target.freeze == true:
+			print("Someone is already holding this!")
+			return
+
+		# ... rest of your existing logic (Crates, etc.)
+		elif target.has_method("interact"):
+			target.interact(self)
+		elif target.is_in_group("interactables"):
+			pick_up(target)
 
 
 func pick_up(item):
@@ -352,6 +364,10 @@ func drop_item():
 func throw_item():
 	if not is_multiplayer_authority() or carried_item == null: return 
 	
+	if is_instance_valid(carried_item):
+		if carried_item.has_method("set_ghost_appearance"):
+			carried_item.set_ghost_appearance(false)
+	
 	var tool = get_held_tool()
 	if tool:
 		tool.update_proximity(null)
@@ -361,10 +377,7 @@ func throw_item():
 	var item = carried_item
 	carried_item = null # This stops the _process snap-to-hand IMMEDIATELY
 	item.scale = Vector3.ONE
-	
-	if is_instance_valid(carried_item):
-		if carried_item.has_method("set_ghost_appearance"):
-			carried_item.set_ghost_appearance(false)
+
 	
 	# 1. CALCULATE DATA
 	var launch_dir = (-hand.global_transform.basis.z + Vector3(0, 0.3, 0)).normalized()
@@ -595,12 +608,16 @@ func update_action_ui():
 				target_text = "[E] Take " + potential_item.display_name
 			elif potential_item.has_method("deposit_item"):
 				target_text = "[E] Open Storage"
+			elif potential_item.has_method("deposit_item_cart"):
+				target_text = "[E] Take Cart"
 			elif potential_item.has_method("get_interaction_text"):
 				target_text = potential_item.get_interaction_text()
 	else:
 		var potential_target = get_interaction_target()
 		if potential_target and potential_target.has_method("deposit_item"):
 			target_text = "[E] Store " + carried_item.display_name
+		elif potential_target.has_method("deposit_item_cart"):
+			target_text = "[E] Deposit in cart"
 		else:
 			var tool = get_held_tool()
 			if tool :
@@ -712,3 +729,32 @@ func open_chest_ui(chest_node: Node3D):
 		
 	# 3. Unlock the mouse so the player can click the grid
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+@rpc("any_peer", "call_local")
+func _rpc_toggle_cart_grab(cart_path: NodePath):
+	if not multiplayer.is_server(): return
+	
+	var cart = get_node_or_null(cart_path)
+	var my_player = get_parent() # Assuming this script is on the player
+	var my_id = multiplayer.get_remote_sender_id()
+	
+	if cart:
+		if cart.driver_id == my_id:
+			cart.release_cart()
+		else:
+			cart.grab_cart(my_player, my_id)
+			
+			
+			
+@rpc("any_peer", "call_local")
+func _rpc_request_cart_deposit(cart_path: NodePath, item_path: NodePath):
+	# Security check: Only the Server manages the math
+	if not multiplayer.is_server(): return
+	
+	var cart = get_node_or_null(cart_path)
+	var item = get_node_or_null(item_path)
+	
+	if cart != null and item != null:
+		if cart.has_method("deposit_item_cart"):
+			cart.deposit_item(item)

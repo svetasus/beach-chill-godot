@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ct6wef0wj1t8f"]
+[gd_scene load_steps=21 format=3 uid="uid://ct6wef0wj1t8f"]
 
 [ext_resource type="Script" uid="uid://oofej86k011a" path="res://scripts/main.gd" id="1_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://c4wtfvlv2judr" path="res://scenes/features/multiplayerMenu.tscn" id="3_85g3d"]
@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://bio5ygciicsu6" path="res://scenes/features/artifactCombiner.tscn" id="16_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://cmpknns23ho7" path="res://scenes/features/tentManager.tscn" id="17_muem4"]
 [ext_resource type="Script" uid="uid://ctmokqka65mly" path="res://scripts/treasure_spawn_point.gd" id="18_treasurespawnpoint"]
+[ext_resource type="PackedScene" uid="uid://2oj6er2ejk2" path="res://scenes/features/cart.tscn" id="20_gqmmt"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_o6xl0")
@@ -133,8 +134,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.93131, 0, 17.1483)
 
 [node name="TentManager" parent="." instance=ExtResource("17_muem4")]
 
-[connection signal="body_entered" from="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@21769/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@21769/TreasurePoint" method="_on_body_entered"]
-[connection signal="body_exited" from="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@21769/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@21769/TreasurePoint" method="_on_body_exited"]
-[connection signal="body_entered" from="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@21770/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@21770/TreasurePoint" method="_on_body_entered"]
-[connection signal="body_exited" from="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@21770/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@21770/TreasurePoint" method="_on_body_exited"]
+[node name="Cart" parent="." instance=ExtResource("20_gqmmt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.66695, 0.571931, -2.45948)
+
+[connection signal="body_entered" from="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@42173/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@42173/TreasurePoint" method="_on_body_entered"]
+[connection signal="body_exited" from="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@42173/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@42173/TreasurePoint" method="_on_body_exited"]
+[connection signal="body_entered" from="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@42174/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@42174/TreasurePoint" method="_on_body_entered"]
+[connection signal="body_exited" from="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@42174/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@42174/TreasurePoint" method="_on_body_exited"]
 [connection signal="spawned" from="MultiplayerSpawners/MultiplayerSpawner_Players" to="." method="_on_multiplayer_spawner_spawned"]

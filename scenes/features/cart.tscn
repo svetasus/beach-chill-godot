@@ -1,0 +1,73 @@
+[gd_scene load_steps=9 format=3 uid="uid://2oj6er2ejk2"]
+
+[ext_resource type="Script" uid="uid://ey08dtmuv7t5" path="res://cart.gd" id="1_1uyiy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gioan"]
+transparency = 1
+albedo_color = Color(0.505882, 0.376471, 0.556863, 0.545098)
+
+[sub_resource type="BoxMesh" id="BoxMesh_on5qa"]
+material = SubResource("StandardMaterial3D_gioan")
+size = Vector3(0.7, 0.5, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_on5qa"]
+albedo_color = Color(0.505882, 0.376471, 0.556863, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vm11s"]
+material = SubResource("StandardMaterial3D_on5qa")
+radius = 0.1
+height = 0.75
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_1uyiy"]
+height = 0.5
+radius = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gioan"]
+size = Vector3(0.5, 0.5, 0.7)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1uyiy"]
+properties/0/path = NodePath(".:global_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:global_rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:driver_id")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
+[node name="Cart" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 4
+script = ExtResource("1_1uyiy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
+mesh = SubResource("BoxMesh_on5qa")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 0.144408, -0.989518, 0, 0.989518, 0.144408, 0, 0.157122, 0.827062)
+mesh = SubResource("CapsuleMesh_vm11s")
+
+[node name="HandleZone" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HandleZone"]
+transform = Transform3D(1, 0, 0, 0, 0.137237, -0.990538, 0, 0.990538, 0.137237, 0, 0.175595, 1.01196)
+shape = SubResource("CylinderShape3D_1uyiy")
+
+[node name="BasketZone" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BasketZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0985168, 0)
+shape = SubResource("BoxShape3D_gioan")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_1uyiy")

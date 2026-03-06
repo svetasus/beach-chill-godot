@@ -27,6 +27,10 @@ var display_name: String = "Item"
 
 var is_ghost_mode: bool = false
 
+var locked_to_cart: Node3D = null
+var cart_offset: Vector3 = Vector3.ZERO
+var rotation_offset: Basis
+
 # --- 2. AUTHORITY & PHYSICS ---
 func set_ghost_appearance(active: bool):
 	is_ghost_mode = active
@@ -189,6 +193,40 @@ func _find_shape_recursive(node):
 		var found = _find_shape_recursive(child)
 		if found: return found
 	return null
+	
+	
+# Called by the Server when dropped in a cart
+func lock_to_cart(cart: Node3D):
+	if not multiplayer.is_server(): return
+	
+	locked_to_cart = cart
+	
+	# 1. Turn off physics calculations
+	freeze = true 
+	
+	# 2. (Optional but recommended) Turn off collision so players don't trip on the pile
+	if has_node("CollisionShape3D"):
+		$CollisionShape3D.disabled = true
+		
+	# 3. Calculate exactly where it is sitting relative to the cart right now
+	cart_offset = cart.to_local(global_position)
+	rotation_offset = cart.global_transform.basis.inverse() * global_transform.basis
+	
+# Called by the Server when removed from the cart
+func unlock_from_cart():
+	if not multiplayer.is_server(): return
+	
+	locked_to_cart = null
+	freeze = false
+	if has_node("CollisionShape3D"):
+		$CollisionShape3D.disabled = false
+		
+func _physics_process(delta):
+	# If we are in a cart, forcefully glue ourselves to it every frame
+	if multiplayer.is_server() and locked_to_cart and is_instance_valid(locked_to_cart):
+		global_position = locked_to_cart.to_global(cart_offset)
+		global_basis = locked_to_cart.global_transform.basis * rotation_offset
+
 
 # --- 6. CLEANUP ---
 
