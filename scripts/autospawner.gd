@@ -81,7 +81,7 @@ func _get_ground_position(start_pos: Vector3, ray_length: float) -> Vector3:
 	var result = space_state.intersect_ray(query)
 
 	if result:
-		return result.position
+		return result.position + Vector3(0, 0.5, 0)
 	return Vector3.ZERO
 
 func _spawn_item(item_scene: PackedScene, item_data: ItemData, pos: Vector3):
