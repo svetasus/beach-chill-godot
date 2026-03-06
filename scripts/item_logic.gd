@@ -221,6 +221,14 @@ func unlock_from_cart():
 	if has_node("CollisionShape3D"):
 		$CollisionShape3D.disabled = false
 		
+@rpc("any_peer", "call_local")
+func request_unlock_from_cart():
+	if multiplayer.is_server():
+		if locked_to_cart and locked_to_cart.has_method("remove_item"):
+			locked_to_cart.remove_item(self)
+		else:
+			unlock_from_cart()
+
 func _physics_process(delta):
 	# If we are in a cart, forcefully glue ourselves to it every frame
 	if multiplayer.is_server() and locked_to_cart and is_instance_valid(locked_to_cart):

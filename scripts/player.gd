@@ -179,8 +179,23 @@ func _input(event):
 		else:
 			# If we hold an item, but look at a storage chest, try to deposit it
 			var potential_target = get_interaction_target()
-			if potential_target and potential_target.has_method("deposit_item"):
-				check_interaction()
+			if potential_target:
+				if potential_target.has_method("deposit_item"):
+					check_interaction()
+				elif potential_target is Area3D and potential_target.has_meta("is_cart_basket"):
+					check_interaction()
+				else:
+					var tool = get_held_tool()
+
+					# If we have a shovel/tool and are near a treasure...
+					if tool and tool.can_interact_with(current_treasure):
+						tool.use_tool(current_treasure)
+					# ELSE IF we are looking at a treasure but NOT close enough to dig yet...
+					#elif current_treasure != null:
+					#	print("Too far to dig, doing nothing (prevents accidental drop)")
+					# ONLY drop if we aren't trying to use a tool on a valid target
+					else:
+						drop_item()
 			else:
 				var tool = get_held_tool()
 
@@ -216,11 +231,8 @@ func check_interaction():
 	if not can_interact_here(): return
 	if not is_multiplayer_authority(): return
 	
-	if shapecast.is_colliding():
-		var target = shapecast.get_collider(0)
-		
-		
-			
+	var target = get_interaction_target()
+	if target:
 		if target.has_method("deposit_item"):
 		# Scenario A: We are holding an item -> STORE IT
 			if carried_item != null:
@@ -234,15 +246,17 @@ func check_interaction():
 			else:
 				open_chest_ui(target)
 		
-		elif target.has_method("deposit_item_cart"):
-		# Scenario A: Holding an item -> Put it in the cart
-			if carried_item != null:
-				_rpc_request_cart_deposit.rpc_id(1, target.get_path(), carried_item.get_path())
-				carried_item = null
-				
-			# Scenario B: Empty hands -> Toggle grabbing the cart
-			else:
-				_rpc_toggle_cart_grab.rpc_id(1, target.get_path())
+		# Specific logic for carts
+		elif target is Area3D:
+			if target.has_meta("is_cart_handle"):
+				if carried_item == null:
+					var cart_node = target.get_meta("cart_node")
+					_rpc_toggle_cart_grab.rpc_id(1, cart_node.get_path())
+			elif target.has_meta("is_cart_basket"):
+				if carried_item != null:
+					var cart_node = target.get_meta("cart_node")
+					_rpc_request_cart_deposit.rpc_id(1, cart_node.get_path(), carried_item.get_path())
+					carried_item = null
 				
 		# NEW GUARD: If someone else is already the boss of this item and it's 'frozen' (held), ignore it!
 		elif target is Item and target.freeze == true:
@@ -261,10 +275,29 @@ func pick_up(item):
 	
 	if item == null:
 		return
-	
+
+	# Check if we are driving any cart. If so, don't allow pick up.
+	# We'll just look around if there's any cart where we are the driver.
+	# Or, since we only need to not take items while holding the cart, we can add a check.
+	# Is the best way to get the root's children and check carts?
+	var carts = get_tree().get_nodes_in_group("carts")
+	for c in carts:
+		if c.get("driver_id") == multiplayer.get_unique_id():
+			print("CANNOT PICK UP: You are driving a cart!")
+			return
+
 	if item.freeze == true and item.get_multiplayer_authority() != multiplayer.get_unique_id():
-		print("CANNOT PICK UP: Someone else is already the boss of this!")
-		return
+		# Check if it's locked to a cart. If so, let's unlock it and take it.
+		# Note: locked_to_cart is a server-side only variable in item_logic.
+		# However, if it's a cart item, its freeze state might be true and authority might be server(1).
+		# Let's request the server to unlock it.
+		if item.get_multiplayer_authority() == 1:
+			# Potentially locked to cart, try to pick it up anyway
+			if item.has_method("request_unlock_from_cart"):
+				item.request_unlock_from_cart.rpc_id(1)
+		else:
+			print("CANNOT PICK UP: Someone else is already the boss of this!")
+			return
 	
 	if item is RigidBody3D:
 		item.freeze = false
@@ -597,6 +630,10 @@ func update_action_ui():
 	action_label.show()
 	var target_text = ""
 
+	# Are we currently driving the cart?
+	# We can check if any cart has us as driver, but let's check action context.
+	var currently_driving_cart = false
+
 	if current_ui != null and is_instance_valid(current_ui):
 		target_text = ""
 	elif carried_item == null:
@@ -608,21 +645,30 @@ func update_action_ui():
 				target_text = "[E] Take " + potential_item.display_name
 			elif potential_item.has_method("deposit_item"):
 				target_text = "[E] Open Storage"
-			elif potential_item.has_method("deposit_item_cart"):
-				target_text = "[E] Take Cart"
 			elif potential_item.has_method("get_interaction_text"):
 				target_text = potential_item.get_interaction_text()
+			elif potential_item is Area3D:
+				if potential_item.has_meta("is_cart_handle"):
+					var cart_node = potential_item.get_meta("cart_node")
+					if cart_node.driver_id == multiplayer.get_unique_id():
+						target_text = "[E] Release Cart"
+					elif cart_node.driver_id == 0:
+						target_text = "[E] Take Cart"
 	else:
 		var potential_target = get_interaction_target()
-		if potential_target and potential_target.has_method("deposit_item"):
-			target_text = "[E] Store " + carried_item.display_name
-		elif potential_target.has_method("deposit_item_cart"):
-			target_text = "[E] Deposit in cart"
+		if potential_target:
+			if potential_target.has_method("deposit_item"):
+				target_text = "[E] Store " + carried_item.display_name
+			elif potential_target is Area3D and potential_target.has_meta("is_cart_basket"):
+				target_text = "[E] Deposit in cart"
+			else:
+				var tool = get_held_tool()
+				if tool and tool.can_interact_with(current_treasure):
+					target_text = "[E] " + tool.get_action_name()
+				else:
+					target_text = "[E] Drop " + carried_item.display_name
 		else:
 			var tool = get_held_tool()
-			if tool :
-				print(tool.get_action_name())
-				#print("Found tool: ", tool.get_action_name(), " | Target: ", current_treasure)
 			if tool and tool.can_interact_with(current_treasure):
 				target_text = "[E] " + tool.get_action_name()
 			else:
@@ -650,6 +696,11 @@ func get_interaction_target():
 		#print("Shapecast met ", shapecast.get_collider(0).name, " on Layer: ", shapecast.get_collider(0).collision_layer)
 		if collider is Item or collider.has_method("deposit_item") or collider.has_method("get_interaction_text"):
 			return collider
+		# Specific checks for cart metadata on Area3Ds
+		if collider is Area3D:
+			if collider.has_meta("is_cart_handle") or collider.has_meta("is_cart_basket"):
+				return collider
+
 	return null
 
 
@@ -736,7 +787,7 @@ func _rpc_toggle_cart_grab(cart_path: NodePath):
 	if not multiplayer.is_server(): return
 	
 	var cart = get_node_or_null(cart_path)
-	var my_player = get_parent() # Assuming this script is on the player
+	var my_player = self # This script is directly on the player
 	var my_id = multiplayer.get_remote_sender_id()
 	
 	if cart:
