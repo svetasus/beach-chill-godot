@@ -22,7 +22,10 @@ func _on_host_button_pressed():
 	# 3. Add YOURSELF (the host) to the game
 	add_player(multiplayer.get_unique_id())
 	
-	# 4. Hide the menu UI
+	# 4. Trigger autospawn for items/treasures
+	AutoSpawner.trigger_spawn()
+
+	# 5. Hide the menu UI
 	self.hide()
 
 func _on_join_button_pressed():
