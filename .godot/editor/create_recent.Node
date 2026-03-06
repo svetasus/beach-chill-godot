@@ -1,7 +1,8 @@
 MeshInstance3D
-Marker3D
-Node3D
 CollisionShape3D
+Area3D
+Node3D
+Marker3D
 Button
 GridContainer
 Panel
@@ -9,6 +10,5 @@ Control
 MultiplayerSynchronizer
 StaticBody3D
 GPUParticles3D
-Area3D
 MultiplayerSpawner
 RayCast3D

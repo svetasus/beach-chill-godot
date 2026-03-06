@@ -1,10 +1,13 @@
-[gd_scene load_steps=23 format=3 uid="uid://7bo1jg4ha4dw"]
+[gd_scene load_steps=29 format=3 uid="uid://7bo1jg4ha4dw"]
 
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
 [ext_resource type="Texture2D" uid="uid://rkbpkmmptwbk" path="res://textures/tex_Water.jpg" id="2_42wun"]
-[ext_resource type="Material" uid="uid://cws2g2sjnwdf8" path="res://resources/sand_material.tres" id="3_5p50t"]
-[ext_resource type="Material" uid="uid://bm4ar1a4q50vg" path="res://resources/ocean_material.tres" id="3_6mrmg"]
+[ext_resource type="Material" uid="uid://cws2g2sjnwdf8" path="res://resources/materials/sand_material.tres" id="3_5p50t"]
+[ext_resource type="Material" uid="uid://bm4ar1a4q50vg" path="res://resources/materials/ocean_material.tres" id="3_6mrmg"]
 [ext_resource type="Texture2D" uid="uid://ob2klsiv7kbl" path="res://textures/sqrafr9ffb7idpdl257avlbgf1-92245fd9d4f1a7ef533bf428b54dec89.png" id="5_r84l6"]
+[ext_resource type="Script" uid="uid://dnw1sundtvpw0" path="res://scripts/autospawn_area.gd" id="6_ic7dp"]
+[ext_resource type="Resource" uid="uid://b6fkh3ijbv1h3" path="res://resources/spawn_profiles/spawn_profile_default.tres" id="7_gqja0"]
+[ext_resource type="Resource" uid="uid://d22djgxra57mn" path="res://resources/spawn_profiles/treasure_profile_default.tres" id="8_uyy6t"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3j6ee"]
 albedo_color = Color(0.911744, 0.823696, 0.685418, 1)
@@ -89,6 +92,17 @@ albedo_texture = ExtResource("5_r84l6")
 [sub_resource type="QuadMesh" id="QuadMesh_gatpe"]
 material = SubResource("StandardMaterial3D_ic7dp")
 orientation = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r84l6"]
+size = Vector3(10, 4, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gatpe"]
+transparency = 1
+albedo_color = Color(1, 1, 0.380392, 0.454902)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gqja0"]
+material = SubResource("StandardMaterial3D_gatpe")
+size = Vector3(10, 4, 10)
 
 [node name="Level01Default" type="Node3D"]
 
@@ -179,3 +193,17 @@ visible = false
 amount = 20
 process_material = SubResource("ParticleProcessMaterial_5p50t")
 draw_pass_1 = SubResource("QuadMesh_gatpe")
+
+[node name="AutospawnAreas" type="Node3D" parent="."]
+
+[node name="Area3D" type="Area3D" parent="AutospawnAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2.04143, 6.01974)
+script = ExtResource("6_ic7dp")
+spawn_profile = ExtResource("7_gqja0")
+treasure_profile = ExtResource("8_uyy6t")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AutospawnAreas/Area3D"]
+shape = SubResource("BoxShape3D_r84l6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AutospawnAreas/Area3D"]
+mesh = SubResource("BoxMesh_gqja0")
