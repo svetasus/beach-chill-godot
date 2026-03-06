@@ -11,7 +11,7 @@ func trigger_spawn():
 		print("AutoSpawner: No level loaded at ", Global.LEVEL_PATH)
 		return
 
-	var autospawn_areas = level.get_node_or_null("AutospawnAreas")
+	var autospawn_areas = _find_node_by_name_recursive(level, "AutospawnAreas")
 	if not autospawn_areas:
 		print("AutoSpawner: No 'AutospawnAreas' node found in level.")
 		return
@@ -19,6 +19,15 @@ func trigger_spawn():
 	for area in autospawn_areas.get_children():
 		if area is AutospawnArea:
 			_spawn_in_area(area)
+
+func _find_node_by_name_recursive(node: Node, target_name: String) -> Node:
+	if node.name == target_name:
+		return node
+	for child in node.get_children():
+		var found = _find_node_by_name_recursive(child, target_name)
+		if found:
+			return found
+	return null
 
 func _spawn_in_area(area: AutospawnArea):
 	if not area.get_child_count() > 0:
