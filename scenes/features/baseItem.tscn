@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ysiwkaaxd645" path="res://scripts/item_logic.gd" id="1_s8enn"]
 [ext_resource type="Script" uid="uid://dppyd1qn2x4ot" path="res://scripts/item_name_pivot.gd" id="2_6muww"]
-[ext_resource type="Material" uid="uid://bngpgyipxn0vv" path="res://resources/ghost_item_material.tres" id="2_jpn51"]
+[ext_resource type="Material" uid="uid://bngpgyipxn0vv" path="res://resources/materials/ghost_item_material.tres" id="2_jpn51"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_11e83"]
 properties/0/path = NodePath(".:linear_velocity")

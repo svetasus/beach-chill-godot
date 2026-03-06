@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://t70pcbuj84fb"]
 
-[ext_resource type="Material" uid="uid://b6phied1ls275" path="res://resources/artifact_001_material.tres" id="1_ibeqe"]
+[ext_resource type="Material" uid="uid://b6phied1ls275" path="res://resources/materials/artifact_001_material.tres" id="1_ibeqe"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_28spg"]
 height = 0.35

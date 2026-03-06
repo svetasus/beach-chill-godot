@@ -1,3 +1,5 @@
+TreasureProfile
+SpawnProfile
 StandardMaterial3D
 ItemData
 ArtifactData

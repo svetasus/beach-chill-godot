@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SpawnProfile" load_steps=5 format=3 uid="uid://b6fkh3ijbv1h3"]
+
+[ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/item_data.gd" id="1_h5ge1"]
+[ext_resource type="Script" uid="uid://dfbpk62v1a2m3" path="res://scripts/spawn_profile.gd" id="2_pnpe1"]
+[ext_resource type="Resource" uid="uid://k81noy3tielt" path="res://resources/items/shell_001_data.tres" id="2_vivbw"]
+[ext_resource type="Resource" uid="uid://dqqv0qpqsbk76" path="res://resources/items/shell_002_data.tres" id="3_3wviy"]
+
+[resource]
+script = ExtResource("2_pnpe1")
+items = Array[ExtResource("1_h5ge1")]([ExtResource("2_vivbw"), ExtResource("3_3wviy")])
+metadata/_custom_type_script = "uid://dfbpk62v1a2m3"
