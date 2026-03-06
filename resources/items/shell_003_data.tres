@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://jq3hqufu1vc6"]
+
+[ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/item_data.gd" id="1_2ak7f"]
+[ext_resource type="PackedScene" uid="uid://b627c6ixmkf52" path="res://scenes/models/visShell_003.tscn" id="1_4u67t"]
+[ext_resource type="Texture2D" uid="uid://cy84sh4vgxkjx" path="res://textures/turqshell.png" id="1_bryfu"]
+
+[resource]
+script = ExtResource("1_2ak7f")
+name = "shell_003"
+display_name = "Turquoise Shell"
+item_icon = ExtResource("1_bryfu")
+particle_color = Color(0.235294, 0.72549, 0.784314, 1)
+scene = ExtResource("1_4u67t")
+mass = 1.0
+collision_size = Vector3(0.2, 0.2, 0.2)
+is_tool = false
+is_collectible = true
+metadata/_custom_type_script = "uid://cslspwbckibw1"
