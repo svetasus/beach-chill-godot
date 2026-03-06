@@ -182,7 +182,7 @@ func _input(event):
 			if potential_target:
 				if potential_target.has_method("deposit_item"):
 					check_interaction()
-				elif potential_target is Area3D and potential_target.has_meta("is_cart_basket"):
+				elif potential_target.has_meta("is_cart_basket"):
 					check_interaction()
 				else:
 					var tool = get_held_tool()
@@ -247,16 +247,15 @@ func check_interaction():
 				open_chest_ui(target)
 		
 		# Specific logic for carts
-		elif target is Area3D:
-			if target.has_meta("is_cart_handle"):
-				if carried_item == null:
-					var cart_node = target.get_meta("cart_node")
-					_rpc_toggle_cart_grab.rpc_id(1, cart_node.get_path())
-			elif target.has_meta("is_cart_basket"):
-				if carried_item != null:
-					var cart_node = target.get_meta("cart_node")
-					_rpc_request_cart_deposit.rpc_id(1, cart_node.get_path(), carried_item.get_path())
-					carried_item = null
+		elif target.has_meta("is_cart_handle"):
+			if carried_item == null:
+				var cart_node = target.get_meta("cart_node")
+				_rpc_toggle_cart_grab.rpc_id(1, cart_node.get_path())
+		elif target.has_meta("is_cart_basket"):
+			if carried_item != null:
+				var cart_node = target.get_meta("cart_node")
+				_rpc_request_cart_deposit.rpc_id(1, cart_node.get_path(), carried_item.get_path())
+				carried_item = null
 				
 		# NEW GUARD: If someone else is already the boss of this item and it's 'frozen' (held), ignore it!
 		elif target is Item and target.freeze == true:
@@ -647,19 +646,18 @@ func update_action_ui():
 				target_text = "[E] Open Storage"
 			elif potential_item.has_method("get_interaction_text"):
 				target_text = potential_item.get_interaction_text()
-			elif potential_item is Area3D:
-				if potential_item.has_meta("is_cart_handle"):
-					var cart_node = potential_item.get_meta("cart_node")
-					if cart_node.driver_id == multiplayer.get_unique_id():
-						target_text = "[E] Release Cart"
-					elif cart_node.driver_id == 0:
-						target_text = "[E] Take Cart"
+			elif potential_item.has_meta("is_cart_handle"):
+				var cart_node = potential_item.get_meta("cart_node")
+				if cart_node.driver_id == multiplayer.get_unique_id():
+					target_text = "[E] Release Cart"
+				elif cart_node.driver_id == 0:
+					target_text = "[E] Take Cart"
 	else:
 		var potential_target = get_interaction_target()
 		if potential_target:
 			if potential_target.has_method("deposit_item"):
 				target_text = "[E] Store " + carried_item.display_name
-			elif potential_target is Area3D and potential_target.has_meta("is_cart_basket"):
+			elif potential_target.has_meta("is_cart_basket"):
 				target_text = "[E] Deposit in cart"
 			else:
 				var tool = get_held_tool()
@@ -696,10 +694,9 @@ func get_interaction_target():
 		#print("Shapecast met ", shapecast.get_collider(0).name, " on Layer: ", shapecast.get_collider(0).collision_layer)
 		if collider is Item or collider.has_method("deposit_item") or collider.has_method("get_interaction_text"):
 			return collider
-		# Specific checks for cart metadata on Area3Ds
-		if collider is Area3D:
-			if collider.has_meta("is_cart_handle") or collider.has_meta("is_cart_basket"):
-				return collider
+		# Specific checks for cart metadata
+		if collider.has_meta("is_cart_handle") or collider.has_meta("is_cart_basket"):
+			return collider
 
 	return null
 
