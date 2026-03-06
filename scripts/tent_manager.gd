@@ -50,6 +50,12 @@ func spawn_tent_for_player(player_id: int):
 		
 	var target_marker = all_markers[spawn_index]
 	
+	if not target_marker.is_inside_tree():
+		await target_marker.tree_entered
+
+	# Wait for a frame to ensure the global position is valid after entering the tree
+	await get_tree().process_frame
+
 	# Instantiate and Add
 	var tent = tent_scene.instantiate()
 	tent.name = "Tent_" + str(player_id)
