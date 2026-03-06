@@ -1,6 +1,9 @@
 extends Node3D
 
-@export var owner_id: int = -1 # The multiplayer ID of the player
+@export var owner_id: int = -1:
+	set(new_id):
+		owner_id = new_id
+		_on_owner_id_changed()
 
 func _ready():
 	if has_node("Area3D"):
@@ -12,13 +15,10 @@ func _ready():
 		is_private = $TentRulesBlock.is_private
 	_update_barrier(is_private)
 
-# This is the "Bouncer" function
-func can_player_modify(player_id: int) -> bool:
-	return player_id == owner_id
+	_on_owner_id_changed()
 
-func set_tent_owner(new_id: int):
-	owner_id = new_id
-	print("Tent initialized for Player: ", owner_id)
+func _on_owner_id_changed():
+	if not is_inside_tree(): return
 	
 	if has_node("TentRulesBlock"):
 		$TentRulesBlock.owner_id = owner_id
@@ -35,6 +35,14 @@ func set_tent_owner(new_id: int):
 	var storage_chest = get_node_or_null("storageMarker/StorageChest")
 	if storage_chest:
 		storage_chest.owner_id = owner_id
+
+# This is the "Bouncer" function
+func can_player_modify(player_id: int) -> bool:
+	return player_id == owner_id
+
+func set_tent_owner(new_id: int):
+	owner_id = new_id
+	print("Tent initialized for Player: ", owner_id)
 
 func _on_area_body_entered(body):
 	if body.is_multiplayer_authority() and body.multiplayer.get_unique_id() == body.name.to_int():
