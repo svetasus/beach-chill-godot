@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b6rrpow7wx152" path="res://scripts/player_tent.gd" id="1_th7oj"]
 [ext_resource type="PackedScene" uid="uid://cxwxxb12345" path="res://scenes/features/tentRulesBlock.tscn" id="2_rules"]
+[ext_resource type="PackedScene" uid="uid://bupw5dclt1xdb" path="res://scenes/features/storageChest.tscn" id="3_chest"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_th7oj"]
 size = Vector3(0.2, 3, 4)
