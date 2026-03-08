@@ -108,6 +108,7 @@ shape = SubResource("SphereShape3D_4flbx")
 transform = Transform3D(1, -2.08301e-08, -3.78156e-08, -3.87962e-08, -0.0492854, -0.998785, 1.8941e-08, 0.998785, -0.0492856, 2.22816e-09, -0.0764315, 0.489192)
 shape = SubResource("CylinderShape3D_4flbx")
 collision_mask = 4
+collide_with_areas = true
 
 [node name="PlacementRay" type="RayCast3D" parent="Body/Head/Camera3D"]
 target_position = Vector3(0, 0, -5)
