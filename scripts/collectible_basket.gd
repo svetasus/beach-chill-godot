@@ -20,9 +20,10 @@ func _on_body_entered(body: Node3D) -> void:
 			var item_color = body.data.particle_color
 			var body_path = body.get_path()
 			var spawn_pos = body.global_position
+			var money_value = body.data.get_value() if body.data.has_method("get_value") else 10
 			
 			# Debug to see why it thinks it's the server
-			print("Basket detected: ", body.name, " | Authority ID: ", thrower_id)
+			print("Basket detected: ", body.name, " | Authority ID: ", thrower_id, " | Value: ", money_value)
 			
 			# --- STOP NETWORK ERRORS ---
 			# We tell the synchronizer to shut up BEFORE the node dies
@@ -36,6 +37,23 @@ func _on_body_entered(body: Node3D) -> void:
 				body.freeze = true
 			body.hide()
 			
+			# --- MONEY LOGIC ---
+			if Global.split_money_in_team:
+				var players_container = get_node_or_null(Global.PLAYERS_CONTAINER_PATH)
+				if players_container:
+					var player_count = players_container.get_child_count()
+					if player_count > 0:
+						var split_money = int(money_value / player_count)
+						for player in players_container.get_children():
+							if player.has_method("receive_money"):
+								player.receive_money.rpc_id(player.name.to_int(), split_money)
+			else:
+				var players_container = get_node_or_null(Global.PLAYERS_CONTAINER_PATH)
+				if players_container:
+					var player_node = players_container.get_node_or_null(str(thrower_id))
+					if player_node and player_node.has_method("receive_money"):
+						player_node.receive_money.rpc_id(thrower_id, money_value)
+
 			# --- THE SYNC ---
 			# We pass all captured data so clients don't have to look it up
 			sync_collection.rpc(body_path, item_path, thrower_id, item_color, spawn_pos)

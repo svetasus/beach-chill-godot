@@ -27,6 +27,14 @@ offset_right = 1773.0
 offset_bottom = 335.0
 text = "JOIN"
 
+[node name="TeamMoneyCheckBox" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 1210.0
+offset_top = 400.0
+offset_right = 1400.0
+offset_bottom = 431.0
+text = "Split Money in Team"
+
 [node name="AddressEntry" type="LineEdit" parent="."]
 layout_mode = 0
 offset_left = 167.0

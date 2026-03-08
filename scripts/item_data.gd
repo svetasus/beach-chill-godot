@@ -20,3 +20,18 @@ class_name ItemData
 @export var is_tool: bool = false
 @export var is_collectible: bool = true
 #@export_file("*.tscn") var tool_scene_path: String # The "Address" of the brain
+
+enum ItemValueType { COMMON, RARE, EPIC, ARTIFACT }
+@export var item_value_type: ItemValueType = ItemValueType.COMMON
+
+func get_value() -> int:
+	match item_value_type:
+		ItemValueType.COMMON:
+			return 10
+		ItemValueType.RARE:
+			return 20
+		ItemValueType.EPIC:
+			return 40
+		ItemValueType.ARTIFACT:
+			return 60
+	return 10

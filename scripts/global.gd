@@ -12,3 +12,5 @@ const TENT_MARKERS_LEVEL_PATH: String = "Markers/TentSpawnMarkers"
 const TREASURE_MARKERS_LEVEL_PATH: String = "Markers/TreasureSpawnMarkers"
 
 const PLAYER_SCENE_PATH: String = "res://scenes/features/player.tscn"
+
+var split_money_in_team: bool = false

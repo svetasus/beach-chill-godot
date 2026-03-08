@@ -7,6 +7,11 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _on_host_button_pressed():
+	# Set global team money setting based on the check box
+	var checkbox = get_node_or_null("TeamMoneyCheckBox")
+	if checkbox:
+		Global.split_money_in_team = checkbox.button_pressed
+
 	# 1. Setup the server
 	var error = enet_peer.create_server(9999)
 	if error != OK:
