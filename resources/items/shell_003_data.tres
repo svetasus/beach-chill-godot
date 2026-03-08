@@ -15,4 +15,5 @@ mass = 1.0
 collision_size = Vector3(0.2, 0.2, 0.2)
 is_tool = false
 is_collectible = true
+item_value_type = 1
 metadata/_custom_type_script = "uid://cslspwbckibw1"

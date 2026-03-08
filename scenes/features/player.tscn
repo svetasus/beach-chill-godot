@@ -186,15 +186,6 @@ offset_bottom = 872.0
 script = ExtResource("2_g2els")
 slot_prefab = ExtResource("3_qhqgy")
 
-[node name="MoneyLabel" type="Label" parent="PlayerUI"]
-layout_mode = 1
-offset_left = 30.0
-offset_top = 30.0
-offset_right = 300.0
-offset_bottom = 80.0
-theme_override_font_sizes/font_size = 32
-text = "Money: $0"
-
 [node name="PanelContainer" type="PanelContainer" parent="PlayerUI/InventoryUI"]
 layout_mode = 1
 anchors_preset = 5
@@ -210,6 +201,18 @@ layout_mode = 2
 
 [node name="ItemList" type="HBoxContainer" parent="PlayerUI/InventoryUI/PanelContainer/ScrollContainer"]
 layout_mode = 2
+
+[node name="MoneyLabel" type="Label" parent="PlayerUI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -287.0
+offset_top = 121.0
+offset_right = -17.0
+offset_bottom = 171.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 32
+text = "Money: $0"
 
 [node name="NotificationArea" type="VBoxContainer" parent="PlayerUI"]
 anchors_preset = 10
