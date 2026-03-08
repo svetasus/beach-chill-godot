@@ -1,6 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://2oj6er2ejk2"]
+[gd_scene load_steps=12 format=3 uid="uid://2oj6er2ejk2"]
 
 [ext_resource type="Script" uid="uid://ey08dtmuv7t5" path="res://cart.gd" id="1_1uyiy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1uyiy"]
+size = Vector3(1, 0.2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_on5qa"]
+size = Vector3(0.2, 0.7, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vm11s"]
+size = Vector3(0.8, 0.6, 0.2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gioan"]
 transparency = 1
@@ -37,11 +46,29 @@ properties/2/spawn = true
 properties/2/replication_mode = 2
 
 [node name="Cart" type="CharacterBody3D" groups=["carts"]]
-collision_layer = 2
+collision_layer = 6
 collision_mask = 4
 script = ExtResource("1_1uyiy")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.148291, 0)
+shape = SubResource("BoxShape3D_1uyiy")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.356329, 0, 0)
+shape = SubResource("BoxShape3D_on5qa")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.406742, 0, 0)
+shape = SubResource("BoxShape3D_on5qa")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.525142)
+shape = SubResource("BoxShape3D_vm11s")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.465338)
+shape = SubResource("BoxShape3D_vm11s")
 
 [node name="Model" type="Node3D" parent="."]
 
