@@ -54,7 +54,7 @@ transform = Transform3D(1, 0, 0, 0, 0.144408, -0.989518, 0, 0.989518, 0.144408, 
 mesh = SubResource("CapsuleMesh_vm11s")
 
 [node name="HandleZone" type="Area3D" parent="."]
-collision_layer = 8
+collision_layer = 4
 collision_mask = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="HandleZone"]
@@ -62,7 +62,7 @@ transform = Transform3D(1, 0, 0, 0, 0.137237, -0.990538, 0, 0.990538, 0.137237, 
 shape = SubResource("CylinderShape3D_1uyiy")
 
 [node name="BasketZone" type="Area3D" parent="."]
-collision_layer = 8
+collision_layer = 4
 collision_mask = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BasketZone"]
