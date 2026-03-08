@@ -39,8 +39,28 @@ var jump_queued = false
 # Stores item names and their counts: {"Pink Shell": 3, "Old Coin": 1}
 var collection = {}
 
+var money: int = 0
+
 # Signal to tell the UI to refresh
 signal collection_updated(new_collection)
+
+func get_save_path() -> String:
+	return "user://player_money_" + str(name) + ".save"
+
+func save_money():
+	var file = FileAccess.open(get_save_path(), FileAccess.WRITE)
+	if file:
+		file.store_string(str(money))
+		file.close()
+
+func load_money():
+	var path = get_save_path()
+	if FileAccess.file_exists(path):
+		var file = FileAccess.open(path, FileAccess.READ)
+		if file:
+			var content = file.get_as_text()
+			money = content.to_int()
+			file.close()
 
 func _enter_tree() -> void:
 	pass
@@ -77,6 +97,8 @@ func _ready():
 		eye_color = Color(randf(), randf(), randf()) # Random RGB
 		apply_eye_color(eye_color)
 		
+		load_money()
+		update_money_ui()
 		
 	else:
 		# THIS IS SOMEONE ELSE: Turn off their camera on my screen
@@ -805,7 +827,43 @@ func _rpc_toggle_cart_grab(cart_path: NodePath):
 		else:
 			cart.grab_cart(my_player, my_id)
 			
-			
+
+@rpc("any_peer", "call_local")
+func receive_money(amount: int):
+	if not is_multiplayer_authority():
+		return
+	money += amount
+	save_money()
+	update_money_ui()
+	show_floating_money(amount)
+
+func update_money_ui():
+	var money_label = $PlayerUI/MoneyLabel
+	if money_label:
+		money_label.text = "Money: $" + str(money)
+
+func show_floating_money(amount: int):
+	var floating_label = Label.new()
+	floating_label.text = "+$" + str(amount)
+	floating_label.add_theme_color_override("font_color", Color(0.2, 1.0, 0.2)) # Green color
+	floating_label.add_theme_font_size_override("font_size", 24)
+
+	$PlayerUI.add_child(floating_label)
+
+	# Position it somewhat near the main money label
+	var start_pos = Vector2(20, 60)
+	if $PlayerUI/MoneyLabel:
+		start_pos = $PlayerUI/MoneyLabel.position + Vector2(0, 30)
+
+	floating_label.position = start_pos
+
+	var tween = create_tween()
+	# Float upwards and fade out
+	tween.tween_property(floating_label, "position", start_pos + Vector2(0, -50), 1.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(floating_label, "modulate:a", 0.0, 1.5)
+
+	tween.tween_callback(floating_label.queue_free)
+
 			
 @rpc("any_peer", "call_local")
 func _rpc_request_cart_deposit(cart_path: NodePath, item_path: NodePath):
