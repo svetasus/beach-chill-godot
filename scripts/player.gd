@@ -174,6 +174,14 @@ func _input(event):
 	if event.is_action_pressed("interact"): # You define "interact" in Input Map (e.g., 'E' key)
 		if not is_multiplayer_authority(): return
 		#print("pressed interact;")
+
+		# Allow releasing the cart anytime we are driving it
+		var carts = get_tree().get_nodes_in_group("carts")
+		for c in carts:
+			if c.get("driver_id") == multiplayer.get_unique_id():
+				_rpc_toggle_cart_grab.rpc_id(1, c.get_path())
+				return
+
 		if carried_item == null:
 			check_interaction()
 		else:
@@ -630,11 +638,17 @@ func update_action_ui():
 	var target_text = ""
 
 	# Are we currently driving the cart?
-	# We can check if any cart has us as driver, but let's check action context.
 	var currently_driving_cart = false
+	var carts = get_tree().get_nodes_in_group("carts")
+	for c in carts:
+		if c.get("driver_id") == multiplayer.get_unique_id():
+			currently_driving_cart = true
+			break
 
 	if current_ui != null and is_instance_valid(current_ui):
 		target_text = ""
+	elif currently_driving_cart:
+		target_text = "[E] Release Cart"
 	elif carried_item == null:
 		# Use your existing interaction check (Raycast or Shapecast)
 		var potential_item = get_interaction_target() 
@@ -648,9 +662,7 @@ func update_action_ui():
 				target_text = potential_item.get_interaction_text()
 			elif potential_item.has_meta("is_cart_handle"):
 				var cart_node = potential_item.get_meta("cart_node")
-				if cart_node.driver_id == multiplayer.get_unique_id():
-					target_text = "[E] Release Cart"
-				elif cart_node.driver_id == 0:
+				if cart_node.driver_id == 0:
 					target_text = "[E] Take Cart"
 	else:
 		var potential_target = get_interaction_target()
