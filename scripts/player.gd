@@ -817,4 +817,4 @@ func _rpc_request_cart_deposit(cart_path: NodePath, item_path: NodePath):
 	
 	if cart != null and item != null:
 		if cart.has_method("deposit_item_cart"):
-			cart.deposit_item(item)
+			cart.deposit_item_cart(item)
