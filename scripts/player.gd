@@ -249,7 +249,7 @@ func _input(event):
 		rotation_offset -= deg_to_rad(15)
 			
 	# NEW: Press Left Click (or a new 'throw' action) to yeet!
-	if event.is_action_pressed("throw") or event.is_action_pressed("ui_select"): 
+	if event.is_action_pressed("throw"):
 		if not is_multiplayer_authority(): return
 		if carried_item != null:
 			throw_item()
