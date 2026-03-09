@@ -1,6 +1,7 @@
-[gd_scene load_steps=27 format=3 uid="uid://7bo1jg4ha4dw"]
+[gd_scene load_steps=31 format=3 uid="uid://7bo1jg4ha4dw"]
 
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
+[ext_resource type="Texture2D" uid="uid://rkbpkmmptwbk" path="res://textures/tex_Water.jpg" id="2_42wun"]
 [ext_resource type="Material" uid="uid://cws2g2sjnwdf8" path="res://resources/materials/sand_material.tres" id="3_5p50t"]
 [ext_resource type="Material" uid="uid://bm4ar1a4q50vg" path="res://resources/materials/ocean_material.tres" id="3_6mrmg"]
 [ext_resource type="Texture2D" uid="uid://ob2klsiv7kbl" path="res://textures/sqrafr9ffb7idpdl257avlbgf1-92245fd9d4f1a7ef533bf428b54dec89.png" id="5_r84l6"]
@@ -9,6 +10,17 @@
 [ext_resource type="Resource" uid="uid://d22djgxra57mn" path="res://resources/spawn_profiles/treasure_profile_default.tres" id="8_uyy6t"]
 [ext_resource type="PackedScene" uid="uid://bssf45p8hu43w" path="res://scenes/features/playerTent.tscn" id="tent_scene"]
 [ext_resource type="Script" uid="uid://2f1qjvg30a2" path="res://scripts/tent_spawn_point.gd" id="tent_sp_script"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3j6ee"]
+albedo_color = Color(0.911744, 0.823696, 0.685418, 1)
+albedo_texture = ExtResource("1_66c2g")
+uv1_scale = Vector3(100, 100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_opwhv"]
+albedo_color = Color(1, 1, 1, 0.458824)
+albedo_texture = ExtResource("2_42wun")
+metallic = 0.5
+roughness = 0.1
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r84l6"]
 sky_top_color = Color(0, 0.635294, 1, 1)
@@ -49,11 +61,18 @@ albedo_color = Color(0.439216, 0.172549, 0.0470588, 0.32549)
 material = SubResource("StandardMaterial3D_5p50t")
 size = Vector2(150, 150)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_um12m"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dqc62"]
 albedo_texture = ExtResource("1_66c2g")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uyy6t"]
-albedo_texture = ExtResource("1_66c2g")
+[sub_resource type="CylinderMesh" id="CylinderMesh_6mrmg"]
+material = SubResource("StandardMaterial3D_dqc62")
+top_radius = 5.0
+bottom_radius = 5.0
+height = 1.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_dqc62"]
+height = 1.0
+radius = 5.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_5p50t"]
 material = ExtResource("3_6mrmg")
@@ -89,6 +108,18 @@ size = Vector3(10, 4, 10)
 
 [node name="Level01Default" type="Node3D"]
 
+[node name="SandFloor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.999994, -0.00349065, 0, 0.00349065, 0.999994, 0, -0.5, 0)
+visible = false
+size = Vector3(200, 1, 200)
+material = SubResource("StandardMaterial3D_3j6ee")
+
+[node name="Ocean" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+visible = false
+size = Vector3(500, 0.5, 500)
+material = SubResource("StandardMaterial3D_opwhv")
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 30.1693, 0)
 light_energy = 1.5
@@ -98,14 +129,12 @@ shadow_enabled = true
 environment = SubResource("Environment_t1vjb")
 
 [node name="InvWalls" type="StaticBody3D" parent="."]
-visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InvWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -102.829, 12.0481, 0)
 shape = SubResource("BoxShape3D_6qn38")
 
 [node name="InvFloor" type="StaticBody3D" parent="InvWalls"]
-visible = false
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InvWalls/InvFloor"]
@@ -113,7 +142,6 @@ transform = Transform3D(1, 0, 0, 0, 0.999994, -0.00349065, 0, 0.00349065, 0.9999
 shape = SubResource("BoxShape3D_66c2g")
 
 [node name="Floor" type="Node3D" parent="."]
-visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.65, 0)
@@ -126,46 +154,42 @@ mesh = SubResource("PlaneMesh_r84l6")
 [node name="LevelDesign" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.80351)
 
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="LevelDesign"]
-use_collision = true
-collision_mask = 0
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelDesign"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.2444)
+mesh = SubResource("CylinderMesh_6mrmg")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="LevelDesign/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10.2137)
-size = Vector3(20, 2, 1)
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="LevelDesign"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.2985, 0.255053, 10.2444)
+mesh = SubResource("CylinderMesh_6mrmg")
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="LevelDesign/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.65, 9.506)
-radius = 30.0
-height = 1.0
-sides = 32
-material = SubResource("StandardMaterial3D_um12m")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelDesign"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.2333)
+shape = SubResource("CylinderShape3D_dqc62")
 
-[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="LevelDesign/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.10649, -0.479753, 13.2738)
-radius = 10.0
-material = SubResource("StandardMaterial3D_uyy6t")
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="LevelDesign"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.33552, 0.252855, 10.2333)
+shape = SubResource("CylinderShape3D_dqc62")
 
 [node name="Markers" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.822292, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 
 [node name="PlayerSpawnMarkers" type="Node3D" parent="Markers"]
 
 [node name="TentSpawnMarkers" type="Node3D" parent="Markers"]
 
 [node name="Marker3D" type="Marker3D" parent="Markers/TentSpawnMarkers"]
-transform = Transform3D(-0.854305, 0, -0.519773, 0, 1, 0, 0.519773, 0, -0.854305, 7.07259, 1.05741, 10.108)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.8649, 0, -3.19676)
 script = ExtResource("tent_sp_script")
 tent_scene = ExtResource("tent_scene")
 
 [node name="Marker3D2" type="Marker3D" parent="Markers/TentSpawnMarkers"]
-transform = Transform3D(0.228657, 0, -0.973507, 0, 1, 0, 0.973507, 0, 0.228657, 9.91484, 1.05741, 0.103615)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.7755, 0, -19.7488)
 script = ExtResource("tent_sp_script")
 tent_scene = ExtResource("tent_scene")
 
-[node name="Ocean" type="Node3D" parent="."]
+[node name="Ocean2" type="Node3D" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ocean"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ocean2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 mesh = SubResource("PlaneMesh_5p50t")
 

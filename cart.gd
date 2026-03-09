@@ -39,9 +39,8 @@ func grab_cart(player: Node3D, peer_id: int):
 	if has_node("MultiplayerSynchronizer"):
 		$MultiplayerSynchronizer.set_multiplayer_authority(peer_id)
 
-	# Disable cart collision so it doesn't push the player around while attached
-	if has_node("CollisionShape3D"):
-		$CollisionShape3D.disabled = true
+	# Disable cart collision with player so it doesn't push the player around while attached
+	set_collision_mask_value(2, false)
 
 	# Notify clients
 	_rpc_sync_driver.rpc(peer_id, player.get_path())
@@ -57,9 +56,8 @@ func release_cart():
 	if has_node("MultiplayerSynchronizer"):
 		$MultiplayerSynchronizer.set_multiplayer_authority(1)
 
-	# Re-enable collision
-	if has_node("CollisionShape3D"):
-		$CollisionShape3D.disabled = false
+	# Re-enable collision with player
+	set_collision_mask_value(2, true)
 
 	_rpc_sync_driver.rpc(0, NodePath())
 
@@ -68,12 +66,10 @@ func _rpc_sync_driver(new_id: int, player_path: NodePath):
 	driver_id = new_id
 	if new_id != 0 and not player_path.is_empty():
 		driver_node = get_node_or_null(player_path)
-		if has_node("CollisionShape3D"):
-			$CollisionShape3D.disabled = true
+		set_collision_mask_value(2, false)
 	else:
 		driver_node = null
-		if has_node("CollisionShape3D"):
-			$CollisionShape3D.disabled = false
+		set_collision_mask_value(2, true)
 
 func _physics_process(delta):
 	if driver_node and is_instance_valid(driver_node):
