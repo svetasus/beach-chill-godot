@@ -15,6 +15,7 @@ res://scenes/models/visShell_003.tscn
 res://scenes/features/player.tscn
 res://scenes/features/storageChest.tscn
 res://scenes/features/playerTent.tscn
-res://scenes/models/visShell_001.tscn
 res://scenes/models/visArtifact_001.tscn
 res://scenes/models/visShell_002.tscn
+res://scenes/models/visShell_001.tscn
+res://scenes/levels/GreyBoxLevel.tscn
