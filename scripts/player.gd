@@ -723,14 +723,22 @@ func update_action_ui():
 func get_interaction_target():
 	# Replace 'shapecast' with the name of your RayCast3D or ShapeCast3D node
 	if $Body/Head/Camera3D/InteractionShape.is_colliding():
-		var collider = $Body/Head/Camera3D/InteractionShape.get_collider(0)
-		# Only return it if it's an item we can actually pick up
-		#print("Shapecast met ", shapecast.get_collider(0).name, " on Layer: ", shapecast.get_collider(0).collision_layer)
-		if collider is Item or collider.has_method("deposit_item") or collider.has_method("get_interaction_text"):
-			return collider
-		# Specific checks for cart metadata
-		if collider.has_meta("is_cart_handle") or collider.has_meta("is_cart_basket"):
-			return collider
+		var collision_count = $Body/Head/Camera3D/InteractionShape.get_collision_count()
+
+		# Pass 1: Prioritize items first to prevent large zones (like cart baskets) from blocking them
+		for i in range(collision_count):
+			var collider = $Body/Head/Camera3D/InteractionShape.get_collider(i)
+			if collider is Item:
+				return collider
+
+		# Pass 2: Fallback to other interactables
+		for i in range(collision_count):
+			var collider = $Body/Head/Camera3D/InteractionShape.get_collider(i)
+			if collider.has_method("deposit_item") or collider.has_method("get_interaction_text"):
+				return collider
+			# Specific checks for cart metadata
+			if collider.has_meta("is_cart_handle") or collider.has_meta("is_cart_basket"):
+				return collider
 
 	return null
 
