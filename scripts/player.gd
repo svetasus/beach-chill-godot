@@ -285,7 +285,7 @@ func check_interaction():
 			if carried_item != null:
 				var cart_node = target.get_meta("cart_node")
 				_rpc_request_cart_deposit.rpc_id(1, cart_node.get_path(), carried_item.get_path())
-				carried_item = null
+				drop_item()
 				
 		# NEW GUARD: If someone else is already the boss of this item and it's 'frozen' (held), ignore it!
 		elif target is Item and target.freeze == true:

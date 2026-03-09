@@ -201,25 +201,11 @@ func lock_to_cart(cart: Node3D):
 	
 	locked_to_cart = cart
 	
-	# 1. Turn off physics calculations
-	freeze = true 
-	
-	# 2. (Optional but recommended) Turn off collision so players don't trip on the pile
-	if has_node("CollisionShape3D"):
-		$CollisionShape3D.disabled = true
-		
-	# 3. Calculate exactly where it is sitting relative to the cart right now
-	cart_offset = cart.to_local(global_position)
-	rotation_offset = cart.global_transform.basis.inverse() * global_transform.basis
-	
 # Called by the Server when removed from the cart
 func unlock_from_cart():
 	if not multiplayer.is_server(): return
 	
 	locked_to_cart = null
-	freeze = false
-	if has_node("CollisionShape3D"):
-		$CollisionShape3D.disabled = false
 		
 @rpc("any_peer", "call_local")
 func request_unlock_from_cart():
@@ -230,10 +216,7 @@ func request_unlock_from_cart():
 			unlock_from_cart()
 
 func _physics_process(delta):
-	# If we are in a cart, forcefully glue ourselves to it every frame
-	if multiplayer.is_server() and locked_to_cart and is_instance_valid(locked_to_cart):
-		global_position = locked_to_cart.to_global(cart_offset)
-		global_basis = locked_to_cart.global_transform.basis * rotation_offset
+	pass
 
 
 # --- 6. CLEANUP ---
