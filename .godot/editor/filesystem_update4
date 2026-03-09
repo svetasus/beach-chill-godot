@@ -19,3 +19,6 @@ res://scenes/models/visArtifact_001.tscn
 res://scenes/models/visShell_002.tscn
 res://scenes/models/visShell_001.tscn
 res://scenes/levels/GreyBoxLevel.tscn
+res://scenes/features/storageUI.tscn
+res://scenes/features/UI/storageUI.tscn
+res://scripts/player.gd

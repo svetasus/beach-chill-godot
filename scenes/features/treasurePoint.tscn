@@ -44,6 +44,7 @@ mesh = SubResource("SphereMesh_4k1pr")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10.4829)
+visible = false
 mesh = SubResource("BoxMesh_4k1pr")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
