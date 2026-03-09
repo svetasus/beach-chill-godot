@@ -1,8 +1,8 @@
+MeshInstance3D
 CSGBox3D
 CSGCylinder3D
 CSGCombiner3D
 CollisionShape3D
-MeshInstance3D
 Node3D
 MultiplayerSynchronizer
 Area3D
@@ -12,4 +12,3 @@ Button
 GridContainer
 Panel
 Control
-StaticBody3D

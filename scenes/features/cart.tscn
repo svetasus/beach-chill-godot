@@ -1,38 +1,52 @@
-[gd_scene load_steps=12 format=3 uid="uid://2oj6er2ejk2"]
+[gd_scene load_steps=16 format=3 uid="uid://2oj6er2ejk2"]
 
 [ext_resource type="Script" uid="uid://ey08dtmuv7t5" path="res://cart.gd" id="1_1uyiy"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1uyiy"]
-size = Vector3(1, 0.2, 1)
+size = Vector3(0.7, 0.1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_on5qa"]
-size = Vector3(0.2, 0.7, 1)
+size = Vector3(0.1, 0.5, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vm11s"]
-size = Vector3(0.8, 0.6, 0.2)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gioan"]
-transparency = 1
-albedo_color = Color(0.505882, 0.376471, 0.556863, 0.545098)
-
-[sub_resource type="BoxMesh" id="BoxMesh_on5qa"]
-material = SubResource("StandardMaterial3D_gioan")
-size = Vector3(0.7, 0.5, 1)
+size = Vector3(0.8, 0.5, 0.1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_on5qa"]
-albedo_color = Color(0.505882, 0.376471, 0.556863, 1)
+albedo_color = Color(0.505882, 0.521569, 0.184314, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vm11s"]
 material = SubResource("StandardMaterial3D_on5qa")
-radius = 0.1
-height = 0.75
+radius = 0.05
+height = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1uyiy"]
+albedo_color = Color(0.505882, 0.521569, 0.184314, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_1uyiy"]
+material = SubResource("StandardMaterial3D_1uyiy")
+size = Vector3(0.1, 0.5, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gioan"]
+albedo_color = Color(0.505882, 0.521569, 0.184314, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gioan"]
+material = SubResource("StandardMaterial3D_gioan")
+size = Vector3(0.8, 0.5, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vm11s"]
+size = Vector3(0.7, 0.1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1uyiy"]
+top_radius = 0.2
+bottom_radius = 0.2
+height = 0.1
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_1uyiy"]
-height = 0.5
-radius = 0.2
+height = 0.57
+radius = 0.25
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gioan"]
-size = Vector3(0.5, 0.5, 0.7)
+size = Vector3(0.6, 0.5, 0.8)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1uyiy"]
 properties/0/path = NodePath(".:global_position")
@@ -51,41 +65,69 @@ collision_mask = 4
 script = ExtResource("1_1uyiy")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.148291, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25998, 0)
 shape = SubResource("BoxShape3D_1uyiy")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.356329, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.353585, 0, 0)
 shape = SubResource("BoxShape3D_on5qa")
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.406742, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.356015, 0, 0)
 shape = SubResource("BoxShape3D_on5qa")
 
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.525142)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.490676)
 shape = SubResource("BoxShape3D_vm11s")
 
 [node name="CollisionShape3D5" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.465338)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.472095)
 shape = SubResource("BoxShape3D_vm11s")
 
 [node name="Model" type="Node3D" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
-mesh = SubResource("BoxMesh_on5qa")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 0.144408, -0.989518, 0, 0.989518, 0.144408, 0, 0.157122, 0.827062)
+[node name="Mesh_Handle1" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 0.144408, -0.989518, 0, 0.989518, 0.144408, -0.209291, 0.157122, 0.773844)
 mesh = SubResource("CapsuleMesh_vm11s")
+
+[node name="Mesh_Handle2" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 0.144408, -0.989518, 0, 0.989518, 0.144408, 0.209, 0.157, 0.773782)
+mesh = SubResource("CapsuleMesh_vm11s")
+
+[node name="Mesh_Left_Wall" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.351068, 0, 0)
+mesh = SubResource("BoxMesh_1uyiy")
+
+[node name="Mesh_Right_Wall" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.356041, 0, 0)
+mesh = SubResource("BoxMesh_1uyiy")
+
+[node name="Mesh_Front_Wall" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.485206)
+mesh = SubResource("BoxMesh_gioan")
+
+[node name="Mesh_Back_Wall" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.468704)
+mesh = SubResource("BoxMesh_gioan")
+
+[node name="Mesh_Floor" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.264133, 0)
+mesh = SubResource("BoxMesh_vm11s")
+
+[node name="Mesh_Tire_Right" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.379428, -0.229818, 0.421948)
+mesh = SubResource("CylinderMesh_1uyiy")
+
+[node name="Mesh_Tire_Left" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.379, -0.23, 0.422)
+mesh = SubResource("CylinderMesh_1uyiy")
 
 [node name="HandleZone" type="Area3D" parent="."]
 collision_layer = 4
 collision_mask = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="HandleZone"]
-transform = Transform3D(1, 0, 0, 0, 0.137237, -0.990538, 0, 0.990538, 0.137237, 0, 0.175595, 1.01196)
+transform = Transform3D(1, 0, 0, 0, 0.137237, -0.990538, 0, 0.990538, 0.137237, 0, 0.175595, 0.863975)
 shape = SubResource("CylinderShape3D_1uyiy")
 
 [node name="BasketZone" type="Area3D" parent="."]

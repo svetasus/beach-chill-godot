@@ -4,14 +4,14 @@
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="2_vxkq1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxkq1"]
-albedo_color = Color(1, 0.654902, 1, 1)
+albedo_color = Color(1, 0.654902, 0.329412, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vxkq1"]
 material = SubResource("StandardMaterial3D_vxkq1")
-size = Vector3(2, 1, 1)
+size = Vector3(1.5, 1, 0.75)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vxkq1"]
-size = Vector3(2, 1, 1)
+size = Vector3(1.5, 1, 0.75)
 
 [node name="StorageChest" type="StaticBody3D" node_paths=PackedStringArray("spawn_point")]
 collision_layer = 4
