@@ -23,3 +23,4 @@ res://scenes/levels/GreyBoxLevel.tscn
 res://scenes/features/storageUI.tscn
 res://scenes/features/tentRulesBlock.tscn
 res://scenes/features/UI/storageUI.tscn
+res://scripts/player.gd

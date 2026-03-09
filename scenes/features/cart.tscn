@@ -61,26 +61,26 @@ properties/2/replication_mode = 2
 
 [node name="Cart" type="CharacterBody3D" groups=["carts"]]
 collision_layer = 6
-collision_mask = 4
+collision_mask = 5
 script = ExtResource("1_1uyiy")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionS_Floor" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25998, 0)
 shape = SubResource("BoxShape3D_1uyiy")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+[node name="CollisionS_Right_Wall" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.353585, 0, 0)
 shape = SubResource("BoxShape3D_on5qa")
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+[node name="CollisionS_Left_Wall" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.356015, 0, 0)
 shape = SubResource("BoxShape3D_on5qa")
 
-[node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
+[node name="CollisionS_Front_Wall" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.490676)
 shape = SubResource("BoxShape3D_vm11s")
 
-[node name="CollisionShape3D5" type="CollisionShape3D" parent="."]
+[node name="CollisionS_Back_Wall" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.472095)
 shape = SubResource("BoxShape3D_vm11s")
 
