@@ -64,6 +64,7 @@ func _enter_tree() -> void:
 	pass
 
 func _ready():
+	placement_ray.set_collision_mask_value(4, true) # Layer 8 for tent collision bounds
 	
 	# WAIT for the spawner to actually name the node (e.g., "1" or "2384923")
 	# If the name is "Player" or "@Player", authority will fail.
@@ -711,13 +712,19 @@ func update_action_ui():
 				if tool and tool.can_interact_with(current_treasure):
 					target_text = "[E] " + tool.get_action_name()
 				else:
-					target_text = "[E] Drop " + carried_item.display_name
+					if can_place:
+						target_text = "[E] Drop " + carried_item.display_name
+					else:
+						target_text = "You can't place it here"
 		else:
 			var tool = get_held_tool()
 			if tool and tool.can_interact_with(current_treasure):
 				target_text = "[E] " + tool.get_action_name()
 			else:
-				target_text = "[E] Drop " + carried_item.display_name
+				if can_place:
+					target_text = "[E] Drop " + carried_item.display_name
+				else:
+					target_text = "You can't place it here"
 
 	# Only update if the text changed to avoid flickering
 	if action_label.text != target_text:
