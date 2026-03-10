@@ -21,8 +21,6 @@ const DIG_DIST = 1.5
 var rotation_offset: float = 0.0
 @export var rotation_speed: float = 0.5 # How fast it rotates with scroll
 
-@export var chest_ui_scene: PackedScene # Drag your new ChestUI.tscn here!
-
 var current_ui: Control = null
 
 var is_typing = false
@@ -274,7 +272,11 @@ func check_interaction():
 			
 			# Scenario B: Our hands are empty -> OPEN UI
 			else:
-				open_chest_ui(target)
+				if target.has_method("interact"):
+					target.interact(self)
+
+		elif target.has_method("interact"):
+			target.interact(self)
 		
 		# Specific logic for carts
 		elif target.has_meta("is_cart_handle"):
@@ -293,8 +295,6 @@ func check_interaction():
 			return
 
 		# ... rest of your existing logic (Crates, etc.)
-		elif target.has_method("interact"):
-			target.interact(self)
 		elif target.is_in_group("interactables"):
 			pick_up(target)
 
@@ -678,10 +678,12 @@ func update_action_ui():
 		if potential_item:
 			if potential_item is Item:
 				target_text = "[E] Take " + potential_item.display_name
-			elif potential_item.has_method("deposit_item"):
-				target_text = "[E] Open Storage"
 			elif potential_item.has_method("get_interaction_text"):
 				target_text = potential_item.get_interaction_text()
+			elif potential_item.has_method("deposit_item"):
+				target_text = "[E] Open Storage"
+			elif potential_item.has_method("interact"):
+				target_text = "[E] Interact"
 			elif potential_item.has_meta("is_cart_handle"):
 				var cart_node = potential_item.get_meta("cart_node")
 				if cart_node.driver_id == 0:
@@ -734,7 +736,7 @@ func get_interaction_target():
 		# Pass 2: Fallback to other interactables
 		for i in range(collision_count):
 			var collider = $Body/Head/Camera3D/InteractionShape.get_collider(i)
-			if collider.has_method("deposit_item") or collider.has_method("get_interaction_text"):
+			if collider.has_method("deposit_item") or collider.has_method("get_interaction_text") or collider.has_method("interact"):
 				return collider
 			# Specific checks for cart metadata
 			if collider.has_meta("is_cart_handle") or collider.has_meta("is_cart_basket"):
@@ -800,24 +802,17 @@ func _rpc_request_deposit(chest_path: NodePath, item_path: NodePath):
 		
 		
 		
-func open_chest_ui(chest_node: Node3D):
+func open_ui(ui_instance: Control):
 	# Don't open it if it's already open
 	if current_ui != null and is_instance_valid(current_ui):
+		ui_instance.queue_free()
 		return
 		
-	if chest_ui_scene == null:
-		print("ERROR: chest_ui_scene is not assigned in the inspector!")
-		return
-		
-	# 1. Instantiate the UI
-	current_ui = chest_ui_scene.instantiate()
+	# 1. Assign the UI
+	current_ui = ui_instance
 	add_child(current_ui)
 	
-	# 2. Pass the chest reference to the UI
-	if current_ui.has_method("setup"):
-		current_ui.setup(chest_node)
-		
-	# 3. Unlock the mouse so the player can click the grid
+	# 2. Unlock the mouse so the player can click the grid
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
