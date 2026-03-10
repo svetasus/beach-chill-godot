@@ -14,13 +14,15 @@ func interact(player: Node3D):
 		return
 
 	var ui = shop_ui_scene.instantiate()
-	if ui.has_method("setup"):
-		ui.setup(self, player)
 
 	if player.has_method("open_ui"):
 		player.open_ui(ui)
 	else:
 		print("ERROR: player does not have open_ui method!")
+		return
+
+	if ui.has_method("setup"):
+		ui.setup(self, player)
 
 # The UI calls this RPC when a player clicks a buy button AND has already deducted money
 @rpc("any_peer", "call_local", "reliable")
@@ -59,3 +61,6 @@ func _spawn_physical_item(path: String):
 	if is_instance_valid(new_item):
 		new_item.data_path = path
 		print("SERVER: Item bought and spawned successfully.")
+
+func get_interaction_text() -> String:
+	return "[E] Open Shop"

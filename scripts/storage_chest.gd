@@ -15,13 +15,15 @@ func interact(player: Node3D):
 		return
 
 	var ui = chest_ui_scene.instantiate()
-	if ui.has_method("setup"):
-		ui.setup(self)
 
 	if player.has_method("open_ui"):
 		player.open_ui(ui)
 	else:
 		print("ERROR: player does not have open_ui method!")
+		return
+
+	if ui.has_method("setup"):
+		ui.setup(self)
 
 # --- 1. DEPOSITING (SERVER ONLY) ---
 
@@ -80,3 +82,6 @@ func _spawn_physical_item(path: String):
 	if is_instance_valid(new_item):
 		new_item.data_path = path
 		print("SERVER: Item extracted and spawned successfully.")
+
+func get_interaction_text() -> String:
+	return "[E] Open Storage"

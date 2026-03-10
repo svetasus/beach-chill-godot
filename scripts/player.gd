@@ -274,6 +274,9 @@ func check_interaction():
 			else:
 				if target.has_method("interact"):
 					target.interact(self)
+
+		elif target.has_method("interact"):
+			target.interact(self)
 		
 		# Specific logic for carts
 		elif target.has_meta("is_cart_handle"):
@@ -292,8 +295,6 @@ func check_interaction():
 			return
 
 		# ... rest of your existing logic (Crates, etc.)
-		elif target.has_method("interact"):
-			target.interact(self)
 		elif target.is_in_group("interactables"):
 			pick_up(target)
 
@@ -677,10 +678,12 @@ func update_action_ui():
 		if potential_item:
 			if potential_item is Item:
 				target_text = "[E] Take " + potential_item.display_name
-			elif potential_item.has_method("deposit_item"):
-				target_text = "[E] Open Storage"
 			elif potential_item.has_method("get_interaction_text"):
 				target_text = potential_item.get_interaction_text()
+			elif potential_item.has_method("deposit_item"):
+				target_text = "[E] Open Storage"
+			elif potential_item.has_method("interact"):
+				target_text = "[E] Interact"
 			elif potential_item.has_meta("is_cart_handle"):
 				var cart_node = potential_item.get_meta("cart_node")
 				if cart_node.driver_id == 0:
@@ -733,7 +736,7 @@ func get_interaction_target():
 		# Pass 2: Fallback to other interactables
 		for i in range(collision_count):
 			var collider = $Body/Head/Camera3D/InteractionShape.get_collider(i)
-			if collider.has_method("deposit_item") or collider.has_method("get_interaction_text"):
+			if collider.has_method("deposit_item") or collider.has_method("get_interaction_text") or collider.has_method("interact"):
 				return collider
 			# Specific checks for cart metadata
 			if collider.has_meta("is_cart_handle") or collider.has_meta("is_cart_basket"):
