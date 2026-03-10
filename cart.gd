@@ -19,6 +19,10 @@ func deposit_item_cart(item_node: Node3D):
 	if not inventory_nodes.has(item_node):
 		inventory_nodes.append(item_node)
 		
+		if item_node is RigidBody3D:
+			item_node.linear_damp = 15.0
+			item_node.angular_damp = 15.0
+
 		if item_node.has_method("lock_to_cart"):
 			item_node.lock_to_cart(self)
 			
@@ -110,5 +114,10 @@ func _physics_process(delta):
 func remove_item(item_node: Node3D):
 	if inventory_nodes.has(item_node):
 		inventory_nodes.erase(item_node)
+
+		if item_node is RigidBody3D:
+			item_node.linear_damp = 2.0
+			item_node.angular_damp = 2.0
+
 		if item_node.has_method("unlock_from_cart"):
 			item_node.unlock_from_cart()
