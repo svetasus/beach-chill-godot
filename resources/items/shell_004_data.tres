@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://gmupw1edgnua"]
+
+[ext_resource type="Texture2D" uid="uid://dolw6p3qgok7e" path="res://textures/shell_004.png" id="1_6b0v6"]
+[ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/item_data.gd" id="1_85o7k"]
+[ext_resource type="PackedScene" uid="uid://cas7jbmaov5lg" path="res://scenes/models/visShell_004.tscn" id="2_yyrtc"]
+
+[resource]
+script = ExtResource("1_85o7k")
+name = "shell_004"
+display_name = "Pup Star"
+item_icon = ExtResource("1_6b0v6")
+particle_color = Color(0.654902, 0.317647, 0.905882, 1)
+scene = ExtResource("2_yyrtc")
+mass = 1.0
+collision_size = Vector3(0.2, 0.2, 0.2)
+is_tool = false
+is_collectible = true
+item_value_type = 1
+metadata/_custom_type_script = "uid://cslspwbckibw1"

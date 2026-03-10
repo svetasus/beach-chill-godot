@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" uid="uid://bc4e0nomewrwc" path="res://scripts/tent_rules_block.gd" id="1_rules"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_block"]
-size = Vector3(0.5, 0.5, 0.5)
+[sub_resource type="SphereShape3D" id="SphereShape3D_68jmj"]
+radius = 0.2
 
-[sub_resource type="BoxMesh" id="BoxMesh_block"]
-size = Vector3(0.5, 0.5, 0.5)
+[sub_resource type="SphereMesh" id="SphereMesh_ukynb"]
+radius = 0.2
+height = 0.4
 
 [node name="TentRulesBlock" type="StaticBody3D"]
 collision_layer = 4
@@ -14,13 +15,14 @@ collision_mask = 6
 script = ExtResource("1_rules")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("BoxShape3D_block")
+shape = SubResource("SphereShape3D_68jmj")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_block")
+mesh = SubResource("SphereMesh_ukynb")
 
 [node name="RulesLabel" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.178252, 0.189139)
 pixel_size = 0.01
 text = "Private"
+font_size = 22
 outline_size = 5

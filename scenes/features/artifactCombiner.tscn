@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bio5ygciicsu6"]
+[gd_scene load_steps=11 format=3 uid="uid://bio5ygciicsu6"]
 
 [ext_resource type="Script" uid="uid://dkfnbyms2yfqe" path="res://scripts/artifact_combiner.gd" id="1_f0cbo"]
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="2_3jmie"]
@@ -17,6 +17,14 @@ albedo_color = Color(0.427451, 0.239216, 0.247059, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_ipgce"]
 material = SubResource("StandardMaterial3D_ehuat")
 size = Vector3(2, 0.2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n5n7q"]
+albedo_color = Color(0.498039, 0.294118, 0.333333, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_rihgq"]
+material = SubResource("StandardMaterial3D_n5n7q")
+radius = 0.05
+height = 0.6
 
 [node name="ArtifactCombiner" type="StaticBody3D" node_paths=PackedStringArray("spawn_point")]
 collision_mask = 0
@@ -40,8 +48,34 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.706019, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_w5t2g")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Name" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28179, 0)
+billboard = 1
+text = "Item Combiner
+"
+font_size = 40
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
 mesh = SubResource("BoxMesh_ipgce")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.846289, 0.621076, -0.843019)
+mesh = SubResource("CapsuleMesh_rihgq")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.846, 0.621514, 0.843)
+mesh = SubResource("CapsuleMesh_rihgq")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.846, 0.621514, -0.843)
+mesh = SubResource("CapsuleMesh_rihgq")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.846, 0.621514, 0.843)
+mesh = SubResource("CapsuleMesh_rihgq")
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

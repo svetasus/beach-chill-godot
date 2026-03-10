@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://cas7jbmaov5lg"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_7oq0p"]
+height = 0.1
+radius = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wyoci"]
+albedo_color = Color(0.654902, 0.317647, 0.905882, 1)
+emission_enabled = true
+emission = Color(0.654902, 0.317647, 0.905882, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_wyoci"]
+material = SubResource("StandardMaterial3D_wyoci")
+size = Vector3(0.3, 0.1, 0.3)
+
+[node name="Shell004" type="Node3D"]
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
+shape = SubResource("CylinderShape3D_7oq0p")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Model"]
+mesh = SubResource("BoxMesh_wyoci")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(0.677569, 0, -0.735459, 0, 1, 0, 0.735459, 0, 0.677569, 0, 0, 0)
+mesh = SubResource("BoxMesh_wyoci")

@@ -1,6 +1,7 @@
-[gd_scene load_steps=18 format=3 uid="uid://bssf45p8hu43w"]
+[gd_scene load_steps=21 format=3 uid="uid://bssf45p8hu43w"]
 
 [ext_resource type="Script" uid="uid://b6rrpow7wx152" path="res://scripts/player_tent.gd" id="1_th7oj"]
+[ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="2_52xpw"]
 [ext_resource type="PackedScene" uid="uid://cxwxxb12345" path="res://scenes/features/tentRulesBlock.tscn" id="2_rules"]
 [ext_resource type="PackedScene" uid="uid://bupw5dclt1xdb" path="res://scenes/features/storageChest.tscn" id="3_chest"]
 
@@ -57,12 +58,19 @@ size = Vector3(4, 2, 4)
 [sub_resource type="BoxMesh" id="BoxMesh_th7oj"]
 size = Vector3(0.1, 0.1, 4)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_guw58"]
+albedo_texture = ExtResource("2_52xpw")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fuu75"]
+material = SubResource("StandardMaterial3D_guw58")
+size = Vector2(3.8, 3.8)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_52xpw"]
 albedo_color = Color(0.571116, 0.284561, 0.225404, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_guw58"]
 material = SubResource("StandardMaterial3D_52xpw")
-size = Vector3(1, 0.1, 1)
+size = Vector3(1, 0.05, 0.5)
 
 [node name="PlayerTent" type="Node3D"]
 script = ExtResource("1_th7oj")
@@ -108,6 +116,7 @@ replication_config = SubResource("SceneReplicationConfig_th7oj")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 0)
 
 [node name="Tent" type="Node3D" parent="Model"]
+visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Model/Tent"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
@@ -126,7 +135,7 @@ mesh = SubResource("BoxMesh_52xpw")
 skeleton = NodePath("../..")
 
 [node name="Borders" type="Node3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.118976, 0)
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Model/Borders"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.83463, -3.5, 0)
@@ -152,12 +161,16 @@ layers = 8
 mesh = SubResource("BoxMesh_th7oj")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.25, 1.146)
+[node name="Floor" type="MeshInstance3D" parent="Model/Borders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0275126, -3.53153, 0)
+mesh = SubResource("PlaneMesh_fuu75")
+
+[node name="Carpet" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.41924, 1.54287)
 mesh = SubResource("BoxMesh_guw58")
 
 [node name="storageMarker" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.764572, 1, -1.2792)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.14379, 0.653087, -1.52094)
 
 [node name="StorageChest" parent="storageMarker" instance=ExtResource("3_chest")]
 
@@ -169,7 +182,7 @@ font_size = 28
 outline_size = 10
 
 [node name="TentRulesBlock" parent="." instance=ExtResource("2_rules")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2083, 0.8, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.36615, 0.54951, -1.41484)
 
 [node name="TentBarrier" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 2)

@@ -32,4 +32,10 @@ mesh = SubResource("TorusMesh_difg4")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.661099, 0)
 shape = SubResource("CylinderShape3D_mii44")
 
+[node name="Name" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58386, 0)
+billboard = 1
+text = "Sell Basket"
+font_size = 40
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

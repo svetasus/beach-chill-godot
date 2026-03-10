@@ -8,17 +8,17 @@ albedo_color = Color(0.345098, 0.360784, 1, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_okkok"]
 material = SubResource("StandardMaterial3D_nceh7")
-radius = 0.08
-height = 0.8
+radius = 0.05
+height = 0.6
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_ykuq6"]
-top_radius = 0.2
+top_radius = 0.15
 bottom_radius = 0.05
-height = 0.1
+height = 0.08
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nceh7"]
-radius = 0.22
-height = 1.13176
+radius = 0.15
+height = 0.8
 
 [node name="ToolMetalDetector" type="Node3D"]
 script = ExtResource("1_rnwdl")
@@ -26,17 +26,17 @@ script = ExtResource("1_rnwdl")
 [node name="Model" type="Node3D" parent="."]
 
 [node name="MeshHandle" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, -0.000472784, -0.325622, -0.275736)
+transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, -0.000472784, -0.325622, -0.35424)
 mesh = SubResource("CapsuleMesh_okkok")
 skeleton = NodePath("../MeshHead")
 
 [node name="MeshHead" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, 0, -0.391852, -0.66)
+transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, 0, -0.391852, -0.639929)
 mesh = SubResource("CylinderMesh_ykuq6")
 skeleton = NodePath("../MeshHandle")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 0.253606, -0.967308, 0, 0.967308, 0.253606, -0.00140071, -0.303977, -0.344117)
+transform = Transform3D(1, 0, 0, 0, 0.253606, -0.967308, 0, 0.967308, 0.253606, -0.00140071, -0.330496, -0.400304)
 shape = SubResource("CapsuleShape3D_nceh7")
 
 [node name="Functionality" type="Node3D" parent="."]

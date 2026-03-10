@@ -9,10 +9,10 @@ albedo_color = Color(1, 0.654902, 0.329412, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vxkq1"]
 material = SubResource("StandardMaterial3D_vxkq1")
-size = Vector3(1.5, 1, 0.75)
+size = Vector3(1.2, 0.5, 0.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vxkq1"]
-size = Vector3(1.5, 1, 0.75)
+size = Vector3(1.2, 0.5, 0.5)
 
 [node name="StorageChest" type="StaticBody3D" node_paths=PackedStringArray("spawn_point")]
 collision_layer = 4
@@ -30,3 +30,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77384, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_vxkq1")
+
+[node name="Name" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.02292, 0)
+billboard = 1
+text = "Storage
+"
+font_size = 40
