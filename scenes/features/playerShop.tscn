@@ -1,0 +1,59 @@
+[gd_scene load_steps=8 format=3 uid="uid://c6ihexlxalvfq"]
+
+[ext_resource type="Script" path="res://scripts/player_shop.gd" id="1_4ahvm"]
+[ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="2_i035e"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_iahuh"]
+top_radius = 1.0
+bottom_radius = 1.0
+height = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_bd0yg"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_635m7"]
+height = 1.0
+radius = 1.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_22fi0"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_4ahvm"]
+size = Vector3(1.5, 0.1, 2)
+
+[node name="Shop" type="StaticBody3D" node_paths=PackedStringArray("spawn_point")]
+collision_layer = 4
+collision_mask = 6
+script = ExtResource("1_4ahvm")
+item_scene = ExtResource("2_i035e")
+spawn_point = NodePath("SpawnItemMarker")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
+mesh = SubResource("CylinderMesh_iahuh")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496212, 0)
+mesh = SubResource("BoxMesh_bd0yg")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
+shape = SubResource("CylinderShape3D_635m7")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.500549, 0)
+shape = SubResource("BoxShape3D_22fi0")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.478038, 1.36802)
+mesh = SubResource("BoxMesh_4ahvm")
+
+[node name="Name" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58386, 0)
+billboard = 1
+text = "Shop
+"
+font_size = 40
+
+[node name="SpawnItemMarker" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.840156, 2.09965)
