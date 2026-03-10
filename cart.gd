@@ -39,57 +39,11 @@ func grab_cart(player: Node3D, peer_id: int):
 	if has_node("MultiplayerSynchronizer"):
 		$MultiplayerSynchronizer.set_multiplayer_authority(peer_id)
 
-	# Calculate the target position and rotation right away
-	var player_forward = -player.global_transform.basis.z.normalized()
-	var target_pos = player.global_position + (player_forward * 1.5)
-	target_pos.y = player.global_position.y
-
-	var target_rot_y = player.global_rotation.y
-
-	# Before we snap the cart, save the relative transform of all items inside
-	var items_relative_transforms = []
-	var cart_inv_transform = global_transform.affine_inverse()
-
-	for item in inventory_nodes:
-		if is_instance_valid(item):
-			items_relative_transforms.append(cart_inv_transform * item.global_transform)
-		else:
-			items_relative_transforms.append(Transform3D())
-
-	# Snap the cart to its new transform
-	global_position = target_pos
-	global_rotation = Vector3(global_rotation.x, target_rot_y, global_rotation.z)
-
-	# Snap all the items to their new global transforms based on the cart's new transform
-	for i in range(inventory_nodes.size()):
-		var item = inventory_nodes[i]
-		if is_instance_valid(item) and item is RigidBody3D:
-			# Freeze to prevent the physics engine from generating explosive forces
-			# when moving overlapping bodies
-			item.freeze = true
-			if item.has_node("CollisionShape3D"):
-				item.get_node("CollisionShape3D").disabled = true
-
-			item.global_transform = global_transform * items_relative_transforms[i]
-			item.linear_velocity = Vector3.ZERO
-			item.angular_velocity = Vector3.ZERO
-
 	# Disable cart collision with player so it doesn't push the player around while attached
 	set_collision_mask_value(2, false)
 
 	# Notify clients
 	_rpc_sync_driver.rpc(peer_id, player.get_path())
-
-	# Wait for a couple physics frames so the snap fully processes
-	await get_tree().physics_frame
-	await get_tree().physics_frame
-
-	# Unfreeze the items so they can fall back into the cart naturally
-	for item in inventory_nodes:
-		if is_instance_valid(item) and item is RigidBody3D:
-			item.freeze = false
-			if item.has_node("CollisionShape3D"):
-				item.get_node("CollisionShape3D").disabled = false
 
 func release_cart():
 	if not multiplayer.is_server(): return
@@ -114,16 +68,11 @@ func _rpc_sync_driver(new_id: int, player_path: NodePath):
 		driver_node = get_node_or_null(player_path)
 		set_collision_mask_value(2, false)
 
-		# On the client who is becoming the new driver, do an immediate local snap too
-		# so the client doesn't see one frame of flinging before the server's update arrives.
+		# If we are the player who just grabbed the cart, snap our own rotation
+		# to match the cart's current rotation so the cart doesn't violently
+		# spin around and fling items out of the basket.
 		if multiplayer.get_unique_id() == new_id and driver_node != null:
-			var player_forward = -driver_node.global_transform.basis.z.normalized()
-			var target_pos = driver_node.global_position + (player_forward * 1.5)
-			target_pos.y = driver_node.global_position.y
-			var target_rot_y = driver_node.global_rotation.y
-
-			global_position = target_pos
-			global_rotation = Vector3(global_rotation.x, target_rot_y, global_rotation.z)
+			driver_node.global_rotation.y = global_rotation.y
 
 	else:
 		driver_node = null
