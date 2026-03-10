@@ -33,6 +33,7 @@ var current_treasure = null # This will now be the NEAREST one
 var can_dig = false
 var jump_queued = false
 var can_place = true
+var current_furniture = null
 
 # Stores item names and their counts: {"Pink Shell": 3, "Old Coin": 1}
 var collection = {}
@@ -126,6 +127,15 @@ func _physics_process(delta: float) -> void:
 	
 	if not is_multiplayer_authority() or is_typing: return
 	
+	if current_furniture != null and is_instance_valid(current_furniture):
+		# Snap to the furniture's position
+		global_position = current_furniture.global_position + Vector3(0, 0.5, 0)
+		# Face the same way as the furniture (or opposite, depending on model)
+		# global_rotation.y = current_furniture.global_rotation.y
+		velocity = Vector3.ZERO
+		move_and_slide()
+		return
+
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -247,6 +257,16 @@ func _input(event):
 		# Rotate by 15 degrees counter-clockwise
 		rotation_offset -= deg_to_rad(15)
 			
+	if event.is_action_pressed("alt_interact"):
+		if not is_multiplayer_authority(): return
+
+		if current_furniture != null:
+			leave_furniture()
+		elif carried_item == null:
+			var target = get_interaction_target()
+			if target and target is Item and target.has_method("alt_interact"):
+				target.alt_interact(self)
+
 	# NEW: Press Left Click (or a new 'throw' action) to yeet!
 	if event.is_action_pressed("throw") : 
 		if not is_multiplayer_authority(): return
@@ -683,6 +703,8 @@ func update_action_ui():
 		target_text = ""
 	elif currently_driving_cart:
 		target_text = "[E] Release Cart"
+	elif current_furniture != null and is_instance_valid(current_furniture):
+		target_text = "[R] Get up"
 	elif carried_item == null:
 		# Use your existing interaction check (Raycast or Shapecast)
 		var potential_item = get_interaction_target() 
@@ -690,6 +712,10 @@ func update_action_ui():
 		if potential_item:
 			if potential_item is Item:
 				target_text = "[E] Take " + potential_item.display_name
+				if potential_item.has_method("get_alt_interaction_text"):
+					var alt_txt = potential_item.get_alt_interaction_text()
+					if alt_txt != "":
+						target_text += " " + alt_txt
 			elif potential_item.has_method("get_interaction_text"):
 				target_text = potential_item.get_interaction_text()
 			elif potential_item.has_method("deposit_item"):
@@ -739,6 +765,25 @@ func update_action_ui():
 			tween.tween_property(action_label, "modulate:a", 1.0, 0.2)
 	
 
+
+func use_furniture(furniture_node: Node3D):
+	if not is_multiplayer_authority(): return
+	if carried_item != null:
+		drop_item()
+	current_furniture = furniture_node
+	# Optional: Disable collision mask if needed so player doesn't pop out
+	set_collision_mask_value(1, false)
+
+func leave_furniture():
+	if not is_multiplayer_authority(): return
+	if current_furniture != null:
+		if current_furniture.has_method("leave"):
+			current_furniture.leave(self)
+		current_furniture = null
+		# Optional: re-enable collision mask
+		set_collision_mask_value(1, true)
+		# Hop them up slightly so they don't clip
+		global_position.y += 0.5
 
 func get_interaction_target():
 	# Replace 'shapecast' with the name of your RayCast3D or ShapeCast3D node
