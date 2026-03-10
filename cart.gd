@@ -67,6 +67,21 @@ func _rpc_sync_driver(new_id: int, player_path: NodePath):
 	if new_id != 0 and not player_path.is_empty():
 		driver_node = get_node_or_null(player_path)
 		set_collision_mask_value(2, false)
+
+		# If we are the player who just grabbed the cart, snap our own rotation
+		# and position to match the cart's current state so the cart doesn't violently
+		# yank itself towards us on the first frame and fling items out of the basket.
+		if multiplayer.get_unique_id() == new_id and driver_node != null:
+			driver_node.global_rotation.y = global_rotation.y
+
+			# Snap the player perfectly behind the cart based on its forward axis
+			var cart_forward = -global_transform.basis.z.normalized()
+			var ideal_player_pos = global_position - (cart_forward * 1.5)
+
+			# Update X and Z, keep Y so the player doesn't float or sink
+			driver_node.global_position.x = ideal_player_pos.x
+			driver_node.global_position.z = ideal_player_pos.z
+
 	else:
 		driver_node = null
 		set_collision_mask_value(2, true)
