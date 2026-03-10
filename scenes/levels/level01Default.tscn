@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://7bo1jg4ha4dw"]
+[gd_scene load_steps=25 format=3 uid="uid://7bo1jg4ha4dw"]
 
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
 [ext_resource type="Material" uid="uid://bm4ar1a4q50vg" path="res://resources/materials/ocean_material.tres" id="3_6mrmg"]
@@ -8,7 +8,7 @@
 [ext_resource type="Resource" uid="uid://b6fkh3ijbv1h3" path="res://resources/spawn_profiles/spawn_profile_default.tres" id="7_gqja0"]
 [ext_resource type="Resource" uid="uid://d22djgxra57mn" path="res://resources/spawn_profiles/treasure_profile_default.tres" id="8_uyy6t"]
 [ext_resource type="PackedScene" uid="uid://b4v64l3u3emau" path="res://scenes/features/player.tscn" id="player_scene"]
-[ext_resource type="Script" uid="uid://dlqy2v3v6v3v6" path="res://scripts/player_spawn_point.gd" id="player_sp_script"]
+[ext_resource type="Script" uid="uid://b323jxfhhka6t" path="res://scripts/player_spawn_point.gd" id="player_sp_script"]
 [ext_resource type="PackedScene" uid="uid://bssf45p8hu43w" path="res://scenes/features/playerTent.tscn" id="tent_scene"]
 [ext_resource type="Script" uid="uid://2f1qjvg30a2" path="res://scripts/tent_spawn_point.gd" id="tent_sp_script"]
 
@@ -114,14 +114,15 @@ size = Vector3(15, 1, 20)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 
 [node name="PlayerSpawnMarkers" type="Node3D" parent="Markers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.986929, 0)
 
 [node name="Marker3D" type="Marker3D" parent="Markers/PlayerSpawnMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 1.0, -5.0)
+transform = Transform3D(-0.442711, 0, 0.896664, 0, 1, 0, -0.896664, 0, -0.442711, 10, 1, -5)
 script = ExtResource("player_sp_script")
 player_scene = ExtResource("player_scene")
 
 [node name="Marker3D2" type="Marker3D" parent="Markers/PlayerSpawnMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0, 1.0, -5.0)
+transform = Transform3D(-0.768741, 0, -0.63956, 0, 1, 0, 0.63956, 0, -0.768741, -1.38465, 1, -5)
 script = ExtResource("player_sp_script")
 player_scene = ExtResource("player_scene")
 
