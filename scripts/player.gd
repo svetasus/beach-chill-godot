@@ -32,7 +32,7 @@ var nearby_treasures: Array[Node3D] = [] # Change current_treasure to an Array
 var current_treasure = null # This will now be the NEAREST one
 var can_dig = false
 var jump_queued = false
-
+var can_place = true
 
 # Stores item names and their counts: {"Pink Shell": 3, "Old Coin": 1}
 var collection = {}
@@ -64,6 +64,7 @@ func _enter_tree() -> void:
 	pass
 
 func _ready():
+	placement_ray.set_collision_mask_value(4, true) # Layer 8 for tent collision bounds
 	
 	# WAIT for the spawner to actually name the node (e.g., "1" or "2384923")
 	# If the name is "Player" or "@Player", authority will fail.
@@ -386,6 +387,7 @@ func pick_up(item):
 
 func drop_item():
 	if not is_multiplayer_authority(): return
+	if not can_place: return
 	
 	placement_ray.remove_exception(carried_item)
 	
@@ -425,6 +427,7 @@ func drop_item():
 
 func throw_item():
 	if not is_multiplayer_authority() or carried_item == null: return 
+	if not can_place: return
 	
 	if is_instance_valid(carried_item):
 		if carried_item.has_method("set_ghost_appearance"):
@@ -646,9 +649,18 @@ func update_ghost_preview():
 		# 3. ROTATION: Keep it upright and apply scroll offset
 		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
 		
+		# Validate placement regarding tent state
+		if get_tent_for_position(hit_point) == get_tent_for_position(global_position):
+			can_place = true
+		else:
+			can_place = false
 	else:
 		# Fallback: If not looking at a surface, keep item in hand
 		carried_item.global_transform = hand.global_transform
+		can_place = true
+
+	if carried_item.has_method("set_ghost_valid"):
+		carried_item.set_ghost_valid(can_place)
 	
 
 func update_action_ui():
@@ -700,13 +712,19 @@ func update_action_ui():
 				if tool and tool.can_interact_with(current_treasure):
 					target_text = "[E] " + tool.get_action_name()
 				else:
-					target_text = "[E] Drop " + carried_item.display_name
+					if can_place:
+						target_text = "[E] Drop " + carried_item.display_name
+					else:
+						target_text = "You can't place it here"
 		else:
 			var tool = get_held_tool()
 			if tool and tool.can_interact_with(current_treasure):
 				target_text = "[E] " + tool.get_action_name()
 			else:
-				target_text = "[E] Drop " + carried_item.display_name
+				if can_place:
+					target_text = "[E] Drop " + carried_item.display_name
+				else:
+					target_text = "You can't place it here"
 
 	# Only update if the text changed to avoid flickering
 	if action_label.text != target_text:
@@ -727,15 +745,22 @@ func get_interaction_target():
 	if $Body/Head/Camera3D/InteractionShape.is_colliding():
 		var collision_count = $Body/Head/Camera3D/InteractionShape.get_collision_count()
 
+		var my_tent = get_tent_for_position(global_position)
+
 		# Pass 1: Prioritize items first to prevent large zones (like cart baskets) from blocking them
 		for i in range(collision_count):
 			var collider = $Body/Head/Camera3D/InteractionShape.get_collider(i)
 			if collider is Item:
-				return collider
+				if get_tent_for_position(collider.global_position) == my_tent:
+					return collider
 
 		# Pass 2: Fallback to other interactables
 		for i in range(collision_count):
 			var collider = $Body/Head/Camera3D/InteractionShape.get_collider(i)
+
+			if get_tent_for_position(collider.global_position) != my_tent:
+				continue
+
 			if collider.has_method("deposit_item") or collider.has_method("get_interaction_text") or collider.has_method("interact"):
 				return collider
 			# Specific checks for cart metadata
@@ -771,6 +796,21 @@ func toggle_inventory():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
+
+func get_tent_for_position(pos: Vector3) -> Node:
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsPointQueryParameters3D.new()
+	query.position = pos
+	query.collision_mask = 8 # Tent Area3D layer
+	query.collide_with_areas = true
+	query.collide_with_bodies = false
+	var results = space_state.intersect_point(query)
+	for res in results:
+		if res.collider is Area3D:
+			var tent = res.collider.get_parent()
+			if tent.has_method("can_player_modify"):
+				return tent
+	return null
 
 func can_interact_here() -> bool:
 	# 1. Get all overlapping areas at the player's feet

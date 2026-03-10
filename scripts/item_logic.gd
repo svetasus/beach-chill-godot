@@ -32,19 +32,34 @@ var cart_offset: Vector3 = Vector3.ZERO
 var rotation_offset: Basis
 
 # --- 2. AUTHORITY & PHYSICS ---
+var is_ghost_valid: bool = true
+
 func set_ghost_appearance(active: bool):
 	is_ghost_mode = active
-	_apply_material_to_anchor($MeshAnchor, active)
+	_apply_material_to_anchor($MeshAnchor, active, is_ghost_valid)
 
+func set_ghost_valid(valid: bool):
+	if is_ghost_valid != valid:
+		is_ghost_valid = valid
+		if is_ghost_mode:
+			_apply_material_to_anchor($MeshAnchor, true, is_ghost_valid)
 
-func _apply_material_to_anchor(node: Node, active: bool):
+func _apply_material_to_anchor(node: Node, active: bool, valid: bool = true):
 	if node is MeshInstance3D:
 		# If active is true, we force the ghost material. 
 		# If false, we set it to null, which returns it to the original material.
-		node.material_override = ghost_material if active else null
+		if active:
+			if valid:
+				node.material_override = ghost_material
+			else:
+				var invalid_mat = ghost_material.duplicate()
+				invalid_mat.albedo_color = Color(1, 0, 0, 0.5)
+				node.material_override = invalid_mat
+		else:
+			node.material_override = null
 		
 	for child in node.get_children():
-		_apply_material_to_anchor(child, active)
+		_apply_material_to_anchor(child, active, valid)
 
 @rpc("any_peer", "call_local")
 func sync_authority(peer_id: int, should_freeze: bool, impulse: Vector3 = Vector3.ZERO, pos: Vector3 = Vector3.ZERO, rot_y: float = 0.0):
