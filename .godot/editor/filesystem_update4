@@ -21,13 +21,4 @@ res://scenes/models/visShell_001.tscn
 res://scenes/levels/GreyBoxLevel.tscn
 res://scenes/features/storageUI.tscn
 res://scenes/features/UI/storageUI.tscn
-res://scenes/features/tentRulesBlock.tscn
-res://scenes/features/collectibleBasket.tscn
-res://scenes/features/shop.tscn
-res://scenes/features/playerShop.tscn
-res://scripts/player_shop.gd
-res://scenes/features/playerShopUI.tscn
-res://scripts/player_shop_ui.gd
-res://cart.gd
-res://scenes/features/artifactCombiner.tscn
-res://scenes/features/baseItem.tscn
+res://scripts/player.gd
