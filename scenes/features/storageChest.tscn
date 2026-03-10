@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c0quiu648ix8c" path="res://scripts/storage_chest.gd" id="1_yv562"]
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="2_vxkq1"]
+[ext_resource type="PackedScene" uid="uid://bmy52431j14h" path="res://scenes/features/UI/storageUI.tscn" id="ui_scene_res"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxkq1"]
 albedo_color = Color(1, 0.654902, 0.329412, 1)
@@ -16,6 +17,7 @@ size = Vector3(1.5, 1, 0.75)
 [node name="StorageChest" type="StaticBody3D" node_paths=PackedStringArray("spawn_point")]
 collision_layer = 4
 collision_mask = 6
+chest_ui_scene = ExtResource("ui_scene_res")
 script = ExtResource("1_yv562")
 item_scene = ExtResource("2_vxkq1")
 spawn_point = NodePath("SpawnItemMarker")

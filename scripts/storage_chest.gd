@@ -1,5 +1,6 @@
 extends StaticBody3D
 
+@export var chest_ui_scene: PackedScene
 @export var item_scene: PackedScene # The base Item.tscn to spawn when withdrawing
 @export var spawn_point: Marker3D # A marker slightly above/in front of the chest
 
@@ -7,6 +8,20 @@ var owner_id: int = 1
 var inventory: Array = [] # Array of Strings (Item data_paths)
 
 @onready var items_container = get_node(Global.ITEMS_CONTAINER_PATH) # Or ItemsContainer
+
+func interact(player: Node3D):
+	if chest_ui_scene == null:
+		print("ERROR: chest_ui_scene is not assigned in the inspector!")
+		return
+
+	var ui = chest_ui_scene.instantiate()
+	if ui.has_method("setup"):
+		ui.setup(self)
+
+	if player.has_method("open_ui"):
+		player.open_ui(ui)
+	else:
+		print("ERROR: player does not have open_ui method!")
 
 # --- 1. DEPOSITING (SERVER ONLY) ---
 

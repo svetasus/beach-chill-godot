@@ -1,7 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://fye4030235q2"]
+[gd_scene load_steps=11 format=3 uid="uid://fye4030235q2"]
 
 [ext_resource type="Script" path="res://scripts/player_shop.gd" id="1_4ahvm"]
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="2_i035e"]
+[ext_resource type="PackedScene" uid="uid://buhj3mje6xcxu" path="res://scenes/features/playerShopUI.tscn" id="ui_scene_res"]
+[ext_resource type="Resource" uid="uid://k81noy3tielt" path="res://resources/items/shell_001_data.tres" id="res_shell_1"]
+[ext_resource type="Resource" uid="uid://dqqv0qpqsbk76" path="res://resources/items/shell_002_data.tres" id="res_shell_2"]
+[ext_resource type="Resource" uid="uid://b1hcfs0kip2o2" path="res://resources/items/shovel_01_data.tres" id="res_shovel"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_iahuh"]
 top_radius = 1.0
@@ -22,9 +26,11 @@ size = Vector3(1.5, 0.1, 2)
 [node name="Shop" type="StaticBody3D" node_paths=PackedStringArray("spawn_point")]
 collision_layer = 4
 collision_mask = 6
-script = ExtResource("1_4ahvm")
+shop_ui_scene = ExtResource("ui_scene_res")
 item_scene = ExtResource("2_i035e")
 spawn_point = NodePath("SpawnItemMarker")
+items_for_sale = Array[Resource("res://scripts/item_data.gd")]([ExtResource("res_shell_1"), ExtResource("res_shell_2"), ExtResource("res_shovel")])
+script = ExtResource("1_4ahvm")
 
 [node name="Model" type="Node3D" parent="."]
 

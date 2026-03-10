@@ -21,8 +21,6 @@ const DIG_DIST = 1.5
 var rotation_offset: float = 0.0
 @export var rotation_speed: float = 0.5 # How fast it rotates with scroll
 
-@export var chest_ui_scene: PackedScene # Drag your new ChestUI.tscn here!
-
 var current_ui: Control = null
 
 var is_typing = false
@@ -274,7 +272,8 @@ func check_interaction():
 			
 			# Scenario B: Our hands are empty -> OPEN UI
 			else:
-				open_chest_ui(target)
+				if target.has_method("interact"):
+					target.interact(self)
 		
 		# Specific logic for carts
 		elif target.has_meta("is_cart_handle"):
@@ -800,24 +799,17 @@ func _rpc_request_deposit(chest_path: NodePath, item_path: NodePath):
 		
 		
 		
-func open_chest_ui(chest_node: Node3D):
+func open_ui(ui_instance: Control):
 	# Don't open it if it's already open
 	if current_ui != null and is_instance_valid(current_ui):
+		ui_instance.queue_free()
 		return
 		
-	if chest_ui_scene == null:
-		print("ERROR: chest_ui_scene is not assigned in the inspector!")
-		return
-		
-	# 1. Instantiate the UI
-	current_ui = chest_ui_scene.instantiate()
+	# 1. Assign the UI
+	current_ui = ui_instance
 	add_child(current_ui)
 	
-	# 2. Pass the chest reference to the UI
-	if current_ui.has_method("setup"):
-		current_ui.setup(chest_node)
-		
-	# 3. Unlock the mouse so the player can click the grid
+	# 2. Unlock the mouse so the player can click the grid
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
