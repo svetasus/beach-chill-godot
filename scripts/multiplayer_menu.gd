@@ -54,14 +54,35 @@ func add_player(peer_id):
 	player.name = str(peer_id) # This name MUST be the ID for authority to work!
 	
 	
+	# Determine spawn point from level
+	var spawn_pos = Vector3.ZERO
+	var spawn_rot = Vector3.ZERO
 	var container = get_node_or_null(Global.PLAYERS_CONTAINER_PATH)
+
+	var level_container = get_node_or_null(Global.LEVEL_PATH)
+	if level_container and level_container.get_child_count() > 0:
+		var current_level = level_container.get_child(0)
+		var markers_folder = current_level.get_node_or_null(Global.PLAYER_MARKERS_LEVEL_PATH)
+		if markers_folder:
+			var all_markers = markers_folder.get_children()
+			if not all_markers.is_empty():
+				# We calculate spawn index based on current number of players already in container
+				var spawn_index = 0
+				if container:
+					spawn_index = container.get_child_count()
+				if spawn_index >= all_markers.size():
+					# Fallback or wrap around if we exceed markers
+					spawn_index = spawn_index % all_markers.size()
+				var target_marker = all_markers[spawn_index]
+				spawn_pos = target_marker.global_position
+				spawn_rot = target_marker.global_rotation
+
+	# Set transform before adding to tree for proper MultiplayerSynchronizer init
+	player.position = spawn_pos
+	player.rotation = spawn_rot
+
 	if container:
 		container.add_child(player)
-	
-	# Move them to the spawn point AFTER adding to tree
-	var spawn_point = get_node_or_null(Global.PLAYERS_SPAWNPOINT_PATH)
-	if spawn_point:
-		player.global_position = spawn_point.global_position
 	
 	var tent_manager = get_tree().root.get_node_or_null("Main/TentManager")
 	if tent_manager:

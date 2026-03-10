@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://dnw1sundtvpw0" path="res://scripts/autospawn_area.gd" id="6_ic7dp"]
 [ext_resource type="Resource" uid="uid://b6fkh3ijbv1h3" path="res://resources/spawn_profiles/spawn_profile_default.tres" id="7_gqja0"]
 [ext_resource type="Resource" uid="uid://d22djgxra57mn" path="res://resources/spawn_profiles/treasure_profile_default.tres" id="8_uyy6t"]
+[ext_resource type="PackedScene" uid="uid://b4v64l3u3emau" path="res://scenes/features/player.tscn" id="player_scene"]
+[ext_resource type="Script" uid="uid://dlqy2v3v6v3v6" path="res://scripts/player_spawn_point.gd" id="player_sp_script"]
 [ext_resource type="PackedScene" uid="uid://bssf45p8hu43w" path="res://scenes/features/playerTent.tscn" id="tent_scene"]
 [ext_resource type="Script" uid="uid://2f1qjvg30a2" path="res://scripts/tent_spawn_point.gd" id="tent_sp_script"]
 
@@ -112,6 +114,16 @@ size = Vector3(15, 1, 20)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 
 [node name="PlayerSpawnMarkers" type="Node3D" parent="Markers"]
+
+[node name="Marker3D" type="Marker3D" parent="Markers/PlayerSpawnMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 1.0, -5.0)
+script = ExtResource("player_sp_script")
+player_scene = ExtResource("player_scene")
+
+[node name="Marker3D2" type="Marker3D" parent="Markers/PlayerSpawnMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0, 1.0, -5.0)
+script = ExtResource("player_sp_script")
+player_scene = ExtResource("player_scene")
 
 [node name="TentSpawnMarkers" type="Node3D" parent="Markers"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1738, 0)

@@ -6,8 +6,7 @@ const TREASURES_CONTAINER_PATH: String = "/root/Main/World/Containers/TreasuresC
 const PLAYERS_CONTAINER_PATH: String = "/root/Main/World/Containers/PlayersContainer/"
 const TENTS_CONTAINER_PATH: String = "/root/Main/World/Containers/TentsContainer"
 const LEVEL_PATH:String = "/root/Main/LevelLoaded"
-const PLAYERS_SPAWNPOINT_PATH: String = "/root/Main/World/SpawnPoint"
-
+const PLAYER_MARKERS_LEVEL_PATH: String = "Markers/PlayerSpawnMarkers"
 const TENT_MARKERS_LEVEL_PATH: String = "Markers/TentSpawnMarkers"
 const TREASURE_MARKERS_LEVEL_PATH: String = "Markers/TreasureSpawnMarkers"
 
