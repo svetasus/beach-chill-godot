@@ -1,13 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://dprek8xvxjxor"]
+[gd_scene load_steps=7 format=3 uid="uid://dprek8xvxjxor"]
 
 [ext_resource type="Script" uid="uid://ysiwkaaxd645" path="res://scripts/item_logic.gd" id="1_s8enn"]
 [ext_resource type="Script" uid="uid://dppyd1qn2x4ot" path="res://scripts/item_name_pivot.gd" id="2_6muww"]
 [ext_resource type="Material" uid="uid://bngpgyipxn0vv" path="res://resources/materials/ghost_item_material.tres" id="2_jpn51"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_item"]
-friction = 1.0
 rough = true
-bounce = 0.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_11e83"]
 properties/0/path = NodePath(".:linear_velocity")
@@ -35,8 +33,6 @@ collision_mask = 5
 mass = 5.0
 physics_material_override = SubResource("PhysicsMaterial_item")
 gravity_scale = 3.0
-sleeping_threshold_linear = 0.5
-sleeping_threshold_angular = 0.5
 linear_damp = 2.0
 angular_damp = 2.0
 script = ExtResource("1_s8enn")

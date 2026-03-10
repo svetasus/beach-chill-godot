@@ -3,7 +3,7 @@ extends CharacterBody3D
 
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
-const THROW_FORCE = 8.0
+const THROW_FORCE = 16.0
 const DIG_DIST = 1.5
 
 @onready var shapecast = $Body/Head/Camera3D/InteractionShape
