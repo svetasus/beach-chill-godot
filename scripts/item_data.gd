@@ -19,6 +19,7 @@ class_name ItemData
 @export_group("Logic")
 @export var is_tool: bool = false
 @export var is_collectible: bool = true
+@export var is_furniture: bool = false
 #@export_file("*.tscn") var tool_scene_path: String # The "Address" of the brain
 
 enum ItemValueType { COMMON, RARE, EPIC, ARTIFACT }

@@ -188,6 +188,24 @@ func _set_data(new_data):
 		else:
 			print("--- [ITEM] ERROR: No scene found in data! ---")
 
+func alt_interact(player: Node3D):
+	if not data or not data.is_furniture: return
+
+	if $MeshAnchor.get_child_count() > 0:
+		var skin = $MeshAnchor.get_child(0)
+		if skin.has_method("interact"):
+			skin.interact(player)
+
+func get_alt_interaction_text() -> String:
+	if not data or not data.is_furniture: return ""
+
+	if $MeshAnchor.get_child_count() > 0:
+		var skin = $MeshAnchor.get_child(0)
+		if skin.has_method("get_interaction_text"):
+			return skin.get_interaction_text()
+
+	return "[R] Interact"
+
 # --- 5. COLLISION RECURSION ---
 
 func _update_collision_from_skin(skin_node):

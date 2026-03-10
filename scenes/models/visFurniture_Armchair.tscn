@@ -1,6 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://d0vkvbjt3e0uy"]
 
 [ext_resource type="Texture2D" uid="uid://blqtjpnp63h6u" path="res://textures/cloth.jpg" id="1_fhis6"]
+[ext_resource type="Script" uid="uid://b82d3n3h2v1p" path="res://scripts/furniture_armchair.gd" id="2_script"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5yhxa"]
 size = Vector3(0.5, 0.8, 0.65)
@@ -41,6 +42,7 @@ size = Vector3(0.1, 0.3, 0.6)
 albedo_texture = ExtResource("1_fhis6")
 
 [node name="Armchair" type="Node3D"]
+script = ExtResource("2_script")
 
 [node name="Model" type="Node3D" parent="."]
 
