@@ -64,6 +64,12 @@ func grab_cart(player: Node3D, peer_id: int):
 	for i in range(inventory_nodes.size()):
 		var item = inventory_nodes[i]
 		if is_instance_valid(item) and item is RigidBody3D:
+			# Freeze to prevent the physics engine from generating explosive forces
+			# when moving overlapping bodies
+			item.freeze = true
+			if item.has_node("CollisionShape3D"):
+				item.get_node("CollisionShape3D").disabled = true
+
 			item.global_transform = global_transform * items_relative_transforms[i]
 			item.linear_velocity = Vector3.ZERO
 			item.angular_velocity = Vector3.ZERO
@@ -73,6 +79,17 @@ func grab_cart(player: Node3D, peer_id: int):
 
 	# Notify clients
 	_rpc_sync_driver.rpc(peer_id, player.get_path())
+
+	# Wait for a couple physics frames so the snap fully processes
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+
+	# Unfreeze the items so they can fall back into the cart naturally
+	for item in inventory_nodes:
+		if is_instance_valid(item) and item is RigidBody3D:
+			item.freeze = false
+			if item.has_node("CollisionShape3D"):
+				item.get_node("CollisionShape3D").disabled = false
 
 func release_cart():
 	if not multiplayer.is_server(): return
