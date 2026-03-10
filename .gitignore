@@ -5,7 +5,7 @@ export_presets.cfg     # Contains export settings (can contain passwords/sensiti
 
 # Imported assets (Godot 4)
 # We keep the .import files, but ignore the internal data Godot generates from them
-.godot/imported/
+.godot
 
 # Build artifacts
 build/
