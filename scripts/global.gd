@@ -13,3 +13,5 @@ const TREASURE_MARKERS_LEVEL_PATH: String = "Markers/TreasureSpawnMarkers"
 const PLAYER_SCENE_PATH: String = "res://scenes/features/player.tscn"
 
 var split_money_in_team: bool = false
+var account_id: String = ""
+var peer_to_account: Dictionary = {}
