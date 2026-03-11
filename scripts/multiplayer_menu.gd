@@ -5,6 +5,20 @@ var enet_peer = ENetMultiplayerPeer.new()
 func _ready():
 	# Ensure the mouse is visible so we can click Host/Join
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	_load_or_generate_account_id()
+
+func _load_or_generate_account_id():
+	var save_path = "user://account.save"
+	if FileAccess.file_exists(save_path):
+		var file = FileAccess.open(save_path, FileAccess.READ)
+		Global.account_id = file.get_as_text().strip_edges()
+		file.close()
+	else:
+		Global.account_id = "ACC_" + str(Time.get_unix_time_from_system()) + "_" + str(randi() % 10000)
+		var file = FileAccess.open(save_path, FileAccess.WRITE)
+		file.store_string(Global.account_id)
+		file.close()
+	print("Local Account ID: ", Global.account_id)
 
 func _on_host_button_pressed():
 	# Set global team money setting based on the check box
@@ -21,11 +35,13 @@ func _on_host_button_pressed():
 	multiplayer.multiplayer_peer = enet_peer
 	
 	# 2. Tell the game to run 'add_player' when someone joins
-	multiplayer.peer_connected.connect(add_player)
+	multiplayer.peer_connected.connect(_server_peer_connected)
 	multiplayer.peer_disconnected.connect(remove_player)
 	
 	# 3. Add YOURSELF (the host) to the game
-	add_player(multiplayer.get_unique_id())
+	var my_id = multiplayer.get_unique_id()
+	Global.set("peer_to_account", {my_id: Global.account_id})
+	add_player(my_id)
 	
 	# 4. Trigger autospawn for items/treasures
 	AutoSpawner.trigger_spawn()
@@ -47,7 +63,29 @@ func _on_join_button_pressed():
 		print("Failed to join: ", error)
 		return
 	multiplayer.multiplayer_peer = enet_peer
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	hide()
+
+func _on_connected_to_server():
+	_rpc_register_client_account.rpc_id(1, Global.account_id)
+
+func _server_peer_connected(peer_id):
+	# Wait for the client to send their account ID via RPC
+	pass
+
+@rpc("any_peer", "call_local", "reliable")
+func _rpc_register_client_account(account_id: String):
+	if not multiplayer.is_server(): return
+	var sender_id = multiplayer.get_remote_sender_id()
+
+	# Store the mapping
+	var mapping = Global.get("peer_to_account")
+	if mapping == null:
+		mapping = {}
+	mapping[sender_id] = account_id
+	Global.set("peer_to_account", mapping)
+
+	add_player(sender_id)
 
 func add_player(peer_id):
 	var player = preload(Global.PLAYER_SCENE_PATH).instantiate()

@@ -44,7 +44,10 @@ var money: int = 0
 signal collection_updated(new_collection)
 
 func get_save_path() -> String:
-	return "user://player_money_" + str(name) + ".save"
+	if is_multiplayer_authority():
+		return "user://player_money_" + Global.account_id + ".save"
+	else:
+		return "user://player_money_" + str(name) + ".save"
 
 func save_money():
 	var file = FileAccess.open(get_save_path(), FileAccess.WRITE)
