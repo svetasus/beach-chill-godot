@@ -20,7 +20,10 @@ const DIG_DIST = 1.5
 @export var eye_color: Color = Color.BLUE
 
 # Sync this variable in MultiplayerSynchronizer so late joiners know the state!
-@export var is_sitting: bool = false
+@export var is_sitting: bool = false:
+	set(val):
+		is_sitting = val
+		_update_sit_visuals(val)
 
 var rotation_offset: float = 0.0
 @export var rotation_speed: float = 0.5 # How fast it rotates with scroll
@@ -783,7 +786,6 @@ func use_furniture(furniture_node: Node3D):
 	# Optional: Disable collision mask if needed so player doesn't pop out
 	set_collision_mask_value(1, false)
 	is_sitting = true
-	_update_sit_visuals.rpc(true)
 
 func leave_furniture():
 	if not is_multiplayer_authority(): return
@@ -794,11 +796,9 @@ func leave_furniture():
 		# Optional: re-enable collision mask
 		set_collision_mask_value(1, true)
 		is_sitting = false
-		_update_sit_visuals.rpc(false)
 		# Hop them up slightly so they don't clip
 		global_position.y += 0.5
 
-@rpc("call_local", "reliable")
 func _update_sit_visuals(is_sitting: bool):
 	if is_sitting:
 		if state_sit: state_sit.show()
