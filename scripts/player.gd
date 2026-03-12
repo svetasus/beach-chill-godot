@@ -10,6 +10,8 @@ const DIG_DIST = 1.5
 @onready var hand = $Body/Head/Camera3D/HandMarker
 @onready var action_label = $PlayerUI/ActionLabel
 @onready var placement_ray = $Body/Head/Camera3D/PlacementRay
+@onready var state_sit = $State_Sit
+@onready var state_stand = $State_Stand
 
 
 @export var mouse_sensitivity = 0.002
@@ -17,6 +19,8 @@ const DIG_DIST = 1.5
 # This variable will be synced across the network
 @export var eye_color: Color = Color.BLUE
 
+# Sync this variable in MultiplayerSynchronizer so late joiners know the state!
+@export var is_sitting: bool = false
 
 var rotation_offset: float = 0.0
 @export var rotation_speed: float = 0.5 # How fast it rotates with scroll
@@ -82,6 +86,7 @@ func _ready():
 	
 	$Nickname.text = name
 	
+	_update_sit_visuals(is_sitting)
 	
 	# RE-EVALUATE authority after the name change
 	if name.is_valid_int():
@@ -120,6 +125,7 @@ func _ready():
 		# Wait a tiny bit for the network to send the color, then apply it
 		await get_tree().create_timer(0.1).timeout
 		apply_eye_color(eye_color)
+		_update_sit_visuals(is_sitting)
 		
 	# Connect the 'Catch' signal
 	$Body/Head/Camera3D/CatchZone.body_entered.connect(_on_catch_zone_body_entered)
@@ -776,6 +782,8 @@ func use_furniture(furniture_node: Node3D):
 	current_furniture = furniture_node
 	# Optional: Disable collision mask if needed so player doesn't pop out
 	set_collision_mask_value(1, false)
+	is_sitting = true
+	_update_sit_visuals.rpc(true)
 
 func leave_furniture():
 	if not is_multiplayer_authority(): return
@@ -785,8 +793,19 @@ func leave_furniture():
 		current_furniture = null
 		# Optional: re-enable collision mask
 		set_collision_mask_value(1, true)
+		is_sitting = false
+		_update_sit_visuals.rpc(false)
 		# Hop them up slightly so they don't clip
 		global_position.y += 0.5
+
+@rpc("call_local", "reliable")
+func _update_sit_visuals(is_sitting: bool):
+	if is_sitting:
+		if state_sit: state_sit.show()
+		if state_stand: state_stand.hide()
+	else:
+		if state_sit: state_sit.hide()
+		if state_stand: state_stand.show()
 
 func get_interaction_target():
 	# Replace 'shapecast' with the name of your RayCast3D or ShapeCast3D node

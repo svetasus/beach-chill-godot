@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://ct6wef0wj1t8f"]
+[gd_scene load_steps=22 format=3 uid="uid://ct6wef0wj1t8f"]
 
 [ext_resource type="Script" uid="uid://oofej86k011a" path="res://scripts/main.gd" id="1_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://c4wtfvlv2judr" path="res://scenes/features/multiplayerMenu.tscn" id="3_85g3d"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://cant8isko5cln" path="res://scripts/item_spawn_point.gd" id="16_dp3eg"]
 [ext_resource type="PackedScene" uid="uid://bio5ygciicsu6" path="res://scenes/features/artifactCombiner.tscn" id="16_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://cmpknns23ho7" path="res://scenes/features/tentManager.tscn" id="17_muem4"]
+[ext_resource type="Resource" uid="uid://dtl3pr4ht8fma" path="res://resources/items/furniture_armchair.tres" id="17_yc10j"]
 [ext_resource type="Script" uid="uid://ctmokqka65mly" path="res://scripts/treasure_spawn_point.gd" id="18_treasurespawnpoint"]
 [ext_resource type="PackedScene" uid="uid://2oj6er2ejk2" path="res://scenes/features/cart.tscn" id="20_gqmmt"]
 [ext_resource type="PackedScene" uid="uid://fye4030235q2" path="res://scenes/features/playerShop.tscn" id="20_yc10j"]
@@ -104,6 +105,10 @@ script = ExtResource("16_dp3eg")
 item_data = ExtResource("14_a8y0u")
 item_scene = ExtResource("12_trceg")
 
+[node name="Item" parent="World/Containers" instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8434, 2.65593, 10.9308)
+data = ExtResource("17_yc10j")
+
 [node name="MultiplayerSpawners" type="Node3D" parent="."]
 
 [node name="MultiplayerSpawner_Players" type="MultiplayerSpawner" parent="MultiplayerSpawners"]
@@ -135,8 +140,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.66695, 0.571931, -2.45948)
 [node name="Shop" parent="." instance=ExtResource("20_yc10j")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.4502, 1.52804, 15.8369)
 
-[connection signal="body_entered" from="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@21769/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@21769/TreasurePoint" method="_on_body_entered"]
-[connection signal="body_exited" from="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@21769/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@21769/TreasurePoint" method="_on_body_exited"]
-[connection signal="body_entered" from="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@21770/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@21770/TreasurePoint" method="_on_body_entered"]
-[connection signal="body_exited" from="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@21770/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@21770/TreasurePoint" method="_on_body_exited"]
+[connection signal="body_entered" from="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@52079/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@52079/TreasurePoint" method="_on_body_entered"]
+[connection signal="body_exited" from="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@52079/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint2/@MeshInstance3D@52079/TreasurePoint" method="_on_body_exited"]
+[connection signal="body_entered" from="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@52080/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@52080/TreasurePoint" method="_on_body_entered"]
+[connection signal="body_exited" from="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@52080/TreasurePoint" to="World/Containers/TreasuresContainer/TreasureSpawnPoint/@MeshInstance3D@52080/TreasurePoint" method="_on_body_exited"]
 [connection signal="spawned" from="MultiplayerSpawners/MultiplayerSpawner_Players" to="." method="_on_multiplayer_spawner_spawned"]

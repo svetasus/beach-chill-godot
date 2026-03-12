@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://tbfqu8d1clyc" path="res://scripts/furniture_armchair.gd" id="2_script"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5yhxa"]
-size = Vector3(0.5, 0.8, 0.65)
+size = Vector3(0.57, 0.65, 0.68)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nflj7"]
 albedo_texture = ExtResource("1_fhis6")
@@ -47,25 +47,25 @@ script = ExtResource("2_script")
 [node name="Model" type="Node3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0821787, 0.181582)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.001004, 0.202062)
 shape = SubResource("BoxShape3D_5yhxa")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00250429, 0)
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, -0.00250429, 0)
 material_override = SubResource("StandardMaterial3D_nflj7")
 mesh = SubResource("BoxMesh_wyoci")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.164083, 0.267343)
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, -0.164083, 0.267343)
 material_override = SubResource("StandardMaterial3D_55xku")
 mesh = SubResource("BoxMesh_5yhxa")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.283844, -0.154738, 0.181065)
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0.283844, -0.154738, 0.181065)
 material_override = SubResource("StandardMaterial3D_ru8hb")
 mesh = SubResource("BoxMesh_fhis6")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.284, -0.155, 0.181)
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, -0.284, -0.155, 0.181)
 material_override = SubResource("StandardMaterial3D_rsf0y")
 mesh = SubResource("BoxMesh_fhis6")
