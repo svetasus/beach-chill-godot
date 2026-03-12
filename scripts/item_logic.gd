@@ -72,7 +72,15 @@ func sync_authority(peer_id: int, should_freeze: bool, impulse: Vector3 = Vector
 	# 1. SET AUTHORITY FIRST
 	set_multiplayer_authority(peer_id)
 	if has_node("MultiplayerSynchronizer"):
-		$MultiplayerSynchronizer.set_multiplayer_authority(peer_id)
+		if multiplayer.get_unique_id() == peer_id and not multiplayer.is_server():
+			# Delay taking authority of the synchronizer to prevent sending sync packets
+			# before the server has processed the RPC.
+			get_tree().create_timer(0.1).timeout.connect(func():
+				if is_instance_valid(self) and has_node("MultiplayerSynchronizer"):
+					$MultiplayerSynchronizer.set_multiplayer_authority(peer_id)
+			)
+		else:
+			$MultiplayerSynchronizer.set_multiplayer_authority(peer_id)
 	
 	# 2. WAIT A TINY BIT (Deferred)
 	_apply_physics_state.call_deferred(should_freeze, impulse, pos, rot_y)
