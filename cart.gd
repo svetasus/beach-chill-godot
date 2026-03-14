@@ -94,47 +94,79 @@ func _physics_process(delta):
 	if not is_multiplayer_authority():
 		return
 
-	# Always apply gravity
-	if not is_on_floor():
-		velocity += get_gravity() * delta
+	var is_driven = driver_node and is_instance_valid(driver_node)
 
-	if driver_node and is_instance_valid(driver_node):
-		# Keep the cart in front of the player
-		# Assuming the player's 'forward' is -Z. We want the cart 'handle' to be close to the player,
-		# but since Handle is at +Z (+1.0ish), the cart itself should be slightly ahead of the player.
+	if is_driven:
+		# --- DRIVEN LOGIC ---
+		# Reset velocity so we don't build up weird physics forces
+		velocity = Vector3.ZERO
+
+		# 1. Calculate ideal X/Z position in front of player
 		var player_forward = -driver_node.global_transform.basis.z.normalized()
 		var target_pos = driver_node.global_position + (player_forward * 1.5)
 
-		# Move towards target using velocity (ignoring Y for target direction)
-		var direction = (target_pos - global_position)
-		direction.y = 0 # Don't try to fly up or down to match player Y, let gravity handle Y
+		# 2. Find the floor height for the cart using a downward raycast
+		var space_state = get_world_3d().direct_space_state
+		# Raycast from high above the target position down to below the floor
+		var ray_origin = Vector3(target_pos.x, driver_node.global_position.y + 2.0, target_pos.z)
+		var ray_end = ray_origin + Vector3(0, -10.0, 0)
 
-		# Proportional velocity to smoothly approach target
-		var horizontal_velocity = direction * 15.0
-		velocity.x = horizontal_velocity.x
-		velocity.z = horizontal_velocity.z
+		var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
+		# Ignore the cart itself and the player
+		query.exclude = [self.get_rid(), driver_node.get_rid()]
+		# Only hit environment/static bodies, not other items (layers 1 default)
+		query.collision_mask = 1
+
+		var result = space_state.intersect_ray(query)
+
+		var floor_normal = Vector3.UP
+		if result:
+			# If we found the floor, snap the target Y to the hit point
+			# Assuming the cart origin is at its base. If it's centered, add vertical offset.
+			target_pos.y = result.position.y
+			floor_normal = result.normal
+		else:
+			# Fallback if no floor found (e.g., hanging off an edge)
+			target_pos.y = driver_node.global_position.y
+
+		# 3. Smoothly lerp position towards the target
+		global_position = global_position.lerp(target_pos, 15.0 * delta)
+
+		# 4. Handle Rotation & Floor Alignment safely
+		# We want the cart's forward to match the player's forward on the XZ plane
+		var target_forward = player_forward
+		# Prevent parallel vectors for cross product
+		if abs(floor_normal.dot(target_forward)) < 0.99:
+			# X = Forward x Up
+			var right = target_forward.cross(floor_normal).normalized()
+			# Z = Up x Right
+			var forward = floor_normal.cross(right).normalized()
+
+			var target_basis = Basis(right, floor_normal, -forward)
+			global_transform.basis = global_transform.basis.slerp(target_basis, 15.0 * delta)
 
 	else:
-		# Apply friction/drag when not driven
+		# --- ABANDONED LOGIC ---
+		# Always apply gravity when not driven
+		if not is_on_floor():
+			velocity += get_gravity() * delta
+
+		# Apply friction/drag on XZ when not driven
 		velocity.x = move_toward(velocity.x, 0, 10.0 * delta)
 		velocity.z = move_toward(velocity.z, 0, 10.0 * delta)
 
-	move_and_slide()
+		move_and_slide()
 
-	# Align with floor normal
-	if is_on_floor():
-		var normal = get_floor_normal()
-		var target_forward = Vector3.ZERO
+		# Rotate to align with the floor if resting on it
+		if is_on_floor():
+			var floor_normal = get_floor_normal()
+			var target_forward = -global_transform.basis.z.normalized()
 
-		if driver_node and is_instance_valid(driver_node):
-			target_forward = -driver_node.global_transform.basis.z.normalized()
-		else:
-			target_forward = -global_transform.basis.z.normalized()
-
-		# Prevent error if normal and target_forward are parallel
-		if abs(normal.dot(target_forward)) < 0.99:
-			var target_basis = Basis.looking_at(target_forward, normal)
-			global_transform.basis = global_transform.basis.slerp(target_basis, 15.0 * delta)
+			if abs(floor_normal.dot(target_forward)) < 0.99:
+				var right = target_forward.cross(floor_normal).normalized()
+				var forward = floor_normal.cross(right).normalized()
+				var target_basis = Basis(right, floor_normal, -forward)
+				global_transform.basis = global_transform.basis.slerp(target_basis, 10.0 * delta)
 
 func remove_item(item_node: Node3D):
 	if inventory_nodes.has(item_node):
