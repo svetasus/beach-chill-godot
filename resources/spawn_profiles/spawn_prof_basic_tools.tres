@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SpawnProfile" load_steps=5 format=3 uid="uid://cwstu48thm4i6"]
+
+[ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/item_data.gd" id="1_cdnpp"]
+[ext_resource type="Script" uid="uid://dfbpk62v1a2m3" path="res://scripts/spawn_profile.gd" id="2_asn4s"]
+[ext_resource type="Resource" uid="uid://bt0kw71g6ajwd" path="res://resources/items/metal_detector_01_data.tres" id="2_xjnjw"]
+[ext_resource type="Resource" uid="uid://b1hcfs0kip2o2" path="res://resources/items/shovel_01_data.tres" id="3_wt0mo"]
+
+[resource]
+script = ExtResource("2_asn4s")
+items = Array[ExtResource("1_cdnpp")]([ExtResource("2_xjnjw"), ExtResource("3_wt0mo")])
+metadata/_custom_type_script = "uid://dfbpk62v1a2m3"

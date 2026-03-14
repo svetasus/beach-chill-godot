@@ -88,7 +88,7 @@ material = SubResource("StandardMaterial3D_ic7dp")
 orientation = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_r84l6"]
-size = Vector3(10, 4, 10)
+size = Vector3(3, 4, 3)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gatpe"]
 transparency = 1
@@ -96,7 +96,7 @@ albedo_color = Color(1, 1, 0.380392, 0.27451)
 
 [sub_resource type="BoxMesh" id="BoxMesh_gqja0"]
 material = SubResource("StandardMaterial3D_gatpe")
-size = Vector3(10, 4, 10)
+size = Vector3(3, 3, 3)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_i1od3"]
 size = Vector3(10, 4, 10)
@@ -228,6 +228,20 @@ shape = SubResource("BoxShape3D_r84l6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="AutospawnAreas/Area3D"]
 visible = false
+mesh = SubResource("BoxMesh_gqja0")
+
+[node name="ToolsArea" type="Area3D" parent="AutospawnAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58207, 0.636461, -3.89388)
+script = ExtResource("6_ic7dp")
+spawn_profile = ExtResource("7_gqja0")
+treasure_profile = ExtResource("8_uyy6t")
+max_items = 3
+max_treasures = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AutospawnAreas/ToolsArea"]
+shape = SubResource("BoxShape3D_r84l6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AutospawnAreas/ToolsArea"]
 mesh = SubResource("BoxMesh_gqja0")
 
 [node name="Area3D2" type="Area3D" parent="AutospawnAreas"]

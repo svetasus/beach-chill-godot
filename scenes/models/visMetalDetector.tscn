@@ -26,31 +26,32 @@ script = ExtResource("1_rnwdl")
 [node name="Model" type="Node3D" parent="."]
 
 [node name="MeshHandle" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, -0.000472784, -0.325622, -0.35424)
+transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, -0.000472784, -0.325622, 0.0792804)
 mesh = SubResource("CapsuleMesh_okkok")
 skeleton = NodePath("../MeshHead")
 
 [node name="MeshHead" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, 0, -0.391852, -0.639929)
+transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, 0, -0.391852, -0.206409)
 mesh = SubResource("CylinderMesh_ykuq6")
 skeleton = NodePath("../MeshHandle")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 0.253606, -0.967308, 0, 0.967308, 0.253606, -0.00140071, -0.330496, -0.400304)
+transform = Transform3D(1, 0, 0, 0, 0.253606, -0.967308, 0, 0.967308, 0.253606, -0.00140071, -0.330496, 0.0332164)
 shape = SubResource("CapsuleShape3D_nceh7")
 
 [node name="Functionality" type="Node3D" parent="."]
 
 [node name="BeepSound" type="AudioStreamPlayer3D" parent="Functionality"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.43352)
 stream = ExtResource("2_cvchd")
 
 [node name="TipLight" type="OmniLight3D" parent="Functionality"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35912, -0.892362)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35912, -0.458842)
 light_color = Color(1, 0.705882, 1, 1)
-omni_range = 3.0
+omni_range = 1.0
 
 [node name="IndicatorLight" type="OmniLight3D" parent="Functionality"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.220867, -0.638317)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.220867, -0.204797)
 light_color = Color(0.247059, 0.580392, 1, 1)
 light_energy = 0.0
-omni_range = 2.0
+omni_range = 1.0
