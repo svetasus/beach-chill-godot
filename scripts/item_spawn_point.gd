@@ -27,26 +27,25 @@ func _spawn_item():
 
 	var item_instance = item_scene.instantiate()
 
-	# Give it a unique network name so it syncs correctly
-	item_instance.name = "PreplacedItem_" + str(get_instance_id())
-
-	# Add it to the correct container watched by MultiplayerSpawner
-	var container = get_node_or_null(Global.ITEMS_CONTAINER_PATH)
-	if container:
-		container.add_child(item_instance, true)
-	else:
-		print("ItemSpawnPoint: Could not find ItemsContainer at %s" % Global.ITEMS_CONTAINER_PATH)
-		# Fallback to current parent if container not found
-		get_parent().add_child(item_instance, true)
-
-	# Apply transform
-	item_instance.global_transform = global_transform
+	# Apply local position and rotation from the global transform
+	item_instance.position = global_position
+	item_instance.rotation = global_rotation
 
 	# Pass data_path to trigger network sync (item_logic.gd uses data_path with a setter)
 	if "data_path" in item_instance:
 		item_instance.data_path = item_data.resource_path
 	elif "data" in item_instance:
 		item_instance.data = item_data
+
+	# Add it to the correct container watched by MultiplayerSpawner
+	var container = get_node_or_null(Global.ITEMS_CONTAINER_PATH)
+	if container:
+		# Add the child without manually modifying the name. The MultiplayerSpawner will seamlessly synchronize it.
+		container.add_child(item_instance, true)
+	else:
+		print("ItemSpawnPoint: Could not find ItemsContainer at %s" % Global.ITEMS_CONTAINER_PATH)
+		# Fallback to current parent if container not found
+		get_parent().add_child(item_instance, true)
 
 	# We are done here, remove the spawn point
 	queue_free()

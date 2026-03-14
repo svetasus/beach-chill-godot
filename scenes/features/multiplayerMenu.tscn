@@ -42,5 +42,14 @@ offset_top = 338.0
 offset_right = 692.0
 offset_bottom = 492.0
 
+[node name="AccountIDEntry" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 167.0
+offset_top = 220.0
+offset_right = 692.0
+offset_bottom = 300.0
+placeholder_text = "Enter Account ID (For local testing)"
+alignment = 1
+
 [connection signal="pressed" from="HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="JoinButton" to="." method="_on_join_button_pressed"]

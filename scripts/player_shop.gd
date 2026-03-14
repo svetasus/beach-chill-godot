@@ -16,7 +16,8 @@ func interact(player: Node3D):
 	var ui = shop_ui_scene.instantiate()
 
 	if player.has_method("open_ui"):
-		player.open_ui(ui)
+		if not player.open_ui(ui):
+			return
 	else:
 		print("ERROR: player does not have open_ui method!")
 		return

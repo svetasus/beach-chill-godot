@@ -63,7 +63,7 @@ func _process(delta):
 	# WARNING: If this is a child of the BaseItem, 
 	# make sure the BaseItem gave authority to the player!
 	# If you want it to beep for everyone, remove the authority check.
-	if not is_multiplayer_authority(): return
+	if not multiplayer.has_multiplayer_peer() or not is_multiplayer_authority(): return
 	
 	if not active_treasure or not is_instance_valid(active_treasure):
 		active_treasure = null

@@ -17,7 +17,8 @@ func interact(player: Node3D):
 	var ui = chest_ui_scene.instantiate()
 
 	if player.has_method("open_ui"):
-		player.open_ui(ui)
+		if not player.open_ui(ui):
+			return # UI was blocked/closed
 	else:
 		print("ERROR: player does not have open_ui method!")
 		return
@@ -45,6 +46,9 @@ func deposit_item(item_node: Node3D, player_id: int):
 	item_node.destroy_item.rpc()
 	print("SERVER: Item stored! Inventory size: ", inventory.size())
 
+	# 3. Update all clients
+	_rpc_update_inventory.rpc(inventory)
+
 # --- 2. WITHDRAWING (CLIENT ASKS SERVER) ---
 
 # The UI calls this RPC when a player clicks an item button
@@ -66,22 +70,29 @@ func request_withdraw(item_index: int):
 	var path_to_spawn = inventory[item_index]
 	inventory.remove_at(item_index)
 	
-	# 3. Spawn the physical item back into the world
+	# 3. Update all clients
+	_rpc_update_inventory.rpc(inventory)
+
+	# 4. Spawn the physical item back into the world
 	_spawn_physical_item(path_to_spawn)
 
 func _spawn_physical_item(path: String):
 	var new_item = item_scene.instantiate()
-	new_item.name = "Item_Extracted_" + str(Time.get_ticks_msec())
 	
-	# Add to world BEFORE pushing data (The Patience Patch!)
+	# Fix Godot 4 MultiplayerSpawner errors by setting transform BEFORE add_child
+	new_item.position = spawn_point.global_position
+	new_item.data_path = path
+	
 	items_container.add_child(new_item, true)
-	new_item.global_position = spawn_point.global_position
-	
-	await get_tree().process_frame
-	
-	if is_instance_valid(new_item):
-		new_item.data_path = path
-		print("SERVER: Item extracted and spawned successfully.")
+	print("SERVER: Item extracted and spawned successfully.")
 
 func get_interaction_text() -> String:
 	return "[E] Open Storage"
+
+@rpc("any_peer", "call_local", "reliable")
+func _rpc_update_inventory(new_inventory: Array):
+	inventory = new_inventory
+	# Optional: If the client currently has the UI open for THIS chest, trigger a refresh!
+	var ui = get_tree().root.find_child("StorageUI", true, false)
+	if ui and ui.has_method("refresh_inventory") and ui.target_chest == self:
+		ui.refresh_inventory()
