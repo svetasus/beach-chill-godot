@@ -10,28 +10,29 @@
 [ext_resource type="PackedScene" uid="uid://buhj3mje6xcxu" path="res://scenes/features/playerShopUI.tscn" id="ui_scene_res"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w121p"]
-albedo_color = Color(0.223529, 0.415686, 1, 1)
+albedo_color = Color(0.136075, 0.25138, 0.380331, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_iahuh"]
 material = SubResource("StandardMaterial3D_w121p")
-top_radius = 1.0
 bottom_radius = 1.0
-height = 1.0
+height = 0.5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pv6dc"]
-albedo_color = Color(0.223529, 0.415686, 1, 1)
+albedo_color = Color(0.898039, 0.819608, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_bd0yg"]
 material = SubResource("StandardMaterial3D_pv6dc")
+size = Vector3(0.5, 0.3, 0.5)
 
 [sub_resource type="BoxMesh" id="BoxMesh_4ahvm"]
-size = Vector3(1.5, 0.1, 2)
+size = Vector3(1.5, 0.1, 1)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_635m7"]
-height = 1.0
+height = 0.5
 radius = 1.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_22fi0"]
+size = Vector3(0.5, 0.3, 0.5)
 
 [node name="Shop" type="StaticBody3D" node_paths=PackedStringArray("spawn_point")]
 collision_layer = 4
@@ -45,16 +46,17 @@ items_for_sale = Array[ExtResource("4_w121p")]([ExtResource("res_shell_1"), ExtR
 [node name="Model" type="Node3D" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.24682, 0)
 mesh = SubResource("CylinderMesh_iahuh")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.496212, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.363348, 0)
 mesh = SubResource("BoxMesh_bd0yg")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.551951, 1.36802)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.551951, 1.05472)
 mesh = SubResource("BoxMesh_4ahvm")
 
 [node name="Name" type="Label3D" parent="."]
@@ -68,8 +70,9 @@ font_size = 40
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.840156, 2.09965)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.248781, 0)
 shape = SubResource("CylinderShape3D_635m7")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.500549, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.356186, 0)
 shape = SubResource("BoxShape3D_22fi0")

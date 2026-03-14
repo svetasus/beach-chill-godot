@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://7bo1jg4ha4dw"]
+[gd_scene load_steps=32 format=3 uid="uid://7bo1jg4ha4dw"]
 
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
 [ext_resource type="Material" uid="uid://bm4ar1a4q50vg" path="res://resources/materials/ocean_material.tres" id="3_6mrmg"]
@@ -50,15 +50,21 @@ albedo_texture = ExtResource("1_66c2g")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gnpat"]
 albedo_texture = ExtResource("3_um12m")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_amqpa"]
+albedo_texture = ExtResource("3_um12m")
+
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_f462bb996f65"]
 height = 1.0
-radius = 30.0
+radius = 15.0
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cf4c6525e0d9"]
-radius = 14.8
+radius = 8.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_76b23cc97af8"]
 size = Vector3(15, 1, 20)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_mqw0e"]
+points = PackedVector3Array(-1.691, -0.042, 0, 1.343, 1.021, 0, 2.136, 0.996, 0, 2.134, -0.096, 0, -1.691, -0.042, 3, 1.343, 1.021, 3, 2.136, 0.996, 3, 2.134, -0.096, 3)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_5p50t"]
 material = ExtResource("3_6mrmg")
@@ -86,10 +92,16 @@ size = Vector3(10, 4, 10)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gatpe"]
 transparency = 1
-albedo_color = Color(1, 1, 0.380392, 0.454902)
+albedo_color = Color(1, 1, 0.380392, 0.27451)
 
 [sub_resource type="BoxMesh" id="BoxMesh_gqja0"]
 material = SubResource("StandardMaterial3D_gatpe")
+size = Vector3(10, 4, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i1od3"]
+size = Vector3(10, 4, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gnpat"]
 size = Vector3(10, 4, 10)
 
 [node name="Level01Default" type="Node3D"]
@@ -107,21 +119,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.80351)
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="LevelDesign"]
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="LevelDesign/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.639, -0.7, 8.805)
-radius = 30.0
+[node name="CSGCylinderLeft" type="CSGCylinder3D" parent="LevelDesign/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.6191, -0.7, 8.805)
+radius = 15.0
 height = 1.0
+sides = 16
 material = SubResource("StandardMaterial3D_i1od3")
 
-[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="LevelDesign/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.787, -0.55, -10.985)
-radius = 30.0
+[node name="CSGCylinderRight" type="CSGCylinder3D" parent="LevelDesign/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.787, -0.7, -10.985)
+radius = 16.0
 height = 1.0
+sides = 16
 material = SubResource("StandardMaterial3D_uyy6t")
 
 [node name="Hub" type="CSGCylinder3D" parent="LevelDesign/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.61099, 0, 4.13722)
-radius = 15.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0540462, 0, 2.15292)
+radius = 8.0
 sides = 16
 material = SubResource("StandardMaterial3D_gnpat")
 
@@ -129,23 +143,33 @@ material = SubResource("StandardMaterial3D_gnpat")
 transform = Transform3D(0.7159, 0, 0.698203, 0, 1, 0, -0.698203, 0, 0.7159, -20.497, -1.9, 20.435)
 size = Vector3(15, 1, 20)
 
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="LevelDesign/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.68772, 0, 4.28275)
+polygon = PackedVector2Array(-1.69123, -0.0422139, 1.34256, 1.0209, 2.13621, 0.996002, 2.13365, -0.0960317)
+depth = 3.0
+material = SubResource("StandardMaterial3D_amqpa")
+
 [node name="GroundCollision" type="StaticBody3D" parent="LevelDesign"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelDesign/GroundCollision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.639, -0.7, 8.805)
+[node name="CollisionShapeLeftBeach" type="CollisionShape3D" parent="LevelDesign/GroundCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.6191, -0.7, 8.805)
 shape = SubResource("CylinderShape3D_f462bb996f65")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="LevelDesign/GroundCollision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.787, -0.55, -10.985)
+[node name="CollisionShapeRightBeach" type="CollisionShape3D" parent="LevelDesign/GroundCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.787, -0.7, -10.985)
 shape = SubResource("CylinderShape3D_f462bb996f65")
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="LevelDesign/GroundCollision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.61099, 0, 4.13722)
+[node name="CollisionShapeHub" type="CollisionShape3D" parent="LevelDesign/GroundCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0538245, 0, 2.153)
 shape = SubResource("CylinderShape3D_cf4c6525e0d9")
 
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="LevelDesign/GroundCollision"]
 transform = Transform3D(0.7159, 0, 0.698203, 0, 1, 0, -0.698203, 0, 0.7159, -20.497, -1.9, 20.435)
 shape = SubResource("BoxShape3D_76b23cc97af8")
+
+[node name="CollisionShapePolygon" type="CollisionShape3D" parent="LevelDesign/GroundCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.68638, 0, 1.26821)
+shape = SubResource("ConvexPolygonShape3D_mqw0e")
 
 [node name="Markers" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
@@ -154,12 +178,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.986929, 0)
 
 [node name="Marker3D" type="Marker3D" parent="Markers/PlayerSpawnMarkers"]
-transform = Transform3D(-0.442711, 0, 0.896664, 0, 1, 0, -0.896664, 0, -0.442711, 10, 1, -5)
+transform = Transform3D(0.966483, 0, -0.256728, 0, 1, 0, 0.256728, 0, 0.966483, 1.363, 1, -4.52713)
 script = ExtResource("player_sp_script")
 player_scene = ExtResource("player_scene")
 
 [node name="Marker3D2" type="Marker3D" parent="Markers/PlayerSpawnMarkers"]
-transform = Transform3D(-0.768741, 0, -0.63956, 0, 1, 0, 0.63956, 0, -0.768741, -1.38465, 1, -5)
+transform = Transform3D(0.996573, 0, -0.0827209, 0, 1, 0, 0.0827209, 0, 0.996573, -1.38465, 1, -5)
 script = ExtResource("player_sp_script")
 player_scene = ExtResource("player_scene")
 
@@ -167,7 +191,7 @@ player_scene = ExtResource("player_scene")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1738, 0)
 
 [node name="Marker3D" type="Marker3D" parent="Markers/TentSpawnMarkers"]
-transform = Transform3D(0.707551, 0, -0.706662, 0, 1, 0, 0.706662, 0, 0.707551, 12.2, 0, -7.91581)
+transform = Transform3D(0.545912, 0, -0.837842, 0, 1, 0, 0.837842, 0, 0.545912, 4.1749, 0, -7.91581)
 script = ExtResource("tent_sp_script")
 tent_scene = ExtResource("tent_scene")
 
@@ -192,13 +216,31 @@ draw_pass_1 = SubResource("QuadMesh_gatpe")
 [node name="AutospawnAreas" type="Node3D" parent="."]
 
 [node name="Area3D" type="Area3D" parent="AutospawnAreas"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2.04143, 6.01974)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.7386, 2.04143, 3.74067)
 script = ExtResource("6_ic7dp")
 spawn_profile = ExtResource("7_gqja0")
 treasure_profile = ExtResource("8_uyy6t")
+max_items = 6
+max_treasures = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AutospawnAreas/Area3D"]
 shape = SubResource("BoxShape3D_r84l6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="AutospawnAreas/Area3D"]
+visible = false
 mesh = SubResource("BoxMesh_gqja0")
+
+[node name="Area3D2" type="Area3D" parent="AutospawnAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.6221, 0.428391, -24.1662)
+script = ExtResource("6_ic7dp")
+spawn_profile = ExtResource("7_gqja0")
+treasure_profile = ExtResource("8_uyy6t")
+max_items = 6
+max_treasures = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AutospawnAreas/Area3D2"]
+shape = SubResource("BoxShape3D_i1od3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AutospawnAreas/Area3D2"]
+visible = false
+mesh = SubResource("BoxMesh_gnpat")
