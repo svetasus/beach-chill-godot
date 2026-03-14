@@ -167,6 +167,27 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 		
 	move_and_slide()
+
+	# Stair-stepping logic (like the cart's floor checking)
+	if direction != Vector3.ZERO and is_on_floor():
+		var space_state = get_world_3d().direct_space_state
+		# Raycast from 0.4 units high (knee height), looking down 0.5 units,
+		# positioned slightly ahead of the player in their movement direction
+		var forward_offset = direction * 0.5
+		var ray_origin = global_position + forward_offset + Vector3(0, 0.4, 0)
+		var ray_end = ray_origin + Vector3(0, -0.5, 0)
+
+		var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
+		query.exclude = [self.get_rid()]
+		query.collision_mask = 1 # Only hit environment
+
+		var result = space_state.intersect_ray(query)
+		if result:
+			var step_height = result.position.y - global_position.y
+			# If the ground ahead is slightly higher than our current feet (between 0.05 and 0.4 units high)
+			if step_height > 0.05 and step_height <= 0.4:
+				# Smoothly slide the player up the step
+				global_position.y = lerp(global_position.y, result.position.y, 15.0 * delta)
 	
 	
 func _unhandled_input(event):

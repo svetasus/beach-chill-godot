@@ -149,26 +149,34 @@ func _physics_process(delta):
 
 	else:
 		# --- ABANDONED LOGIC ---
+		var wants_to_freeze = false
+
 		# Always apply gravity when not driven
 		if not is_on_floor():
 			velocity += get_gravity() * delta
+		else:
+			# Apply friction/drag on XZ when not driven
+			velocity.x = move_toward(velocity.x, 0, 10.0 * delta)
+			velocity.z = move_toward(velocity.z, 0, 10.0 * delta)
 
-		# Apply friction/drag on XZ when not driven
-		velocity.x = move_toward(velocity.x, 0, 10.0 * delta)
-		velocity.z = move_toward(velocity.z, 0, 10.0 * delta)
+			# If we are barely moving on the floor, freeze completely to stop item jitter
+			if velocity.length_squared() < 0.01:
+				velocity = Vector3.ZERO
+				wants_to_freeze = true
 
-		move_and_slide()
+		if not wants_to_freeze:
+			move_and_slide()
 
-		# Rotate to align with the floor if resting on it
-		if is_on_floor():
-			var floor_normal = get_floor_normal()
-			var target_forward = -global_transform.basis.z.normalized()
+			# Rotate to align with the floor if resting on it
+			if is_on_floor():
+				var floor_normal = get_floor_normal()
+				var target_forward = -global_transform.basis.z.normalized()
 
-			if abs(floor_normal.dot(target_forward)) < 0.99:
-				var right = target_forward.cross(floor_normal).normalized()
-				var forward = floor_normal.cross(right).normalized()
-				var target_basis = Basis(right, floor_normal, -forward)
-				global_transform.basis = global_transform.basis.slerp(target_basis, 10.0 * delta)
+				if abs(floor_normal.dot(target_forward)) < 0.99:
+					var right = target_forward.cross(floor_normal).normalized()
+					var forward = floor_normal.cross(right).normalized()
+					var target_basis = Basis(right, floor_normal, -forward)
+					global_transform.basis = global_transform.basis.slerp(target_basis, 10.0 * delta)
 
 func remove_item(item_node: Node3D):
 	if inventory_nodes.has(item_node):
