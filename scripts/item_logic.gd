@@ -123,7 +123,7 @@ func _apply_physics_state(should_freeze: bool, impulse: Vector3, pos: Vector3, r
 func _ready():
 	# Ensuring the label starts with the correct text
 	if has_node("NamePivot/Name"):
-		$NamePivot/Name.text = item_name
+		$NamePivot/Name.text = display_name
 	$NamePivot.hide()
 	
 	# Connecting your original proximity signals
@@ -175,6 +175,10 @@ func _set_data(new_data):
 			child.queue_free()
 			
 		# 2. Spawn Visuals (The Scene from your ItemData)
+		# Ensure data_path is populated if this item was manually placed with only 'data'
+		if data_path == "" and data.resource_path != "":
+			data_path = data.resource_path
+
 		if data.scene:
 			var skin = data.scene.instantiate()
 			$MeshAnchor.add_child(skin)

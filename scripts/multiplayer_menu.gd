@@ -18,9 +18,21 @@ func _load_or_generate_account_id():
 		var file = FileAccess.open(save_path, FileAccess.WRITE)
 		file.store_string(Global.account_id)
 		file.close()
+	# Fix for local testing where multiple clients run from the same `user://` directory.
+	if OS.has_feature("debug") and OS.get_cmdline_args().has("--client"):
+		Global.account_id += "_local_" + str(OS.get_process_id())
+
 	print("Local Account ID: ", Global.account_id)
 
+	var account_entry = get_node_or_null("AccountIDEntry")
+	if account_entry:
+		account_entry.text = Global.account_id
+
 func _on_host_button_pressed():
+	var account_entry = get_node_or_null("AccountIDEntry")
+	if account_entry and account_entry.text.strip_edges() != "":
+		Global.account_id = account_entry.text.strip_edges()
+
 	# Set global team money setting based on the check box
 	var checkbox = get_node_or_null("TeamMoneyCheckBox")
 	if checkbox:
@@ -50,6 +62,10 @@ func _on_host_button_pressed():
 	self.hide()
 
 func _on_join_button_pressed():
+	var account_entry = get_node_or_null("AccountIDEntry")
+	if account_entry and account_entry.text.strip_edges() != "":
+		Global.account_id = account_entry.text.strip_edges()
+
 	# Get the text from your LineEdit node
 	var address = $AddressEntry.text # Make sure the name matches your LineEdit node
 	
