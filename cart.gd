@@ -3,6 +3,8 @@ extends CharacterBody3D
 @export var driver_id: int = 0
 var driver_node: Node3D = null
 
+@export var floor_offset: float = 0.45
+
 var inventory_nodes: Array[Node3D] = []
 
 func _ready():
@@ -121,13 +123,13 @@ func _physics_process(delta):
 
 		var floor_normal = Vector3.UP
 		if result:
-			# If we found the floor, snap the target Y to the hit point
-			# Assuming the cart origin is at its base. If it's centered, add vertical offset.
-			target_pos.y = result.position.y
+			# If we found the floor, snap the target Y to the hit point + floor_offset
+			# so the cart doesn't sink into the ground.
+			target_pos.y = result.position.y + floor_offset
 			floor_normal = result.normal
 		else:
 			# Fallback if no floor found (e.g., hanging off an edge)
-			target_pos.y = driver_node.global_position.y
+			target_pos.y = driver_node.global_position.y + floor_offset
 
 		# 3. Smoothly lerp position towards the target
 		global_position = global_position.lerp(target_pos, 15.0 * delta)
