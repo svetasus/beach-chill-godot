@@ -909,11 +909,11 @@ func _rpc_request_deposit(chest_path: NodePath, item_path: NodePath):
 		
 		
 		
-func open_ui(ui_instance: Control):
+func open_ui(ui_instance: Control) -> bool:
 	# Don't open it if it's already open
 	if current_ui != null and is_instance_valid(current_ui):
 		ui_instance.queue_free()
-		return
+		return false
 		
 	# 1. Assign the UI
 	current_ui = ui_instance
@@ -921,6 +921,7 @@ func open_ui(ui_instance: Control):
 	
 	# 2. Unlock the mouse so the player can click the grid
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	return true
 
 
 @rpc("any_peer", "call_local")

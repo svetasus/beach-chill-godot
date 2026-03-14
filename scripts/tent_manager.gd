@@ -11,7 +11,7 @@ var active_tents = {}
 var save_timer: float = 0.0
 
 func _process(delta: float):
-	if not multiplayer.is_server(): return
+	if not multiplayer.has_multiplayer_peer() or not multiplayer.is_server(): return
 	save_timer += delta
 	if save_timer >= 10.0:
 		save_timer = 0.0
