@@ -1,4 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://cq60j7ahji7b5"]
+[gd_scene load_steps=5 format=3 uid="uid://cq60j7ahji7b5"]
+
+[ext_resource type="PackedScene" uid="uid://5axe4rlrqta" path="res://resources/models/pink_shell.glb" id="1_v5ed8"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7oq0p"]
 albedo_color = Color(1, 0.101961, 1, 1)
@@ -17,7 +19,11 @@ radius = 0.2
 
 [node name="Model" type="Node3D" parent="."]
 
+[node name="pink_shell" parent="Model" instance=ExtResource("1_v5ed8")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
+visible = false
 mesh = SubResource("CylinderMesh_umd43")
 skeleton = NodePath("../..")
 

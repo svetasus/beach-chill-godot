@@ -35,7 +35,6 @@ mesh = SubResource("CylinderMesh_ykuq6")
 skeleton = NodePath("../MeshHandle")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_detector")
 
 [node name="Functionality" type="Node3D" parent="."]
