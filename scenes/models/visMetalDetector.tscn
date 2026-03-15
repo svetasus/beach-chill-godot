@@ -17,7 +17,7 @@ bottom_radius = 0.05
 height = 0.08
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_detector"]
-size = Vector3(0.3, 0.8, 0.3)
+size = Vector3(0.3, 0.3, 0.8)
 
 [node name="ToolMetalDetector" type="Node3D"]
 script = ExtResource("1_rnwdl")
@@ -25,17 +25,17 @@ script = ExtResource("1_rnwdl")
 [node name="Model" type="Node3D" parent="."]
 
 [node name="MeshHandle" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -0.00268742, 0.999997, 0, -0.999997, -0.00268742, 0, -0.0328819, 0.00378804)
 mesh = SubResource("CapsuleMesh_okkok")
 skeleton = NodePath("../MeshHead")
 
 [node name="MeshHead" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, 0.000472784, -0.06623, -0.285689)
+transform = Transform3D(1, 0, 0, 0, -0.00268742, 0.999997, 0, -0.999997, -0.00268742, 0.000472784, -0.033348, -0.289477)
 mesh = SubResource("CylinderMesh_ykuq6")
 skeleton = NodePath("../MeshHandle")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 0.253606, -0.967308, 0, 0.967308, 0.253606, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_detector")
 
 [node name="Functionality" type="Node3D" parent="."]
@@ -47,7 +47,7 @@ stream = ExtResource("2_cvchd")
 [node name="TipLight" type="OmniLight3D" parent="Functionality"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35912, -0.458842)
 light_color = Color(1, 0.705882, 1, 1)
-omni_range = 1.0
+omni_range = 0.8
 
 [node name="IndicatorLight" type="OmniLight3D" parent="Functionality"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.220867, -0.204797)
