@@ -27,7 +27,7 @@ height = 1.0
 script = ExtResource("1_ujxg5")
 
 [node name="Model" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.331519, -0.943448, 0, 0.943448, 0.331519, 0, -0.281059, 0.149456)
+transform = Transform3D(1, 0, 0, 0, 0.331519, -0.943448, 0, 0.943448, 0.331519, 0, 0, 0)
 
 [node name="MeshHead" type="MeshInstance3D" parent="Model"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.241629, -0.0393937)
