@@ -216,9 +216,18 @@ func _update_collision_from_skin(skin_node):
 	var custom_node = _find_shape_recursive(skin_node)
 	
 	if custom_node:
-		# Copy the shape and transform from the skin to our root collision
+		# Copy the shape from the skin
 		$CollisionShape3D.shape = custom_node.shape
-		$CollisionShape3D.global_transform = custom_node.global_transform
+
+		# Calculate the exact local transform relative to this RigidBody3D
+		# This prevents global_transform sync issues that cause items to stand vertically
+		var local_trans = Transform3D()
+		var current = custom_node
+		while current and current != self:
+			local_trans = current.transform * local_trans
+			current = current.get_parent()
+
+		$CollisionShape3D.transform = local_trans
 		$CollisionShape3D.disabled = false
 	else:
 		print("--- [ITEM] ERROR: No CollisionShape3D found in skin! ---")
