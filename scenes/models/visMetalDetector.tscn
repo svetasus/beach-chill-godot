@@ -16,9 +16,8 @@ top_radius = 0.15
 bottom_radius = 0.05
 height = 0.08
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nceh7"]
-radius = 0.15
-height = 0.8
+[sub_resource type="BoxShape3D" id="BoxShape3D_detector"]
+size = Vector3(0.3, 0.8, 0.3)
 
 [node name="ToolMetalDetector" type="Node3D"]
 script = ExtResource("1_rnwdl")
@@ -26,18 +25,18 @@ script = ExtResource("1_rnwdl")
 [node name="Model" type="Node3D" parent="."]
 
 [node name="MeshHandle" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, -0.000472784, -0.325622, 0.0792804)
+transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_okkok")
 skeleton = NodePath("../MeshHead")
 
 [node name="MeshHead" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, 0, -0.391852, -0.206409)
+transform = Transform3D(1, 0, 0, 0, -0.226906, 0.973917, 0, -0.973917, -0.226906, 0.000472784, -0.06623, -0.285689)
 mesh = SubResource("CylinderMesh_ykuq6")
 skeleton = NodePath("../MeshHandle")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 0.253606, -0.967308, 0, 0.967308, 0.253606, -0.00140071, -0.330496, 0.0332164)
-shape = SubResource("CapsuleShape3D_nceh7")
+transform = Transform3D(1, 0, 0, 0, 0.253606, -0.967308, 0, 0.967308, 0.253606, 0, 0, 0)
+shape = SubResource("BoxShape3D_detector")
 
 [node name="Functionality" type="Node3D" parent="."]
 
