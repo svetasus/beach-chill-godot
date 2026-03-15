@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://7bo1jg4ha4dw"]
+[gd_scene load_steps=33 format=3 uid="uid://7bo1jg4ha4dw"]
 
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
 [ext_resource type="Material" uid="uid://bm4ar1a4q50vg" path="res://resources/materials/ocean_material.tres" id="3_6mrmg"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://dnw1sundtvpw0" path="res://scripts/autospawn_area.gd" id="6_ic7dp"]
 [ext_resource type="Resource" uid="uid://b6fkh3ijbv1h3" path="res://resources/spawn_profiles/spawn_profile_default.tres" id="7_gqja0"]
 [ext_resource type="Resource" uid="uid://d22djgxra57mn" path="res://resources/spawn_profiles/treasure_profile_default.tres" id="8_uyy6t"]
+[ext_resource type="Resource" uid="uid://cwstu48thm4i6" path="res://resources/spawn_profiles/spawn_prof_basic_tools.tres" id="12_gnpat"]
 [ext_resource type="PackedScene" uid="uid://b4v64l3u3emau" path="res://scenes/features/player.tscn" id="player_scene"]
 [ext_resource type="Script" uid="uid://b323jxfhhka6t" path="res://scripts/player_spawn_point.gd" id="player_sp_script"]
 [ext_resource type="PackedScene" uid="uid://bssf45p8hu43w" path="res://scenes/features/playerTent.tscn" id="tent_scene"]
@@ -233,7 +234,7 @@ mesh = SubResource("BoxMesh_gqja0")
 [node name="ToolsArea" type="Area3D" parent="AutospawnAreas"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58207, 0.636461, -3.89388)
 script = ExtResource("6_ic7dp")
-spawn_profile = ExtResource("7_gqja0")
+spawn_profile = ExtResource("12_gnpat")
 treasure_profile = ExtResource("8_uyy6t")
 max_items = 3
 max_treasures = 0
