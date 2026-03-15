@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://ipa8enh86p2g" path="res://scripts/inventory_ui.gd" id="2_g2els"]
 [ext_resource type="PackedScene" uid="uid://cbcwb7nuw340m" path="res://ui/inventorySlot.tscn" id="3_qhqgy"]
 [ext_resource type="Script" uid="uid://ck2hp6el2v8jf" path="res://scripts/notification_area.gd" id="4_qlg0r"]
-[ext_resource type="PackedScene" uid="uid://c1yiyhtvd41gy" path="res://scenes/features/userNotifPop.tscn" id="5_tuyoq"]
+[ext_resource type="PackedScene" uid="uid://c1yiyhtvd41gy" path="res://scenes/features/UI/userNotifPop.tscn" id="5_tuyoq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
 albedo_color = Color(0.731745, 0.926235, 0.904053, 1)

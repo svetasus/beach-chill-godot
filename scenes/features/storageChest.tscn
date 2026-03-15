@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c0quiu648ix8c" path="res://scripts/storage_chest.gd" id="1_yv562"]
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="2_vxkq1"]
-[ext_resource type="PackedScene" uid="uid://fsmukwhgbabq" path="res://scenes/features/storageUI.tscn" id="ui_scene_res"]
+[ext_resource type="PackedScene" uid="uid://op1m3hxf358h" path="res://scenes/features/UI/storageUI.tscn" id="ui_scene_res"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxkq1"]
 albedo_color = Color(1, 0.654902, 0.329412, 1)

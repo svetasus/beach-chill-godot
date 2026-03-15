@@ -1,9 +1,9 @@
 [gd_scene load_steps=21 format=3 uid="uid://bssf45p8hu43w"]
 
-[ext_resource type="Script" uid="uid://b6rrpow7wx152" path="res://scripts/player_tent.gd" id="1_th7oj"]
-[ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="2_52xpw"]
-[ext_resource type="PackedScene" uid="uid://cxwxxb12345" path="res://scenes/features/tentRulesBlock.tscn" id="2_rules"]
-[ext_resource type="PackedScene" uid="uid://bupw5dclt1xdb" path="res://scenes/features/storageChest.tscn" id="3_chest"]
+[ext_resource type="Script" uid="uid://b6rrpow7wx152" path="res://scripts/player_tent.gd" id="1_cygui"]
+[ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="2_hocwk"]
+[ext_resource type="PackedScene" uid="uid://bupw5dclt1xdb" path="res://scenes/features/storageChest.tscn" id="3_agwyy"]
+[ext_resource type="PackedScene" uid="uid://cxwxxb12345" path="res://scenes/features/tent/tentRulesBlock.tscn" id="4_0opyq"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_th7oj"]
 size = Vector3(0.2, 3, 4)
@@ -59,7 +59,7 @@ size = Vector3(4, 2, 4)
 size = Vector3(0.1, 0.1, 4)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_guw58"]
-albedo_texture = ExtResource("2_52xpw")
+albedo_texture = ExtResource("2_hocwk")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fuu75"]
 material = SubResource("StandardMaterial3D_guw58")
@@ -73,7 +73,7 @@ material = SubResource("StandardMaterial3D_52xpw")
 size = Vector3(1, 0.05, 0.5)
 
 [node name="PlayerTent" type="Node3D"]
-script = ExtResource("1_th7oj")
+script = ExtResource("1_cygui")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 0)
@@ -172,7 +172,7 @@ mesh = SubResource("BoxMesh_guw58")
 [node name="storageMarker" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.14379, 0.653087, -1.52094)
 
-[node name="StorageChest" parent="storageMarker" instance=ExtResource("3_chest")]
+[node name="StorageChest" parent="storageMarker" instance=ExtResource("3_agwyy")]
 
 [node name="NameLabel" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 3)
@@ -181,7 +181,7 @@ text = "Player's Tent"
 font_size = 28
 outline_size = 10
 
-[node name="TentRulesBlock" parent="." instance=ExtResource("2_rules")]
+[node name="TentRulesBlock" parent="." instance=ExtResource("4_0opyq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.36615, 0.54951, -1.41484)
 
 [node name="TentBarrier" type="StaticBody3D" parent="."]

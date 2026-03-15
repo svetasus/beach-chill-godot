@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cmpknns23ho7"]
 
 [ext_resource type="Script" uid="uid://8nqqregyc0nc" path="res://scripts/tent_manager.gd" id="1_nhnu7"]
-[ext_resource type="PackedScene" uid="uid://bssf45p8hu43w" path="res://scenes/features/playerTent.tscn" id="2_hbnmv"]
+[ext_resource type="PackedScene" uid="uid://bssf45p8hu43w" path="res://scenes/features/tent/playerTent.tscn" id="2_hbnmv"]
 
 [node name="TentManager" type="Node3D"]
 script = ExtResource("1_nhnu7")

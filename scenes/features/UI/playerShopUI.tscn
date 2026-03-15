@@ -1,11 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://fsmukwhgbabq"]
+[gd_scene load_steps=2 format=3 uid="uid://buhj3mje6xcxu"]
 
-[ext_resource type="Script" uid="uid://bqxycdp37hv0j" path="res://scripts/storage_ui.gd" id="1_cec7o"]
+[ext_resource type="Script" uid="uid://d1y62a7o88qrm" path="res://scripts/player_shop_ui.gd" id="1_axxox"]
 
-[node name="StorageUi" type="Control"]
+[node name="ShopUi" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_cec7o")
+script = ExtResource("1_axxox")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0

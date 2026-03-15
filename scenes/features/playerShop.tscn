@@ -7,7 +7,7 @@
 [ext_resource type="Resource" uid="uid://k81noy3tielt" path="res://resources/items/shell_001_data.tres" id="res_shell_1"]
 [ext_resource type="Resource" uid="uid://dqqv0qpqsbk76" path="res://resources/items/shell_002_data.tres" id="res_shell_2"]
 [ext_resource type="Resource" uid="uid://b1hcfs0kip2o2" path="res://resources/items/shovel_01_data.tres" id="res_shovel"]
-[ext_resource type="PackedScene" uid="uid://buhj3mje6xcxu" path="res://scenes/features/playerShopUI.tscn" id="ui_scene_res"]
+[ext_resource type="PackedScene" uid="uid://buhj3mje6xcxu" path="res://scenes/features/UI/playerShopUI.tscn" id="ui_scene_res"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w121p"]
 albedo_color = Color(0.136075, 0.25138, 0.380331, 1)

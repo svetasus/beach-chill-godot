@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7wkfs2j16n1j"
-path.s3tc="res://.godot/imported/bear_statue.png-51736351540d1a5f7ff6c1414f5f2cf3.s3tc.ctex"
+uid="uid://cnoe80sil1hsb"
+path.s3tc="res://.godot/imported/plus.png-a0dff2ca70239f49b229e5620f825fea.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://textures/bear_statue.png"
-dest_files=["res://.godot/imported/bear_statue.png-51736351540d1a5f7ff6c1414f5f2cf3.s3tc.ctex"]
+source_file="res://textures/plus.png"
+dest_files=["res://.godot/imported/plus.png-a0dff2ca70239f49b229e5620f825fea.s3tc.ctex"]
 
 [params]
 
