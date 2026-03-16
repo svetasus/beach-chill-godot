@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://cc3c4thvq4jrg" path="res://scenes/features/combiner/combinerFull.tscn" id="16_gqmmt"]
 [ext_resource type="PackedScene" uid="uid://bio5ygciicsu6" path="res://scenes/features/combiner/artifactCombiner.tscn" id="16_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://cmpknns23ho7" path="res://scenes/features/tent/tentManager.tscn" id="17_muem4"]
+[ext_resource type="PackedScene" uid="uid://cxwxxb12348" path="res://scenes/features/houseManager.tscn" id="18_house_manager"]
 [ext_resource type="Resource" uid="uid://dtl3pr4ht8fma" path="res://resources/items/furniture_armchair.tres" id="17_yc10j"]
 [ext_resource type="Script" uid="uid://ctmokqka65mly" path="res://scripts/treasure_spawn_point.gd" id="18_treasurespawnpoint"]
 [ext_resource type="PackedScene" uid="uid://2oj6er2ejk2" path="res://scenes/features/cart.tscn" id="20_gqmmt"]
@@ -52,6 +53,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.90326, 1.32555, 13.2021)
 [node name="Containers" type="Node3D" parent="World"]
 
 [node name="TentsContainer" type="Node3D" parent="World/Containers"]
+
+[node name="HousesContainer" type="Node3D" parent="World/Containers"]
+
+[node name="HouseEntrancesContainer" type="Node3D" parent="World/Containers"]
 
 [node name="TreasuresContainer" type="Node3D" parent="World/Containers"]
 
@@ -112,12 +117,20 @@ spawn_path = NodePath("../../World/Containers/TreasuresContainer")
 [node name="MultiplayerSpawner_Tents" type="MultiplayerSpawner" parent="MultiplayerSpawners"]
 spawn_path = NodePath("../../World/Containers/TentsContainer")
 
+[node name="MultiplayerSpawner_Houses" type="MultiplayerSpawner" parent="MultiplayerSpawners"]
+spawn_path = NodePath("../../World/Containers/HousesContainer")
+
+[node name="MultiplayerSpawner_HouseEntrances" type="MultiplayerSpawner" parent="MultiplayerSpawners"]
+spawn_path = NodePath("../../World/Containers/HouseEntrancesContainer")
+
 [node name="LevelLoaded" type="Node3D" parent="."]
 
 [node name="Level01Default" parent="LevelLoaded" instance=ExtResource("11_ya4ey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.93131, 0, 17.1483)
 
 [node name="TentManager" parent="." instance=ExtResource("17_muem4")]
+
+[node name="HouseManager" parent="." instance=ExtResource("18_house_manager")]
 
 [node name="Cart" parent="." instance=ExtResource("20_gqmmt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.66695, 0.241481, -2.45948)

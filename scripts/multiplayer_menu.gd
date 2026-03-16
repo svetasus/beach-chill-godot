@@ -141,6 +141,10 @@ func add_player(peer_id):
 	var tent_manager = get_tree().root.get_node_or_null("Main/TentManager")
 	if tent_manager:
 		tent_manager.spawn_tent_for_player(peer_id)
+
+	var house_manager = get_tree().root.get_node_or_null("Main/HouseManager")
+	if house_manager:
+		house_manager.spawn_house_for_player(peer_id)
 		
 	
 	print("Spawned player ", peer_id, " at ", player.global_position)
@@ -155,3 +159,7 @@ func remove_player(peer_id: int):
 	var tent_manager = get_tree().root.get_node_or_null("Main/TentManager")
 	if tent_manager:
 		tent_manager.remove_tent(peer_id)
+
+	var house_manager = get_tree().root.get_node_or_null("Main/HouseManager")
+	if house_manager:
+		house_manager.remove_house(peer_id)

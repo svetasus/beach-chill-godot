@@ -1,3 +1,48 @@
-[gd_scene format=3 uid="uid://thk0f506mm6d"]
+[gd_scene load_steps=5 format=3 uid="uid://thk0f506mm6d"]
 
-[node name="OuterTent" type="Node3D"]
+[ext_resource type="Script" uid="uid://dp6r5d3r7e5r0" path="res://scripts/player_house.gd" id="1_house"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_house"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_exit"]
+size = Vector3(3, 3, 3)
+
+[node name="PlayerHouse" type="Node3D"]
+script = ExtResource("1_house")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("BoxMesh_house")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="ExitArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1, -8)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitArea"]
+shape = SubResource("BoxShape3D_exit")
+
+[node name="Label3D" type="Label3D" parent="ExitArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+text = "Exit"
+font_size = 64
+
+[node name="ExitMarker" type="Marker3D" parent="ExitArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -9)
+text = "Player's House"
+font_size = 128

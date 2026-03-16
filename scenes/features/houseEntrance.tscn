@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://cxwxxb12347"]
+
+[ext_resource type="Script" uid="uid://e1k9r0k9t1u2r" path="res://scripts/house_entrance.gd" id="1_entrance"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_entrance"]
+size = Vector3(2, 3, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_entrance"]
+size = Vector3(2, 3, 2)
+
+[node name="HouseEntrance" type="Node3D"]
+script = ExtResource("1_entrance")
+
+[node name="Visual" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("BoxMesh_entrance")
+
+[node name="EnterArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnterArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("BoxShape3D_entrance")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+text = "House Entrance"
+font_size = 64
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 3)
