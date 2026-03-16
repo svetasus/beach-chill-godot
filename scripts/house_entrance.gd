@@ -4,7 +4,7 @@ extends Node3D
 @onready var label = $Label3D
 @onready var spawn_point = $SpawnPoint
 
-var owner_id: int = -1
+@export var owner_id: int = -1
 var house_node: Node3D = null
 
 func _ready():
