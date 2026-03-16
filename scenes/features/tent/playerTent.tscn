@@ -65,11 +65,11 @@ albedo_texture = ExtResource("2_hocwk")
 material = SubResource("StandardMaterial3D_guw58")
 size = Vector2(3.8, 3.8)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_52xpw"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cygui"]
 albedo_color = Color(0.571116, 0.284561, 0.225404, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_guw58"]
-material = SubResource("StandardMaterial3D_52xpw")
+material = SubResource("StandardMaterial3D_cygui")
 size = Vector3(1, 0.05, 0.5)
 
 [node name="PlayerTent" type="Node3D"]

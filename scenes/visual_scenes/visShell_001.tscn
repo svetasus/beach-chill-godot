@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cq60j7ahji7b5"]
 
-[ext_resource type="PackedScene" uid="uid://5axe4rlrqta" path="res://resources/models/pink_shell.glb" id="1_v5ed8"]
+[ext_resource type="PackedScene" uid="uid://5axe4rlrqta" path="res://resources/models/pink_shell/pink_shell.glb" id="1_v5ed8"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7oq0p"]
 albedo_color = Color(1, 0.101961, 1, 1)

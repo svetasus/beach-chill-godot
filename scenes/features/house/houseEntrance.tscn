@@ -1,0 +1,54 @@
+[gd_scene load_steps=7 format=3 uid="uid://cxwxxb12347"]
+
+[ext_resource type="Script" uid="uid://c68qfk0ryapm1" path="res://scripts/house_entrance.gd" id="1_ww1k4"]
+[ext_resource type="Texture2D" uid="uid://bhhu17vs3cgpp" path="res://textures/Texturelabs_Wood_145S.jpg" id="2_wiycs"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_entrance"]
+properties/0/path = NodePath(".:owner_id")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:position")
+properties/1/spawn = true
+properties/1/replication_mode = 0
+properties/2/path = NodePath(".:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 0
+properties/3/path = NodePath(".:name")
+properties/3/spawn = true
+properties/3/replication_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1xsd5"]
+albedo_texture = ExtResource("2_wiycs")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_bg3aa"]
+material = SubResource("StandardMaterial3D_1xsd5")
+height = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_entrance"]
+size = Vector3(1.5, 2, 1.5)
+
+[node name="HouseEntrance" type="Node3D"]
+script = ExtResource("1_ww1k4")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_entrance")
+
+[node name="Visual" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.377589, 0)
+mesh = SubResource("CylinderMesh_bg3aa")
+
+[node name="EnterArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnterArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.893983, 0)
+shape = SubResource("BoxShape3D_entrance")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+text = "House Entrance"
+font_size = 64
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 3)

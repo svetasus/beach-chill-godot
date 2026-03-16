@@ -1,0 +1,240 @@
+[gd_scene load_steps=31 format=3 uid="uid://thk0f506mm6d"]
+
+[ext_resource type="Script" uid="uid://drs8dimdmsc0h" path="res://scripts/player_house.gd" id="1_o5bym"]
+[ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="2_e02fs"]
+[ext_resource type="Texture2D" uid="uid://coyfrgifhbye0" path="res://textures/Texturelabs_Fabric_131S.jpg" id="2_rrrxi"]
+[ext_resource type="ArrayMesh" uid="uid://ssgt2i8hbuol" path="res://resources/models/alarm_temp/Alarm_Clock.obj" id="3_xhb8a"]
+[ext_resource type="Texture2D" uid="uid://bhhu17vs3cgpp" path="res://textures/Texturelabs_Wood_145S.jpg" id="4_2fvk6"]
+[ext_resource type="PackedScene" uid="uid://chvxoiot0e84" path="res://resources/models/Squirtle_temp/Squirtle.FBX" id="4_cghks"]
+[ext_resource type="PackedScene" uid="uid://ck16hu0gbak0h" path="res://resources/models/rug_temp/o_rug.fbx" id="7_nve88"]
+[ext_resource type="PackedScene" uid="uid://brvxm6hn3gynr" path="res://resources/models/log_temp/Log.dae" id="8_d3d3p"]
+[ext_resource type="Texture2D" uid="uid://c74ihe1fx3u30" path="res://textures/Texturelabs_Soil_124S.jpg" id="9_3tl8u"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_house"]
+properties/0/path = NodePath(".:owner_id")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:position")
+properties/1/spawn = true
+properties/1/replication_mode = 0
+properties/2/path = NodePath(".:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 0
+properties/3/path = NodePath(".:name")
+properties/3/spawn = true
+properties/3/replication_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ulkwu"]
+albedo_texture = ExtResource("2_rrrxi")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xhb8a"]
+albedo_texture = ExtResource("2_e02fs")
+
+[sub_resource type="BoxMesh" id="BoxMesh_house"]
+material = SubResource("StandardMaterial3D_xhb8a")
+size = Vector3(8, 1, 15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(8, 1, 15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_exit"]
+size = Vector3(1.5, 3, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_52xpw"]
+albedo_color = Color(0.571116, 0.284561, 0.225404, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cghks"]
+material = SubResource("StandardMaterial3D_52xpw")
+size = Vector3(1, 0.05, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nve88"]
+albedo_texture = ExtResource("4_2fvk6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o5bym"]
+albedo_texture = ExtResource("2_e02fs")
+
+[sub_resource type="BoxMesh" id="BoxMesh_e02fs"]
+material = SubResource("StandardMaterial3D_o5bym")
+size = Vector3(1, 4, 15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xhb8a"]
+size = Vector3(1, 4, 15)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d3d3p"]
+albedo_texture = ExtResource("4_2fvk6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3tl8u"]
+albedo_texture = ExtResource("4_2fvk6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cghks"]
+albedo_texture = ExtResource("2_e02fs")
+
+[sub_resource type="BoxMesh" id="BoxMesh_rrrxi"]
+material = SubResource("StandardMaterial3D_cghks")
+size = Vector3(8, 4, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2fvk6"]
+size = Vector3(8, 4, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ifov2"]
+albedo_texture = ExtResource("4_2fvk6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i07m6"]
+albedo_texture = ExtResource("4_2fvk6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1vqlk"]
+albedo_texture = ExtResource("9_3tl8u")
+
+[sub_resource type="BoxMesh" id="BoxMesh_liq1t"]
+size = Vector3(1, 0.1, 1)
+
+[node name="PlayerHouse" type="Node3D"]
+script = ExtResource("1_o5bym")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_house")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+material_override = SubResource("StandardMaterial3D_ulkwu")
+mesh = SubResource("BoxMesh_house")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0.5, -4.82268)
+
+[node name="ExitArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -5.046)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.03031)
+shape = SubResource("BoxShape3D_exit")
+
+[node name="Label3D" type="Label3D" parent="ExitArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.779391, -2.01956)
+text = "Exit"
+font_size = 64
+
+[node name="ExitMarker" type="Marker3D" parent="ExitArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, -2)
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.67538, -7.24982)
+text = "Player's House"
+font_size = 128
+
+[node name="Carpet" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0583057, -6.63991)
+visible = false
+mesh = SubResource("BoxMesh_cghks")
+skeleton = NodePath("../SpawnPoint")
+
+[node name="Walls" type="Node3D" parent="."]
+
+[node name="LeftWall" type="StaticBody3D" parent="Walls"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, -4.5, 1, 0)
+
+[node name="WallMesh" type="MeshInstance3D" parent="Walls/LeftWall"]
+material_override = SubResource("StandardMaterial3D_nve88")
+mesh = SubResource("BoxMesh_e02fs")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Walls/LeftWall"]
+shape = SubResource("BoxShape3D_xhb8a")
+
+[node name="RightWall" type="StaticBody3D" parent="Walls"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, 4.5, 1, 0)
+
+[node name="WallMesh" type="MeshInstance3D" parent="Walls/RightWall"]
+material_override = SubResource("StandardMaterial3D_d3d3p")
+mesh = SubResource("BoxMesh_e02fs")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Walls/RightWall"]
+shape = SubResource("BoxShape3D_xhb8a")
+
+[node name="FrontWall" type="StaticBody3D" parent="Walls"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, 1, 8)
+
+[node name="FrontMesh" type="MeshInstance3D" parent="Walls/FrontWall"]
+material_override = SubResource("StandardMaterial3D_3tl8u")
+mesh = SubResource("BoxMesh_rrrxi")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Walls/FrontWall"]
+shape = SubResource("BoxShape3D_2fvk6")
+
+[node name="BackWall" type="StaticBody3D" parent="Walls"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, 1, -8)
+
+[node name="FrontMesh" type="MeshInstance3D" parent="Walls/BackWall"]
+material_override = SubResource("StandardMaterial3D_ifov2")
+mesh = SubResource("BoxMesh_rrrxi")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Walls/BackWall"]
+shape = SubResource("BoxShape3D_2fvk6")
+
+[node name="BackWall2" type="StaticBody3D" parent="Walls"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, 1, -1.65512)
+
+[node name="FrontMesh" type="MeshInstance3D" parent="Walls/BackWall2"]
+material_override = SubResource("StandardMaterial3D_i07m6")
+mesh = SubResource("BoxMesh_rrrxi")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Walls/BackWall2"]
+shape = SubResource("BoxShape3D_2fvk6")
+
+[node name="Ceiling" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.34976, 0)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Ceiling"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.3813, 0)
+mesh = SubResource("BoxMesh_house")
+skeleton = NodePath("../../Floor")
+
+[node name="DirectionalLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.3273, 0.94492, 0, -0.94492, 0.3273, 2.04021, 3.00808, -4.1095)
+light_color = Color(0.419608, 0.686275, 1, 1)
+light_energy = 0.7
+omni_range = 0.5
+
+[node name="Squirtle" parent="." instance=ExtResource("4_cghks")]
+transform = Transform3D(-0.350666, 0, -0.605833, 0, 0.7, 0, 0.605833, 0, -0.350666, 1.88286, 0.171983, -4.3335)
+
+[node name="o_rug" parent="." instance=ExtResource("7_nve88")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.123168, 0.035744, -6.01373)
+
+[node name="Log" parent="." instance=ExtResource("8_d3d3p")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -3.58699, 0.242619, -5.93989)
+
+[node name="Ladder" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.134452, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ladder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.10961, -7.64746)
+material_override = SubResource("StandardMaterial3D_1vqlk")
+mesh = SubResource("BoxMesh_liq1t")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Ladder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63546, -7.64746)
+material_override = SubResource("StandardMaterial3D_1vqlk")
+mesh = SubResource("BoxMesh_liq1t")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Ladder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0222, -7.64746)
+material_override = SubResource("StandardMaterial3D_1vqlk")
+mesh = SubResource("BoxMesh_liq1t")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Ladder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.391793, -7.64746)
+material_override = SubResource("StandardMaterial3D_1vqlk")
+mesh = SubResource("BoxMesh_liq1t")
+
+[node name="AlarmClock" type="MeshInstance3D" parent="."]
+transform = Transform3D(-2.92194, 0, 0.679903, 0, 3, 0, -0.679903, 0, -2.92194, 1.84641, 0.320623, -4.81035)
+mesh = ExtResource("3_xhb8a")
