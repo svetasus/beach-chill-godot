@@ -8,8 +8,25 @@ size = Vector3(2, 3, 0.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_entrance"]
 size = Vector3(2, 3, 2)
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_entrance"]
+properties/0/path = NodePath(".:owner_id")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:position")
+properties/1/spawn = true
+properties/1/replication_mode = 0
+properties/2/path = NodePath(".:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 0
+properties/3/path = NodePath(".:name")
+properties/3/spawn = true
+properties/3/replication_mode = 0
+
 [node name="HouseEntrance" type="Node3D"]
 script = ExtResource("1_entrance")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_entrance")
 
 [node name="Visual" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)

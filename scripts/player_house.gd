@@ -5,7 +5,7 @@ extends Node3D
 @onready var exit_marker = $ExitArea/ExitMarker
 @onready var label = $Label3D
 
-var owner_id: int = -1
+@export var owner_id: int = -1
 var entrance_node: Node3D = null
 
 func _ready():
