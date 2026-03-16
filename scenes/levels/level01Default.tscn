@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://7bo1jg4ha4dw"]
+[gd_scene load_steps=35 format=3 uid="uid://7bo1jg4ha4dw"]
 
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
 [ext_resource type="Material" uid="uid://bm4ar1a4q50vg" path="res://resources/materials/ocean_material.tres" id="3_6mrmg"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://ob2klsiv7kbl" path="res://textures/sqrafr9ffb7idpdl257avlbgf1-92245fd9d4f1a7ef533bf428b54dec89.png" id="5_r84l6"]
 [ext_resource type="Script" uid="uid://dnw1sundtvpw0" path="res://scripts/autospawn_area.gd" id="6_ic7dp"]
 [ext_resource type="Resource" uid="uid://b6fkh3ijbv1h3" path="res://resources/spawn_profiles/spawn_profile_default.tres" id="7_gqja0"]
+[ext_resource type="Script" uid="uid://2qieviytoojs" path="res://scripts/house_spawn_point.gd" id="7_mqw0e"]
+[ext_resource type="PackedScene" uid="uid://thk0f506mm6d" path="res://scenes/features/tent/playerHouse.tscn" id="8_rw6hm"]
 [ext_resource type="Resource" uid="uid://d22djgxra57mn" path="res://resources/spawn_profiles/treasure_profile_default.tres" id="8_uyy6t"]
 [ext_resource type="Resource" uid="uid://cwstu48thm4i6" path="res://resources/spawn_profiles/spawn_prof_basic_tools.tres" id="12_gnpat"]
 [ext_resource type="PackedScene" uid="uid://b4v64l3u3emau" path="res://scenes/features/player.tscn" id="player_scene"]
@@ -200,6 +202,18 @@ tent_scene = ExtResource("tent_scene")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.32249, 0, -11.1427)
 script = ExtResource("tent_sp_script")
 tent_scene = ExtResource("tent_scene")
+
+[node name="HouseSpawnMarkers" type="Node3D" parent="Markers"]
+
+[node name="Marker3D" type="Marker3D" parent="Markers/HouseSpawnMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -17.771, 0)
+script = ExtResource("7_mqw0e")
+house_scene = ExtResource("8_rw6hm")
+
+[node name="Marker3D2" type="Marker3D" parent="Markers/HouseSpawnMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50.8281, 0)
+script = ExtResource("7_mqw0e")
+house_scene = ExtResource("8_rw6hm")
 
 [node name="Ocean" type="Node3D" parent="."]
 
