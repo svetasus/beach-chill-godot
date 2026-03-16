@@ -603,6 +603,19 @@ func set_near_treasure(treasure, is_near: bool):
 		tool.update_proximity(current_treasure)
 
 
+func teleport(target_pos: Vector3, target_rot: Vector3 = Vector3.ZERO):
+	if is_multiplayer_authority():
+		global_position = target_pos
+		global_rotation.y = target_rot.y
+	else:
+		_rpc_teleport.rpc_id(get_multiplayer_authority(), target_pos, target_rot)
+
+@rpc("any_peer", "call_local")
+func _rpc_teleport(target_pos: Vector3, target_rot: Vector3):
+	global_position = target_pos
+	global_rotation.y = target_rot.y
+
+
 func _process(_delta):
 	if not is_multiplayer_authority(): return
 	

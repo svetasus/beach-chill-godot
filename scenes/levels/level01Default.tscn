@@ -203,6 +203,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.32249, 0, -11.1427)
 script = ExtResource("tent_sp_script")
 tent_scene = ExtResource("tent_scene")
 
+[node name="HouseEnterMarkers" type="Node3D" parent="Markers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1738, 0)
+
+[node name="Marker3D" type="Marker3D" parent="Markers/HouseEnterMarkers"]
+transform = Transform3D(0.545912, 0, -0.837842, 0, 1, 0, 0.837842, 0, 0.545912, 4.1749, 0, -7.91581)
+
+[node name="Marker3D2" type="Marker3D" parent="Markers/HouseEnterMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.32249, 0, -11.1427)
+
 [node name="HouseSpawnMarkers" type="Node3D" parent="Markers"]
 
 [node name="Marker3D" type="Marker3D" parent="Markers/HouseSpawnMarkers"]
