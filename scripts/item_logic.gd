@@ -5,6 +5,7 @@ class_name Item
 
 @export var data: ItemData : set = _set_data # Using a setter!
 @export var ghost_material: Material
+@export var is_autospawned: bool = false
 
 @export var data_path: String = "":
 	set(val):

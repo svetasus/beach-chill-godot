@@ -404,6 +404,10 @@ func pick_up(item):
 		carried_item = item
 		placement_ray.add_exception(item)
 		
+		# If it's a naturally spawned item, mark it as claimed by a player so it gets saved
+		if "is_autospawned" in carried_item:
+			carried_item.is_autospawned = false
+
 		if carried_item.has_method("set_ghost_appearance") and get_held_tool() == null:
 			carried_item.set_ghost_appearance(true)
 		

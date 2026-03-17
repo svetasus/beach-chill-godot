@@ -59,6 +59,9 @@ func _spawn_treasure():
 	if "sand_particles" in treasure_instance:
 		treasure_instance.sand_particles = sand_particles
 
+	if "is_autospawned" in treasure_instance:
+		treasure_instance.is_autospawned = true
+
 	# We are done here, remove the spawn point
 	queue_free()
 
