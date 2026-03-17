@@ -89,6 +89,9 @@ albedo_texture = ExtResource("9_3tl8u")
 [sub_resource type="BoxMesh" id="BoxMesh_liq1t"]
 size = Vector3(1, 0.1, 1)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_nve88"]
+size = Vector3(11, 4, 16)
+
 [node name="PlayerHouse" type="Node3D"]
 script = ExtResource("1_o5bym")
 
@@ -240,3 +243,9 @@ mesh = SubResource("BoxMesh_liq1t")
 [node name="AlarmClock" type="MeshInstance3D" parent="."]
 transform = Transform3D(-2.92194, 0, 0.679903, 0, 3, 0, -0.679903, 0, -2.92194, 1.84641, 0.320623, -4.81035)
 mesh = ExtResource("3_xhb8a")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.16709, 0)
+shape = SubResource("BoxShape3D_nve88")

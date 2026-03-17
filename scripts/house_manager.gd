@@ -144,11 +144,14 @@ func save_house_for_player(player_id: int, is_disconnecting: bool):
 		"items": []
 	}
 
-	# NOTE: Simplified save logic for houses: we save items that are near the house's global position.
-	# For a real game you'd probably use an Area3D bounding box for the entire house.
+	# Save items in house bounds
 	var items_container = get_node_or_null(Global.ITEMS_CONTAINER_PATH)
 	if items_container:
-		var house_pos = house.global_position
+		var space_state = house.get_world_3d().direct_space_state
+		var query = PhysicsPointQueryParameters3D.new()
+		query.collision_mask = 8 # Layer 4 (value 8) - House/Tent bounds
+		query.collide_with_areas = true
+		query.collide_with_bodies = false
 
 		var children = items_container.get_children()
 		for i in range(children.size() - 1, -1, -1):
@@ -156,10 +159,22 @@ func save_house_for_player(player_id: int, is_disconnecting: bool):
 			if not is_instance_valid(item) or item.is_queued_for_deletion(): continue
 			if not (item is Item) or item.data_path == "": continue
 
+			# Ensure we only save sleeping or loosely dropped items, not ones currently held
 			if item.freeze and item.get_multiplayer_authority() != 1: continue
 
-			# Simple distance check for items in the house (assuming 30 radius is enough)
-			if item.global_position.distance_to(house_pos) < 30.0:
+			if item.get("is_autospawned") == true: continue
+
+			# Add an upward offset to reliably detect items resting on the floor
+			query.position = item.global_position + Vector3(0, 0.5, 0)
+			var results = space_state.intersect_point(query)
+
+			var inside_this_house = false
+			for res in results:
+				if res.collider is Area3D and res.collider.get_parent() == house:
+					inside_this_house = true
+					break
+
+			if inside_this_house:
 				var local_transform = house.global_transform.affine_inverse() * item.global_transform
 				save_data["items"].append({
 					"data_path": item.data_path,

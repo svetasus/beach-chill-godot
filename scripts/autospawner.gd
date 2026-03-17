@@ -107,6 +107,9 @@ func _spawn_item(item_scene: PackedScene, item_data: ItemData, pos: Vector3):
 	elif "data" in item_instance:
 		item_instance.data = item_data
 
+	if "is_autospawned" in item_instance:
+		item_instance.is_autospawned = true
+
 	_spawned_nodes.append(item_instance)
 	print("Spawning item ", item_instance.name)
 
@@ -135,6 +138,9 @@ func _spawn_treasure(profile: TreasureProfile, pos: Vector3):
 		treasure_instance.base_item_scene = profile.base_item_scene
 	if "sand_particles" in treasure_instance:
 		treasure_instance.sand_particles = profile.sand_particles
+
+	if "is_autospawned" in treasure_instance:
+		treasure_instance.is_autospawned = true
 
 	_spawned_nodes.append(treasure_instance)
 
