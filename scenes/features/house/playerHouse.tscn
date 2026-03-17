@@ -1,5 +1,6 @@
 [gd_scene load_steps=32 format=3 uid="uid://thk0f506mm6d"]
 
+[ext_resource type="Script" uid="uid://bjswhkr15tk70" path="res://scripts/player_house_exit.gd" id="1_exit"]
 [ext_resource type="Script" uid="uid://drs8dimdmsc0h" path="res://scripts/player_house.gd" id="1_o5bym"]
 [ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="2_e02fs"]
 [ext_resource type="Texture2D" uid="uid://coyfrgifhbye0" path="res://textures/Texturelabs_Fabric_131S.jpg" id="2_rrrxi"]
@@ -110,22 +111,23 @@ shape = SubResource("BoxShape3D_floor")
 [node name="SpawnPoint" type="Marker3D" parent="."]
 transform = Transform3D(-0.173648, 0, -0.984808, 0, 1, 0, 0.984808, 0, -0.173648, 0.00961018, 0.524083, -5.43381)
 
-[node name="ExitArea" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -5.046)
-collision_layer = 0
-collision_mask = 2
+[node name="ExitArea" type="StaticBody3D" parent="." groups=["interactables"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -6.87503)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_exit")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ExitArea"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.03031)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.664474)
 shape = SubResource("BoxShape3D_exit")
 
 [node name="Label3D" type="Label3D" parent="ExitArea"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.779391, -2.01956)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.995366, -0.322248)
 text = "Exit"
 font_size = 64
 
 [node name="ExitMarker" type="Marker3D" parent="ExitArea"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, -0.41311)
 
 [node name="Label3D" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.67538, -7.24982)

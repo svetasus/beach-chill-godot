@@ -111,6 +111,7 @@ func _spawn_item(item_scene: PackedScene, item_data: ItemData, pos: Vector3):
 		item_instance.is_autospawned = true
 
 	_spawned_nodes.append(item_instance)
+	print("Spawning item ", item_instance.name)
 
 func _spawn_treasure(profile: TreasureProfile, pos: Vector3):
 	var treasure_instance = profile.treasure_scene.instantiate()

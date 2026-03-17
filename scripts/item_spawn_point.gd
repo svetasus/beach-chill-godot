@@ -49,7 +49,8 @@ func _spawn_item():
 		print("ItemSpawnPoint: Could not find ItemsContainer at %s" % Global.ITEMS_CONTAINER_PATH)
 		# Fallback to current parent if container not found
 		get_parent().add_child(item_instance, true)
-
+	
+	print("Spawning item ", item_instance.name)
 	# We are done here, remove the spawn point
 	queue_free()
 
