@@ -1,6 +1,7 @@
 [gd_scene load_steps=31 format=3 uid="uid://thk0f506mm6d"]
 
 [ext_resource type="Script" uid="uid://drs8dimdmsc0h" path="res://scripts/player_house.gd" id="1_o5bym"]
+[ext_resource type="Script" path="res://scripts/player_house_exit.gd" id="1_exit"]
 [ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="2_e02fs"]
 [ext_resource type="Texture2D" uid="uid://coyfrgifhbye0" path="res://textures/Texturelabs_Fabric_131S.jpg" id="2_rrrxi"]
 [ext_resource type="ArrayMesh" uid="uid://ssgt2i8hbuol" path="res://resources/models/alarm_temp/Alarm_Clock.obj" id="3_xhb8a"]
@@ -107,10 +108,11 @@ shape = SubResource("BoxShape3D_floor")
 [node name="SpawnPoint" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0.5, -4.82268)
 
-[node name="ExitArea" type="Area3D" parent="."]
+[node name="ExitArea" type="StaticBody3D" parent="." groups=["interactables"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -5.046)
-collision_layer = 0
-collision_mask = 2
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_exit")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ExitArea"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.03031)
