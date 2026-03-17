@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://7bo1jg4ha4dw"]
+[gd_scene load_steps=37 format=3 uid="uid://7bo1jg4ha4dw"]
 
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
 [ext_resource type="Material" uid="uid://bm4ar1a4q50vg" path="res://resources/materials/ocean_material.tres" id="3_6mrmg"]
@@ -107,6 +107,13 @@ size = Vector3(10, 4, 10)
 [sub_resource type="BoxMesh" id="BoxMesh_gnpat"]
 size = Vector3(10, 4, 10)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mqw0e"]
+albedo_texture = ExtResource("1_66c2g")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rw6hm"]
+material = SubResource("StandardMaterial3D_mqw0e")
+size = Vector2(200, 200)
+
 [node name="Level01Default" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -192,6 +199,7 @@ player_scene = ExtResource("player_scene")
 
 [node name="TentSpawnMarkers" type="Node3D" parent="Markers"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1738, 0)
+visible = false
 
 [node name="Marker3D" type="Marker3D" parent="Markers/TentSpawnMarkers"]
 transform = Transform3D(0.545912, 0, -0.837842, 0, 1, 0, 0.837842, 0, 0.545912, 4.1749, 0, -7.91581)
@@ -282,3 +290,7 @@ shape = SubResource("BoxShape3D_i1od3")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="AutospawnAreas/Area3D2"]
 visible = false
 mesh = SubResource("BoxMesh_gnpat")
+
+[node name="OceanBottom" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.71015, 0)
+mesh = SubResource("PlaneMesh_rw6hm")
