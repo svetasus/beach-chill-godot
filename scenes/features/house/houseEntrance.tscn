@@ -27,7 +27,9 @@ height = 0.2
 [sub_resource type="BoxShape3D" id="BoxShape3D_entrance"]
 size = Vector3(1.5, 2, 1.5)
 
-[node name="HouseEntrance" type="Node3D"]
+[node name="HouseEntrance" type="StaticBody3D" groups=["interactables"]]
+collision_layer = 4
+collision_mask = 0
 script = ExtResource("1_ww1k4")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
@@ -37,11 +39,7 @@ replication_config = SubResource("SceneReplicationConfig_entrance")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.377589, 0)
 mesh = SubResource("CylinderMesh_bg3aa")
 
-[node name="EnterArea" type="Area3D" parent="."]
-collision_layer = 0
-collision_mask = 2
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="EnterArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.893983, 0)
 shape = SubResource("BoxShape3D_entrance")
 
