@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://thk0f506mm6d"]
+[gd_scene load_steps=33 format=3 uid="uid://thk0f506mm6d"]
 
 [ext_resource type="Script" uid="uid://bjswhkr15tk70" path="res://scripts/player_house_exit.gd" id="1_exit"]
 [ext_resource type="Script" uid="uid://drs8dimdmsc0h" path="res://scripts/player_house.gd" id="1_o5bym"]
