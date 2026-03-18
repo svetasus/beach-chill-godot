@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://7bo1jg4ha4dw"]
+[gd_scene load_steps=41 format=3 uid="uid://7bo1jg4ha4dw"]
 
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
 [ext_resource type="Material" uid="uid://bm4ar1a4q50vg" path="res://resources/materials/ocean_material.tres" id="3_6mrmg"]
@@ -56,6 +56,15 @@ albedo_texture = ExtResource("3_um12m")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_amqpa"]
 albedo_texture = ExtResource("3_um12m")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rw6hm"]
+albedo_texture = ExtResource("3_um12m")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l22oy"]
+albedo_texture = ExtResource("3_um12m")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wujm3"]
+albedo_texture = ExtResource("3_um12m")
+
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_f462bb996f65"]
 height = 1.0
 radius = 15.0
@@ -107,6 +116,9 @@ size = Vector3(10, 4, 10)
 [sub_resource type="BoxMesh" id="BoxMesh_gnpat"]
 size = Vector3(10, 4, 10)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_mqw0e"]
+size = Vector3(200, 1, 200)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mqw0e"]
 albedo_texture = ExtResource("1_66c2g")
 
@@ -154,10 +166,43 @@ transform = Transform3D(0.7159, 0, 0.698203, 0, 1, 0, -0.698203, 0, 0.7159, -20.
 size = Vector3(15, 1, 20)
 
 [node name="CSGPolygon3D" type="CSGPolygon3D" parent="LevelDesign/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.68772, 0, 4.28275)
+transform = Transform3D(0.999129, -0.0417187, 0, 0.0417187, 0.999129, 0, 0, 0, 1, -9.68772, -0.0792254, 4.28275)
 polygon = PackedVector2Array(-1.69123, -0.0422139, 1.34256, 1.0209, 2.13621, 0.996002, 2.13365, -0.0960317)
 depth = 3.0
 material = SubResource("StandardMaterial3D_amqpa")
+
+[node name="CSGCombiner3D2" type="CSGCombiner3D" parent="LevelDesign"]
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="LevelDesign/CSGCombiner3D2"]
+transform = Transform3D(0.974433, 0.224679, 0, -0.224679, 0.974433, 0, 0, 0, 1, 9.49185, -0.0609496, 2.76285)
+size = Vector3(5, 1, 5)
+material = SubResource("StandardMaterial3D_rw6hm")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="LevelDesign/CSGCombiner3D2"]
+transform = Transform3D(0.103913, 0.0406274, 0.993756, -0.442638, 0.896648, 0.00962768, -0.890659, -0.440875, 0.111157, 13.9779, 0.527047, 6.69186)
+size = Vector3(8, 1, 7)
+material = SubResource("StandardMaterial3D_rw6hm")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="LevelDesign/CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.9438, -0.626618, 2.64656)
+size = Vector3(15, 1, 13)
+material = SubResource("StandardMaterial3D_l22oy")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="LevelDesign/CSGCombiner3D2"]
+transform = Transform3D(0.864836, 0, 0.502054, 0, 1, 0, -0.502054, 0, 0.864836, 9.89644, -0.628151, -10.9698)
+size = Vector3(10, 1, 18)
+material = SubResource("StandardMaterial3D_wujm3")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="LevelDesign/CSGCombiner3D2"]
+transform = Transform3D(0.994273, 0, -0.106872, 0, 1, 0, 0.106872, 0, 0.994273, 15.3489, -0.628151, 19.1541)
+size = Vector3(15, 1, 25)
+material = SubResource("StandardMaterial3D_wujm3")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="LevelDesign/CSGCombiner3D2"]
+transform = Transform3D(0.994273, 0, -0.106872, 0, 1, 0, 0.106872, 0, 0.994273, 9.46733, 1.21204, 17.1125)
+size = Vector3(14, 3, 15)
+material = SubResource("StandardMaterial3D_wujm3")
 
 [node name="GroundCollision" type="StaticBody3D" parent="LevelDesign"]
 
@@ -178,7 +223,7 @@ transform = Transform3D(0.7159, 0, 0.698203, 0, 1, 0, -0.698203, 0, 0.7159, -20.
 shape = SubResource("BoxShape3D_76b23cc97af8")
 
 [node name="CollisionShapePolygon" type="CollisionShape3D" parent="LevelDesign/GroundCollision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.68638, 0, 1.26821)
+transform = Transform3D(0.999129, -0.0417187, 0, 0.0417187, 0.999129, 0, 0, 0, 1, -9.68638, -0.0791695, 1.26821)
 shape = SubResource("ConvexPolygonShape3D_mqw0e")
 
 [node name="Markers" type="Node3D" parent="."]
@@ -291,6 +336,14 @@ shape = SubResource("BoxShape3D_i1od3")
 visible = false
 mesh = SubResource("BoxMesh_gnpat")
 
-[node name="OceanBottom" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.71015, 0)
+[node name="OceanBottom" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="OceanBottom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+shape = SubResource("BoxShape3D_mqw0e")
+
+[node name="OceanBottomMesh" type="MeshInstance3D" parent="OceanBottom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 mesh = SubResource("PlaneMesh_rw6hm")
+skeleton = NodePath("../..")
