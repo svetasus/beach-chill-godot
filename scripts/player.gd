@@ -783,10 +783,14 @@ func update_ghost_preview():
 		# Apply scale just in case the parent is scaled
 		y_offset *= carried_item.scale.y
 		
-		# Check if we are looking at a cart basket
+		# Check if we are looking at a cart basket (via raycast OR interaction target)
 		var looking_at_cart = false
 		if active_placement_ray.get_collider() and active_placement_ray.get_collider().has_meta("is_cart_basket"):
 			looking_at_cart = true
+		else:
+			var interact_target = get_interaction_target()
+			if interact_target and interact_target.has_meta("is_cart_basket"):
+				looking_at_cart = true
 
 		if looking_at_cart:
 			# Hide ghost and block standard drop placement
@@ -950,25 +954,39 @@ func get_interaction_target():
 
 		var my_tent = get_tent_for_position(global_position)
 
-		# Pass 1: Prioritize items first to prevent large zones (like cart baskets) from blocking them
-		for i in range(collision_count):
-			var collider = active_shapecast.get_collider(i)
-			if collider is Item:
-				if get_tent_for_position(collider.global_position) == my_tent:
+		if carried_item == null:
+			# If NOT carrying an item, prioritize picking up items so large zones don't block them
+			for i in range(collision_count):
+				var collider = active_shapecast.get_collider(i)
+				if collider is Item:
+					if get_tent_for_position(collider.global_position) == my_tent:
+						return collider
+
+			for i in range(collision_count):
+				var collider = active_shapecast.get_collider(i)
+				if get_tent_for_position(collider.global_position) != my_tent: continue
+
+				if collider.has_method("deposit_item") or collider.has_method("get_interaction_text") or collider.has_method("interact"):
+					return collider
+				if collider.has_meta("is_cart_handle") or collider.has_meta("is_cart_basket"):
+					return collider
+		else:
+			# If CARRYING an item, prioritize containers (chest, pot, cart basket)
+			# so we can easily deposit even if the container is full of other items
+			for i in range(collision_count):
+				var collider = active_shapecast.get_collider(i)
+				if get_tent_for_position(collider.global_position) != my_tent: continue
+
+				if collider.has_method("deposit_item") or collider.has_meta("is_cart_basket"):
 					return collider
 
-		# Pass 2: Fallback to other interactables
-		for i in range(collision_count):
-			var collider = active_shapecast.get_collider(i)
+			for i in range(collision_count):
+				var collider = active_shapecast.get_collider(i)
+				if get_tent_for_position(collider.global_position) != my_tent: continue
 
-			if get_tent_for_position(collider.global_position) != my_tent:
-				continue
-
-			if collider.has_method("deposit_item") or collider.has_method("get_interaction_text") or collider.has_method("interact"):
-				return collider
-			# Specific checks for cart metadata
-			if collider.has_meta("is_cart_handle") or collider.has_meta("is_cart_basket"):
-				return collider
+				# Fallback to general interaction (maybe a tool interact like digging, or alt interact)
+				if collider is Item or collider.has_method("interact") or collider.has_meta("is_cart_handle"):
+					return collider
 
 	return null
 
