@@ -390,6 +390,10 @@ func check_interaction():
 		elif target.has_meta("is_cart_basket"):
 			if carried_item != null:
 				var cart_node = target.get_meta("cart_node")
+
+				# We allow "drop" even if can_place is false because we're interacting
+				# Temporarily force can_place true to bypass standard drop block
+				can_place = true
 				_rpc_request_cart_deposit.rpc_id(1, cart_node.get_path(), carried_item.get_path())
 				drop_item()
 				
@@ -500,6 +504,7 @@ func drop_item():
 	if not is_multiplayer_authority(): return
 	if not can_place: return
 	
+	carried_item.visible = true
 	placement_ray.remove_exception(carried_item)
 	tp_placement_ray.remove_exception(carried_item)
 	
@@ -778,17 +783,34 @@ func update_ghost_preview():
 		# Apply scale just in case the parent is scaled
 		y_offset *= carried_item.scale.y
 		
-		# 2. GLIDE: Set position at hit point + feet offset
-		carried_item.global_position = hit_point + Vector3(0, y_offset, 0)
-		
-		# 3. ROTATION: Keep it upright and apply scroll offset
-		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
-		
-		# Validate placement regarding tent state
-		if get_tent_for_position(hit_point) == get_tent_for_position(global_position):
-			can_place = true
-		else:
+		# Check if we are looking at a cart basket
+		var looking_at_cart = false
+		if active_placement_ray.get_collider() and active_placement_ray.get_collider().has_meta("is_cart_basket"):
+			looking_at_cart = true
+
+		if looking_at_cart:
+			# Hide ghost and block standard drop placement
+			if carried_item.has_method("set_ghost_appearance"):
+				carried_item.set_ghost_appearance(false)
+			carried_item.visible = false
 			can_place = false
+		else:
+			# Standard placement
+			carried_item.visible = true
+			if carried_item.has_method("set_ghost_appearance"):
+				carried_item.set_ghost_appearance(true)
+
+			# 2. GLIDE: Set position at hit point + feet offset
+			carried_item.global_position = hit_point + Vector3(0, y_offset, 0)
+
+			# 3. ROTATION: Keep it upright and apply scroll offset
+			carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
+
+			# Validate placement regarding tent state
+			if get_tent_for_position(hit_point) == get_tent_for_position(global_position):
+				can_place = true
+			else:
+				can_place = false
 	else:
 		# Fallback: If not looking at a surface, keep item in hand
 		if is_third_person:
