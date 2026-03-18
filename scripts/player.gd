@@ -43,6 +43,8 @@ var can_dig = false
 var jump_queued = false
 var can_place = true
 var current_furniture = null
+var _highlighted_node = null
+
 
 # Stores item names and their counts: {"Pink Shell": 3, "Old Coin": 1}
 var collection = {}
@@ -836,6 +838,7 @@ func update_action_ui():
 
 	action_label.show()
 	var target_text = ""
+	var highlight_target = null
 
 	# Are we currently driving the cart?
 	var currently_driving_cart = false
@@ -843,19 +846,23 @@ func update_action_ui():
 	for c in carts:
 		if c.get("driver_id") == multiplayer.get_unique_id():
 			currently_driving_cart = true
+			highlight_target = c
 			break
 
 	if current_ui != null and is_instance_valid(current_ui):
 		target_text = ""
+		highlight_target = null
 	elif currently_driving_cart:
 		target_text = "[E] Release Cart"
 	elif current_furniture != null and is_instance_valid(current_furniture):
 		target_text = "[R] Get up"
+		highlight_target = current_furniture
 	elif carried_item == null:
 		# Use your existing interaction check (Raycast or Shapecast)
 		var potential_item = get_interaction_target() 
 		
 		if potential_item:
+			highlight_target = potential_item
 			if potential_item is Item:
 				target_text = "[E] Take " + potential_item.display_name
 				if potential_item.has_method("get_alt_interaction_text"):
@@ -872,17 +879,21 @@ func update_action_ui():
 				var cart_node = potential_item.get_meta("cart_node")
 				if cart_node.driver_id == 0:
 					target_text = "[E] Take Cart"
+					highlight_target = cart_node
 	else:
 		var potential_target = get_interaction_target()
 		if potential_target:
 			if potential_target.has_method("deposit_item"):
 				target_text = "[E] Store " + carried_item.display_name
+				highlight_target = potential_target
 			elif potential_target.has_meta("is_cart_basket"):
 				target_text = "[E] Deposit in cart"
+				highlight_target = potential_target.get_meta("cart_node")
 			else:
 				var tool = get_held_tool()
 				if tool and tool.can_interact_with(current_treasure):
 					target_text = "[E] " + tool.get_action_name()
+					highlight_target = current_treasure
 				else:
 					if can_place:
 						target_text = "[E] Drop " + carried_item.display_name
@@ -892,11 +903,17 @@ func update_action_ui():
 			var tool = get_held_tool()
 			if tool and tool.can_interact_with(current_treasure):
 				target_text = "[E] " + tool.get_action_name()
+				highlight_target = current_treasure
 			else:
 				if can_place:
 					target_text = "[E] Drop " + carried_item.display_name
 				else:
 					target_text = "You can't place it here"
+
+	if target_text == "" or target_text == "You can't place it here":
+		_update_highlight(null)
+	else:
+		_update_highlight(highlight_target)
 
 	# Only update if the text changed to avoid flickering
 	if action_label.text != target_text:
@@ -1141,3 +1158,70 @@ func _rpc_request_cart_deposit(cart_path: NodePath, item_path: NodePath):
 	if cart != null and item != null:
 		if cart.has_method("deposit_item_cart"):
 			cart.deposit_item_cart(item)
+
+# --- HIGHLIGHT LOGIC ---
+const OUTLINE_MATERIAL = preload("res://resources/materials/outline.tres")
+
+# Dictionary to keep track of active tweens per mesh so we don't cross streams
+var _mesh_tweens: Dictionary = {}
+
+func _get_meshes_recursive(node: Node, meshes: Array[MeshInstance3D]) -> void:
+	if node is MeshInstance3D:
+		meshes.append(node)
+	for child in node.get_children():
+		_get_meshes_recursive(child, meshes)
+
+func _update_highlight(target_node: Node) -> void:
+	if _highlighted_node == target_node:
+		return
+
+	# Fade out old
+	if _highlighted_node != null and is_instance_valid(_highlighted_node):
+		_fade_highlight(_highlighted_node, false)
+
+	_highlighted_node = target_node
+
+	# Fade in new
+	if _highlighted_node != null and is_instance_valid(_highlighted_node):
+		_fade_highlight(_highlighted_node, true)
+
+func _fade_highlight(node: Node, fade_in: bool) -> void:
+	var meshes: Array[MeshInstance3D] = []
+	_get_meshes_recursive(node, meshes)
+
+	if meshes.is_empty():
+		return
+
+	for mesh in meshes:
+		if _mesh_tweens.has(mesh) and _mesh_tweens[mesh] and _mesh_tweens[mesh].is_valid():
+			_mesh_tweens[mesh].kill()
+
+		var tween = create_tween()
+		_mesh_tweens[mesh] = tween
+
+		var mat = mesh.material_overlay
+
+		if fade_in:
+			if not mat or not (mat is ShaderMaterial and mat.shader == OUTLINE_MATERIAL.shader):
+				mat = OUTLINE_MATERIAL.duplicate()
+				mesh.material_overlay = mat
+				mat.set_shader_parameter("alpha_multiplier", 0.0)
+
+			var update_alpha_in = func(val):
+				if is_instance_valid(mesh) and mesh.material_overlay == mat:
+					mat.set_shader_parameter("alpha_multiplier", val)
+
+			tween.tween_method(update_alpha_in, mat.get_shader_parameter("alpha_multiplier"), 1.0, 0.2)
+		else:
+			if mat and mat is ShaderMaterial and mat.shader == OUTLINE_MATERIAL.shader:
+				var update_alpha_out = func(val):
+					if is_instance_valid(mesh) and mesh.material_overlay == mat:
+						mat.set_shader_parameter("alpha_multiplier", val)
+
+				tween.tween_method(update_alpha_out, mat.get_shader_parameter("alpha_multiplier"), 0.0, 0.2)
+
+				tween.tween_callback(func():
+					if is_instance_valid(mesh) and mesh.material_overlay == mat:
+						mesh.material_overlay = null
+					_mesh_tweens.erase(mesh)
+				)
