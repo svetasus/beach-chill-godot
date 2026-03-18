@@ -136,6 +136,8 @@ func save_tent_for_player(player_id: int, is_disconnecting: bool):
 			# Ensure we only save sleeping or loosely dropped items, not ones currently held
 			if item.freeze and item.get_multiplayer_authority() != 1: continue
 
+			if item.get("is_autospawned") == true: continue
+
 			# Add an upward offset to reliably detect items resting on the floor
 			query.position = item.global_position + Vector3(0, 0.5, 0)
 			var results = space_state.intersect_point(query)

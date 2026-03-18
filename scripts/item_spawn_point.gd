@@ -37,6 +37,9 @@ func _spawn_item():
 	elif "data" in item_instance:
 		item_instance.data = item_data
 
+	if "is_autospawned" in item_instance:
+		item_instance.is_autospawned = true
+
 	# Add it to the correct container watched by MultiplayerSpawner
 	var container = get_node_or_null(Global.ITEMS_CONTAINER_PATH)
 	if container:

@@ -15,20 +15,71 @@ func _ready():
 	$BasketZone.set_meta("is_cart_basket", true)
 	$BasketZone.set_meta("cart_node", self)
 
+func get_next_item_position() -> Vector3:
+	var basket = $BasketZone
+	var cols = basket.get_node("CollisionShape3D")
+	var shape = cols.shape as BoxShape3D
+
+	if not shape:
+		return global_position
+
+	var basket_size = shape.size
+	# Create a simple 2x3 grid logic inside the basket
+	# Basket bounds: X: [-0.375, 0.375], Z: [-0.425, 0.425]
+	var grid_points = [
+		Vector3(-0.2, 0, -0.2), Vector3(0.2, 0, -0.2),
+		Vector3(-0.2, 0, 0),    Vector3(0.2, 0, 0),
+		Vector3(-0.2, 0, 0.2),  Vector3(0.2, 0, 0.2)
+	]
+
+	# Determine base stacking height using a small offset based on how many items we have
+	var stack_height = 0.0
+	var offset_index = inventory_nodes.size()
+
+	if offset_index >= grid_points.size():
+		stack_height = int(offset_index / grid_points.size()) * 0.2
+		offset_index = offset_index % grid_points.size()
+
+	var local_point = grid_points[offset_index] + Vector3(0, stack_height, 0)
+
+	# Convert local point in BasketZone to global position
+	return cols.global_transform * local_point
+
+
 func deposit_item_cart(item_node: Node3D):
 	if not multiplayer.is_server(): return
 	
 	if not inventory_nodes.has(item_node):
+
+		# Put the item in its optimal grid position before appending
+		# so the math aligns with its future index in the array
+		var drop_pos = get_next_item_position()
+		item_node.global_position = drop_pos
+
+		# We want it to be perfectly aligned with the cart's rotation for neatness
+		item_node.global_rotation = global_rotation
+
 		inventory_nodes.append(item_node)
 		
 		if item_node is RigidBody3D:
 			item_node.linear_damp = 15.0
 			item_node.angular_damp = 15.0
 
+			# Ensure it is awoken and given velocity reset so it falls gracefully
+			item_node.linear_velocity = Vector3.ZERO
+			item_node.angular_velocity = Vector3.ZERO
+			item_node.sleeping = false
+
 		if item_node.has_method("lock_to_cart"):
 			item_node.lock_to_cart(self)
 			
-		print("SERVER: Physical item locked into cart. Total: ", inventory_nodes.size())
+		# Sync this optimal placement to all clients
+		if item_node.has_method("sync_authority"):
+			# Setting authority to 1 (Server) explicitly unfreezes it so it acts
+			# as a physical entity sitting in the cart.
+			item_node.sync_authority.rpc(1, false, Vector3.ZERO, drop_pos, global_rotation.y)
+
+		print("SERVER: Physical item locked into cart at index ", inventory_nodes.size() - 1)
 
 func grab_cart(player: Node3D, peer_id: int):
 	if not multiplayer.is_server(): return
