@@ -1178,9 +1178,9 @@ func _ready_highlight_system():
 	_highlight_container = SubViewportContainer.new()
 	_highlight_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_highlight_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_highlight_container.stretch = true # FIX: Ensure viewport perfectly matches screen
+	_highlight_container.stretch = true # Ensure viewport perfectly matches screen
 
-	# FIX: Duplicate material so alpha_multiplier fading doesn't affect other players globally
+	# Duplicate material so alpha_multiplier fading doesn't affect other players globally
 	_highlight_container.material = OUTLINE_MATERIAL.duplicate()
 
 	_highlight_viewport = SubViewport.new()
@@ -1191,7 +1191,8 @@ func _ready_highlight_system():
 	# ONLY see layer 20
 	_highlight_camera.cull_mask = HIGHLIGHT_LAYER
 	_highlight_camera.environment = Environment.new()
-	_highlight_camera.environment.background_mode = Environment.BG_CLEAR_COLOR
+	_highlight_camera.environment.background_mode = Environment.BG_COLOR
+	_highlight_camera.environment.bg_color = Color(0, 0, 0, 0)
 
 	_highlight_viewport.add_child(_highlight_camera)
 	_highlight_container.add_child(_highlight_viewport)
@@ -1225,15 +1226,20 @@ func _update_highlight(target_node: Node) -> void:
 
 	if _highlighted_node != null and is_instance_valid(_highlighted_node):
 		_fade_highlight(false)
-		# Immediately strip the highlight layer bit from old meshes
-		for m in _highlight_meshes:
-			if is_instance_valid(m):
-				m.layers &= ~HIGHLIGHT_LAYER
-		_highlight_meshes.clear()
+		# We NO LONGER immediately strip the layer bit here!
+		# It must happen at the end of the fade_out tween to remain visible while fading.
 
 	_highlighted_node = target_node
 
 	if _highlighted_node != null and is_instance_valid(_highlighted_node):
+		# Immediately clear old highlight meshes if targeting a new object
+		# while a previous fadeout was incomplete to prevent multiple highlights.
+		if _highlight_meshes.size() > 0:
+			for m in _highlight_meshes:
+				if is_instance_valid(m):
+					m.layers &= ~HIGHLIGHT_LAYER
+		_highlight_meshes.clear()
+
 		_get_meshes_recursive(_highlighted_node, _highlight_meshes)
 		# Add the highlight layer bit to new meshes
 		for m in _highlight_meshes:
@@ -1247,9 +1253,18 @@ func _fade_highlight(fade_in: bool) -> void:
 		_highlight_tween.kill()
 
 	_highlight_tween = create_tween()
-	var mat = _highlight_container.material # FIX: Target the local instance material
+	var mat = _highlight_container.material # Target the local instance material
 
 	if fade_in:
 		_highlight_tween.tween_property(mat, "shader_parameter/alpha_multiplier", 1.0, 0.2)
 	else:
 		_highlight_tween.tween_property(mat, "shader_parameter/alpha_multiplier", 0.0, 0.2)
+
+		# Now that we're completely faded out, strip the highlight bit so
+		# the secondary camera stops rendering them unnecessarily.
+		_highlight_tween.tween_callback(func():
+			for m in _highlight_meshes:
+				if is_instance_valid(m):
+					m.layers &= ~HIGHLIGHT_LAYER
+			_highlight_meshes.clear()
+		)
