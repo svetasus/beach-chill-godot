@@ -43,6 +43,8 @@ var can_dig = false
 var jump_queued = false
 var can_place = true
 var current_furniture = null
+var _highlighted_node = null
+
 
 # Stores item names and their counts: {"Pink Shell": 3, "Old Coin": 1}
 var collection = {}
@@ -77,6 +79,7 @@ func _enter_tree() -> void:
 	pass
 
 func _ready():
+	_ready_highlight_system()
 	placement_ray.set_collision_mask_value(4, true) # Layer 8 for tent collision bounds
 	tp_placement_ray.set_collision_mask_value(4, true)
 
@@ -690,6 +693,7 @@ func _rpc_teleport(target_pos: Vector3, target_rot: Vector3):
 
 
 func _process(_delta):
+	_sync_highlight_camera()
 	if not is_multiplayer_authority(): return
 	
 	
@@ -836,6 +840,7 @@ func update_action_ui():
 
 	action_label.show()
 	var target_text = ""
+	var highlight_target = null
 
 	# Are we currently driving the cart?
 	var currently_driving_cart = false
@@ -843,19 +848,23 @@ func update_action_ui():
 	for c in carts:
 		if c.get("driver_id") == multiplayer.get_unique_id():
 			currently_driving_cart = true
+			highlight_target = c
 			break
 
 	if current_ui != null and is_instance_valid(current_ui):
 		target_text = ""
+		highlight_target = null
 	elif currently_driving_cart:
 		target_text = "[E] Release Cart"
 	elif current_furniture != null and is_instance_valid(current_furniture):
 		target_text = "[R] Get up"
+		highlight_target = current_furniture
 	elif carried_item == null:
 		# Use your existing interaction check (Raycast or Shapecast)
 		var potential_item = get_interaction_target() 
 		
 		if potential_item:
+			highlight_target = potential_item
 			if potential_item is Item:
 				target_text = "[E] Take " + potential_item.display_name
 				if potential_item.has_method("get_alt_interaction_text"):
@@ -872,17 +881,21 @@ func update_action_ui():
 				var cart_node = potential_item.get_meta("cart_node")
 				if cart_node.driver_id == 0:
 					target_text = "[E] Take Cart"
+					highlight_target = cart_node
 	else:
 		var potential_target = get_interaction_target()
 		if potential_target:
 			if potential_target.has_method("deposit_item"):
 				target_text = "[E] Store " + carried_item.display_name
+				highlight_target = potential_target
 			elif potential_target.has_meta("is_cart_basket"):
 				target_text = "[E] Deposit in cart"
+				highlight_target = potential_target.get_meta("cart_node")
 			else:
 				var tool = get_held_tool()
 				if tool and tool.can_interact_with(current_treasure):
 					target_text = "[E] " + tool.get_action_name()
+					highlight_target = current_treasure
 				else:
 					if can_place:
 						target_text = "[E] Drop " + carried_item.display_name
@@ -892,11 +905,17 @@ func update_action_ui():
 			var tool = get_held_tool()
 			if tool and tool.can_interact_with(current_treasure):
 				target_text = "[E] " + tool.get_action_name()
+				highlight_target = current_treasure
 			else:
 				if can_place:
 					target_text = "[E] Drop " + carried_item.display_name
 				else:
 					target_text = "You can't place it here"
+
+	if target_text == "" or target_text == "You can't place it here":
+		_update_highlight(null)
+	else:
+		_update_highlight(highlight_target)
 
 	# Only update if the text changed to avoid flickering
 	if action_label.text != target_text:
@@ -1141,3 +1160,111 @@ func _rpc_request_cart_deposit(cart_path: NodePath, item_path: NodePath):
 	if cart != null and item != null:
 		if cart.has_method("deposit_item_cart"):
 			cart.deposit_item_cart(item)
+
+# --- HIGHLIGHT LOGIC ---
+const OUTLINE_MATERIAL = preload("res://resources/materials/post_process_outline.tres")
+
+# Visual Layer 20 is reserved for highlighted objects (bitwise: 1 << 19)
+const HIGHLIGHT_LAYER = 1 << 19
+
+var _highlight_viewport: SubViewport
+var _highlight_camera: Camera3D
+var _highlight_container: SubViewportContainer
+var _highlight_tween: Tween = null
+var _highlight_meshes: Array[MeshInstance3D] = []
+
+func _ready_highlight_system():
+	# Build the Post-Processing Rig and attach it to the screen UI
+	_highlight_container = SubViewportContainer.new()
+	_highlight_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_highlight_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_highlight_container.stretch = true # Ensure viewport perfectly matches screen
+
+	# Duplicate material so alpha_multiplier fading doesn't affect other players globally
+	_highlight_container.material = OUTLINE_MATERIAL.duplicate()
+
+	_highlight_viewport = SubViewport.new()
+	_highlight_viewport.transparent_bg = true
+	_highlight_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+
+	_highlight_camera = Camera3D.new()
+	# ONLY see layer 20
+	_highlight_camera.cull_mask = HIGHLIGHT_LAYER
+	_highlight_camera.environment = Environment.new()
+	_highlight_camera.environment.background_mode = Environment.BG_COLOR
+	_highlight_camera.environment.bg_color = Color(0, 0, 0, 0)
+
+	_highlight_viewport.add_child(_highlight_camera)
+	_highlight_container.add_child(_highlight_viewport)
+
+	# Add it underneath other UI elements if possible, or straight to PlayerUI
+	if has_node("PlayerUI"):
+		$PlayerUI.add_child(_highlight_container)
+		$PlayerUI.move_child(_highlight_container, 0) # Render behind crosshair/text
+
+func _sync_highlight_camera():
+	if not _highlight_camera: return
+
+	var main_cam = $Body/Head/Camera3D
+	if is_third_person:
+		main_cam = tp_camera
+
+	if main_cam and main_cam.current:
+		_highlight_camera.global_transform = main_cam.global_transform
+		_highlight_camera.fov = main_cam.fov
+		_highlight_camera.size = main_cam.size
+
+func _get_meshes_recursive(node: Node, meshes: Array[MeshInstance3D]) -> void:
+	if node is MeshInstance3D:
+		meshes.append(node)
+	for child in node.get_children():
+		_get_meshes_recursive(child, meshes)
+
+func _update_highlight(target_node: Node) -> void:
+	if _highlighted_node == target_node:
+		return
+
+	if _highlighted_node != null and is_instance_valid(_highlighted_node):
+		_fade_highlight(false)
+		# We NO LONGER immediately strip the layer bit here!
+		# It must happen at the end of the fade_out tween to remain visible while fading.
+
+	_highlighted_node = target_node
+
+	if _highlighted_node != null and is_instance_valid(_highlighted_node):
+		# Immediately clear old highlight meshes if targeting a new object
+		# while a previous fadeout was incomplete to prevent multiple highlights.
+		if _highlight_meshes.size() > 0:
+			for m in _highlight_meshes:
+				if is_instance_valid(m):
+					m.layers &= ~HIGHLIGHT_LAYER
+		_highlight_meshes.clear()
+
+		_get_meshes_recursive(_highlighted_node, _highlight_meshes)
+		# Add the highlight layer bit to new meshes
+		for m in _highlight_meshes:
+			if is_instance_valid(m):
+				m.layers |= HIGHLIGHT_LAYER
+
+		_fade_highlight(true)
+
+func _fade_highlight(fade_in: bool) -> void:
+	if _highlight_tween and _highlight_tween.is_valid():
+		_highlight_tween.kill()
+
+	_highlight_tween = create_tween()
+	var mat = _highlight_container.material # Target the local instance material
+
+	if fade_in:
+		_highlight_tween.tween_property(mat, "shader_parameter/alpha_multiplier", 1.0, 0.2)
+	else:
+		_highlight_tween.tween_property(mat, "shader_parameter/alpha_multiplier", 0.0, 0.2)
+
+		# Now that we're completely faded out, strip the highlight bit so
+		# the secondary camera stops rendering them unnecessarily.
+		_highlight_tween.tween_callback(func():
+			for m in _highlight_meshes:
+				if is_instance_valid(m):
+					m.layers &= ~HIGHLIGHT_LAYER
+			_highlight_meshes.clear()
+		)

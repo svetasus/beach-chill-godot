@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://resources/materials/post_process_outline.gdshader" id="1_2nkmq"]
+
+[resource]
+shader = ExtResource("1_2nkmq")
+shader_parameter/outline_color = Color(1, 1, 1, 1)
+shader_parameter/outline_thickness = 3.0
+shader_parameter/alpha_multiplier = 0.0
