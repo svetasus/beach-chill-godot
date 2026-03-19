@@ -79,6 +79,7 @@ func _enter_tree() -> void:
 	pass
 
 func _ready():
+	_ready_highlight_system()
 	placement_ray.set_collision_mask_value(4, true) # Layer 8 for tent collision bounds
 	tp_placement_ray.set_collision_mask_value(4, true)
 
@@ -692,6 +693,7 @@ func _rpc_teleport(target_pos: Vector3, target_rot: Vector3):
 
 
 func _process(_delta):
+	_sync_highlight_camera()
 	if not is_multiplayer_authority(): return
 	
 	
@@ -1160,9 +1162,56 @@ func _rpc_request_cart_deposit(cart_path: NodePath, item_path: NodePath):
 			cart.deposit_item_cart(item)
 
 # --- HIGHLIGHT LOGIC ---
-const OUTLINE_MATERIAL = preload("res://resources/materials/outline.tres")
+const OUTLINE_MATERIAL = preload("res://resources/materials/post_process_outline.tres")
 
-var _mesh_tweens: Dictionary = {}
+# Visual Layer 20 is reserved for highlighted objects (bitwise: 1 << 19)
+const HIGHLIGHT_LAYER = 1 << 19
+
+var _highlight_viewport: SubViewport
+var _highlight_camera: Camera3D
+var _highlight_container: SubViewportContainer
+var _highlight_tween: Tween = null
+var _highlight_meshes: Array[MeshInstance3D] = []
+
+func _ready_highlight_system():
+	# Build the Post-Processing Rig and attach it to the screen UI
+	_highlight_container = SubViewportContainer.new()
+	_highlight_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_highlight_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_highlight_container.stretch = true # FIX: Ensure viewport perfectly matches screen
+
+	# FIX: Duplicate material so alpha_multiplier fading doesn't affect other players globally
+	_highlight_container.material = OUTLINE_MATERIAL.duplicate()
+
+	_highlight_viewport = SubViewport.new()
+	_highlight_viewport.transparent_bg = true
+	_highlight_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+
+	_highlight_camera = Camera3D.new()
+	# ONLY see layer 20
+	_highlight_camera.cull_mask = HIGHLIGHT_LAYER
+	_highlight_camera.environment = Environment.new()
+	_highlight_camera.environment.background_mode = Environment.BG_CLEAR_COLOR
+
+	_highlight_viewport.add_child(_highlight_camera)
+	_highlight_container.add_child(_highlight_viewport)
+
+	# Add it underneath other UI elements if possible, or straight to PlayerUI
+	if has_node("PlayerUI"):
+		$PlayerUI.add_child(_highlight_container)
+		$PlayerUI.move_child(_highlight_container, 0) # Render behind crosshair/text
+
+func _sync_highlight_camera():
+	if not _highlight_camera: return
+
+	var main_cam = $Body/Head/Camera3D
+	if is_third_person:
+		main_cam = tp_camera
+
+	if main_cam and main_cam.current:
+		_highlight_camera.global_transform = main_cam.global_transform
+		_highlight_camera.fov = main_cam.fov
+		_highlight_camera.size = main_cam.size
 
 func _get_meshes_recursive(node: Node, meshes: Array[MeshInstance3D]) -> void:
 	if node is MeshInstance3D:
@@ -1175,55 +1224,32 @@ func _update_highlight(target_node: Node) -> void:
 		return
 
 	if _highlighted_node != null and is_instance_valid(_highlighted_node):
-		_fade_highlight(_highlighted_node, false)
+		_fade_highlight(false)
+		# Immediately strip the highlight layer bit from old meshes
+		for m in _highlight_meshes:
+			if is_instance_valid(m):
+				m.layers &= ~HIGHLIGHT_LAYER
+		_highlight_meshes.clear()
 
 	_highlighted_node = target_node
 
 	if _highlighted_node != null and is_instance_valid(_highlighted_node):
-		_fade_highlight(_highlighted_node, true)
+		_get_meshes_recursive(_highlighted_node, _highlight_meshes)
+		# Add the highlight layer bit to new meshes
+		for m in _highlight_meshes:
+			if is_instance_valid(m):
+				m.layers |= HIGHLIGHT_LAYER
 
-func _fade_highlight(node: Node, fade_in: bool) -> void:
-	var meshes: Array[MeshInstance3D] = []
-	_get_meshes_recursive(node, meshes)
+		_fade_highlight(true)
 
-	if meshes.is_empty():
-		return
+func _fade_highlight(fade_in: bool) -> void:
+	if _highlight_tween and _highlight_tween.is_valid():
+		_highlight_tween.kill()
 
-	for mesh in meshes:
-		if _mesh_tweens.has(mesh) and _mesh_tweens[mesh] and _mesh_tweens[mesh].is_valid():
-			_mesh_tweens[mesh].kill()
+	_highlight_tween = create_tween()
+	var mat = _highlight_container.material # FIX: Target the local instance material
 
-		var tween = create_tween()
-		_mesh_tweens[mesh] = tween
-
-		var base_mat = mesh.get_active_material(0)
-		if not base_mat:
-			continue
-
-		if fade_in:
-			# If there's no next_pass yet, duplicate the base material (so we don't apply next_pass globally)
-			# then assign our outline as its next pass.
-			if not base_mat.next_pass or not (base_mat.next_pass is StandardMaterial3D and base_mat.next_pass.grow):
-				# It is crucial to duplicate the base material so we don't accidentally
-				# add outlines to EVERY instance of this object in the world!
-				base_mat = base_mat.duplicate()
-				mesh.set_surface_override_material(0, base_mat)
-
-				var outline_mat = OUTLINE_MATERIAL.duplicate()
-				outline_mat.albedo_color.a = 0.0
-				base_mat.next_pass = outline_mat
-
-			var outline_mat = base_mat.next_pass
-			tween.tween_property(outline_mat, "albedo_color:a", 1.0, 0.2)
-		else:
-			if base_mat.next_pass and base_mat.next_pass is StandardMaterial3D and base_mat.next_pass.grow:
-				var outline_mat = base_mat.next_pass
-				tween.tween_property(outline_mat, "albedo_color:a", 0.0, 0.2)
-
-				tween.tween_callback(func():
-					if is_instance_valid(mesh):
-						var current_mat = mesh.get_active_material(0)
-						if current_mat and current_mat.next_pass == outline_mat:
-							current_mat.next_pass = null
-					_mesh_tweens.erase(mesh)
-				)
+	if fade_in:
+		_highlight_tween.tween_property(mat, "shader_parameter/alpha_multiplier", 1.0, 0.2)
+	else:
+		_highlight_tween.tween_property(mat, "shader_parameter/alpha_multiplier", 0.0, 0.2)
