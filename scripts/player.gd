@@ -1199,53 +1199,15 @@ func _fade_highlight(node: Node, fade_in: bool) -> void:
 		var mat = mesh.material_overlay
 
 		if fade_in:
-			# If the material is missing or not our multi-pass outline, generate it
-			if not mat or not (mat is ShaderMaterial and mat.shader == OUTLINE_MATERIAL.shader):
-				# Create a 4-pass silhouette chain covering the diagonal corners
-				var mat_tl = OUTLINE_MATERIAL.duplicate()
-				mat_tl.set_shader_parameter("shift_dir", Vector2(-1, -1))
-				mat_tl.set_shader_parameter("alpha_multiplier", 0.0)
-
-				var mat_tr = OUTLINE_MATERIAL.duplicate()
-				mat_tr.set_shader_parameter("shift_dir", Vector2(1, -1))
-				mat_tr.set_shader_parameter("alpha_multiplier", 0.0)
-				mat_tl.next_pass = mat_tr
-
-				var mat_bl = OUTLINE_MATERIAL.duplicate()
-				mat_bl.set_shader_parameter("shift_dir", Vector2(-1, 1))
-				mat_bl.set_shader_parameter("alpha_multiplier", 0.0)
-				mat_tr.next_pass = mat_bl
-
-				var mat_br = OUTLINE_MATERIAL.duplicate()
-				mat_br.set_shader_parameter("shift_dir", Vector2(1, 1))
-				mat_br.set_shader_parameter("alpha_multiplier", 0.0)
-				mat_bl.next_pass = mat_br
-
-				mat = mat_tl
+			if not mat or mat.resource_path != OUTLINE_MATERIAL.resource_path:
+				mat = OUTLINE_MATERIAL.duplicate()
 				mesh.material_overlay = mat
+				mat.albedo_color.a = 0.0
 
-			var start_alpha = mat.get_shader_parameter("alpha_multiplier")
-
-			var update_alpha_in = func(val):
-				if is_instance_valid(mesh) and mesh.material_overlay == mat:
-					var current_mat = mat
-					while current_mat != null:
-						current_mat.set_shader_parameter("alpha_multiplier", val)
-						current_mat = current_mat.next_pass
-
-			tween.tween_method(update_alpha_in, start_alpha, 1.0, 0.2)
+			tween.tween_property(mat, "albedo_color:a", 1.0, 0.2)
 		else:
-			if mat and mat is ShaderMaterial and mat.shader == OUTLINE_MATERIAL.shader:
-				var start_alpha = mat.get_shader_parameter("alpha_multiplier")
-
-				var update_alpha_out = func(val):
-					if is_instance_valid(mesh) and mesh.material_overlay == mat:
-						var current_mat = mat
-						while current_mat != null:
-							current_mat.set_shader_parameter("alpha_multiplier", val)
-							current_mat = current_mat.next_pass
-
-				tween.tween_method(update_alpha_out, start_alpha, 0.0, 0.2)
+			if mat and mat is StandardMaterial3D and mat.grow:
+				tween.tween_property(mat, "albedo_color:a", 0.0, 0.2)
 
 				tween.tween_callback(func():
 					if is_instance_valid(mesh) and mesh.material_overlay == mat:
