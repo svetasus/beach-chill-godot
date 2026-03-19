@@ -1162,7 +1162,6 @@ func _rpc_request_cart_deposit(cart_path: NodePath, item_path: NodePath):
 # --- HIGHLIGHT LOGIC ---
 const OUTLINE_MATERIAL = preload("res://resources/materials/outline.tres")
 
-# Dictionary to keep track of active tweens per mesh so we don't cross streams
 var _mesh_tweens: Dictionary = {}
 
 func _get_meshes_recursive(node: Node, meshes: Array[MeshInstance3D]) -> void:
@@ -1175,13 +1174,11 @@ func _update_highlight(target_node: Node) -> void:
 	if _highlighted_node == target_node:
 		return
 
-	# Fade out old
 	if _highlighted_node != null and is_instance_valid(_highlighted_node):
 		_fade_highlight(_highlighted_node, false)
 
 	_highlighted_node = target_node
 
-	# Fade in new
 	if _highlighted_node != null and is_instance_valid(_highlighted_node):
 		_fade_highlight(_highlighted_node, true)
 
@@ -1202,23 +1199,53 @@ func _fade_highlight(node: Node, fade_in: bool) -> void:
 		var mat = mesh.material_overlay
 
 		if fade_in:
+			# If the material is missing or not our multi-pass outline, generate it
 			if not mat or not (mat is ShaderMaterial and mat.shader == OUTLINE_MATERIAL.shader):
-				mat = OUTLINE_MATERIAL.duplicate()
+				# Create a 4-pass silhouette chain covering the diagonal corners
+				var mat_tl = OUTLINE_MATERIAL.duplicate()
+				mat_tl.set_shader_parameter("shift_dir", Vector2(-1, -1))
+				mat_tl.set_shader_parameter("alpha_multiplier", 0.0)
+
+				var mat_tr = OUTLINE_MATERIAL.duplicate()
+				mat_tr.set_shader_parameter("shift_dir", Vector2(1, -1))
+				mat_tr.set_shader_parameter("alpha_multiplier", 0.0)
+				mat_tl.next_pass = mat_tr
+
+				var mat_bl = OUTLINE_MATERIAL.duplicate()
+				mat_bl.set_shader_parameter("shift_dir", Vector2(-1, 1))
+				mat_bl.set_shader_parameter("alpha_multiplier", 0.0)
+				mat_tr.next_pass = mat_bl
+
+				var mat_br = OUTLINE_MATERIAL.duplicate()
+				mat_br.set_shader_parameter("shift_dir", Vector2(1, 1))
+				mat_br.set_shader_parameter("alpha_multiplier", 0.0)
+				mat_bl.next_pass = mat_br
+
+				mat = mat_tl
 				mesh.material_overlay = mat
-				mat.set_shader_parameter("alpha_multiplier", 0.0)
+
+			var start_alpha = mat.get_shader_parameter("alpha_multiplier")
 
 			var update_alpha_in = func(val):
 				if is_instance_valid(mesh) and mesh.material_overlay == mat:
-					mat.set_shader_parameter("alpha_multiplier", val)
+					var current_mat = mat
+					while current_mat != null:
+						current_mat.set_shader_parameter("alpha_multiplier", val)
+						current_mat = current_mat.next_pass
 
-			tween.tween_method(update_alpha_in, mat.get_shader_parameter("alpha_multiplier"), 1.0, 0.2)
+			tween.tween_method(update_alpha_in, start_alpha, 1.0, 0.2)
 		else:
 			if mat and mat is ShaderMaterial and mat.shader == OUTLINE_MATERIAL.shader:
+				var start_alpha = mat.get_shader_parameter("alpha_multiplier")
+
 				var update_alpha_out = func(val):
 					if is_instance_valid(mesh) and mesh.material_overlay == mat:
-						mat.set_shader_parameter("alpha_multiplier", val)
+						var current_mat = mat
+						while current_mat != null:
+							current_mat.set_shader_parameter("alpha_multiplier", val)
+							current_mat = current_mat.next_pass
 
-				tween.tween_method(update_alpha_out, mat.get_shader_parameter("alpha_multiplier"), 0.0, 0.2)
+				tween.tween_method(update_alpha_out, start_alpha, 0.0, 0.2)
 
 				tween.tween_callback(func():
 					if is_instance_valid(mesh) and mesh.material_overlay == mat:

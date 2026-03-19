@@ -5,6 +5,7 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_2nkmq")
-shader_parameter/outline_thickness = 1.5
+shader_parameter/outline_thickness = 4.0
 shader_parameter/outline_color = Color(1, 1, 1, 1)
 shader_parameter/alpha_multiplier = 0.0
+shader_parameter/shift_dir = Vector2(0, 0)
