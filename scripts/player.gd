@@ -1196,29 +1196,34 @@ func _fade_highlight(node: Node, fade_in: bool) -> void:
 		var tween = create_tween()
 		_mesh_tweens[mesh] = tween
 
-		var mat = mesh.material_overlay
+		var base_mat = mesh.get_active_material(0)
+		if not base_mat:
+			continue
 
 		if fade_in:
-			if not mat or mat.resource_path != OUTLINE_MATERIAL.resource_path:
-				mat = OUTLINE_MATERIAL.duplicate()
-				mesh.material_overlay = mat
-				mat.set_shader_parameter("outline_color", Color(1.0, 1.0, 1.0, 0.0))
+			# If there's no next_pass yet, duplicate the base material (so we don't apply next_pass globally)
+			# then assign our outline as its next pass.
+			if not base_mat.next_pass or not (base_mat.next_pass is StandardMaterial3D and base_mat.next_pass.grow):
+				# It is crucial to duplicate the base material so we don't accidentally
+				# add outlines to EVERY instance of this object in the world!
+				base_mat = base_mat.duplicate()
+				mesh.set_surface_override_material(0, base_mat)
 
-			var update_alpha_in = func(val):
-				if is_instance_valid(mesh) and mesh.material_overlay == mat:
-					mat.set_shader_parameter("outline_color", Color(1.0, 1.0, 1.0, val))
+				var outline_mat = OUTLINE_MATERIAL.duplicate()
+				outline_mat.albedo_color.a = 0.0
+				base_mat.next_pass = outline_mat
 
-			tween.tween_method(update_alpha_in, mat.get_shader_parameter("outline_color").a, 1.0, 0.2)
+			var outline_mat = base_mat.next_pass
+			tween.tween_property(outline_mat, "albedo_color:a", 1.0, 0.2)
 		else:
-			if mat and mat is ShaderMaterial and mat.shader == OUTLINE_MATERIAL.shader:
-				var update_alpha_out = func(val):
-					if is_instance_valid(mesh) and mesh.material_overlay == mat:
-						mat.set_shader_parameter("outline_color", Color(1.0, 1.0, 1.0, val))
-
-				tween.tween_method(update_alpha_out, mat.get_shader_parameter("outline_color").a, 0.0, 0.2)
+			if base_mat.next_pass and base_mat.next_pass is StandardMaterial3D and base_mat.next_pass.grow:
+				var outline_mat = base_mat.next_pass
+				tween.tween_property(outline_mat, "albedo_color:a", 0.0, 0.2)
 
 				tween.tween_callback(func():
-					if is_instance_valid(mesh) and mesh.material_overlay == mat:
-						mesh.material_overlay = null
+					if is_instance_valid(mesh):
+						var current_mat = mesh.get_active_material(0)
+						if current_mat and current_mat.next_pass == outline_mat:
+							current_mat.next_pass = null
 					_mesh_tweens.erase(mesh)
 				)
