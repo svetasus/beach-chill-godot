@@ -1192,7 +1192,7 @@ func _ready_highlight_system():
 	_highlight_camera.cull_mask = HIGHLIGHT_LAYER
 	_highlight_camera.environment = Environment.new()
 	_highlight_camera.environment.background_mode = Environment.BG_COLOR
-	_highlight_camera.environment.bg_color = Color(0, 0, 0, 0)
+	_highlight_camera.environment.background_color = Color(0, 0, 0, 0)
 
 	_highlight_viewport.add_child(_highlight_camera)
 	_highlight_container.add_child(_highlight_viewport)
