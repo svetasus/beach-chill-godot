@@ -1202,12 +1202,20 @@ func _fade_highlight(node: Node, fade_in: bool) -> void:
 			if not mat or mat.resource_path != OUTLINE_MATERIAL.resource_path:
 				mat = OUTLINE_MATERIAL.duplicate()
 				mesh.material_overlay = mat
-				mat.albedo_color.a = 0.0
+				mat.set_shader_parameter("outline_color", Color(1.0, 1.0, 1.0, 0.0))
 
-			tween.tween_property(mat, "albedo_color:a", 1.0, 0.2)
+			var update_alpha_in = func(val):
+				if is_instance_valid(mesh) and mesh.material_overlay == mat:
+					mat.set_shader_parameter("outline_color", Color(1.0, 1.0, 1.0, val))
+
+			tween.tween_method(update_alpha_in, mat.get_shader_parameter("outline_color").a, 1.0, 0.2)
 		else:
-			if mat and mat is StandardMaterial3D and mat.grow:
-				tween.tween_property(mat, "albedo_color:a", 0.0, 0.2)
+			if mat and mat is ShaderMaterial and mat.shader == OUTLINE_MATERIAL.shader:
+				var update_alpha_out = func(val):
+					if is_instance_valid(mesh) and mesh.material_overlay == mat:
+						mat.set_shader_parameter("outline_color", Color(1.0, 1.0, 1.0, val))
+
+				tween.tween_method(update_alpha_out, mat.get_shader_parameter("outline_color").a, 0.0, 0.2)
 
 				tween.tween_callback(func():
 					if is_instance_valid(mesh) and mesh.material_overlay == mat:
