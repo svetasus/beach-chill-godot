@@ -15,6 +15,7 @@ const HOUSE_ENTER_MARKERS_LEVEL_PATH: String = "Markers/HouseEnterMarkers"
 const TREASURE_MARKERS_LEVEL_PATH: String = "Markers/TreasureSpawnMarkers"
 
 const PLAYER_SCENE_PATH: String = "res://scenes/features/player.tscn"
+const HIGHLIGHT_OBJECT_MAT_PATH: String = "res://resources/materials/post_process_outline.tres"
 
 var split_money_in_team: bool = false
 var account_id: String = ""

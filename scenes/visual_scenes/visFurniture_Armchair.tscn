@@ -45,6 +45,7 @@ albedo_texture = ExtResource("1_fhis6")
 script = ExtResource("2_script")
 
 [node name="Model" type="Node3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.001004, 0.202062)

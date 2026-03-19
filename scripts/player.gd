@@ -1162,7 +1162,7 @@ func _rpc_request_cart_deposit(cart_path: NodePath, item_path: NodePath):
 			cart.deposit_item_cart(item)
 
 # --- HIGHLIGHT LOGIC ---
-const OUTLINE_MATERIAL = preload("res://resources/materials/post_process_outline.tres")
+const OUTLINE_MATERIAL = preload(Global.HIGHLIGHT_OBJECT_MAT_PATH)
 
 # Visual Layer 20 is reserved for highlighted objects (bitwise: 1 << 19)
 const HIGHLIGHT_LAYER = 1 << 19
@@ -1262,9 +1262,10 @@ func _fade_highlight(fade_in: bool) -> void:
 
 		# Now that we're completely faded out, strip the highlight bit so
 		# the secondary camera stops rendering them unnecessarily.
-		_highlight_tween.tween_callback(func():
-			for m in _highlight_meshes:
-				if is_instance_valid(m):
-					m.layers &= ~HIGHLIGHT_LAYER
-			_highlight_meshes.clear()
-		)
+		_highlight_tween.tween_callback(_on_highlight_fade_out_complete)
+
+func _on_highlight_fade_out_complete() -> void:
+	for m in _highlight_meshes:
+		if is_instance_valid(m):
+			m.layers &= ~HIGHLIGHT_LAYER
+	_highlight_meshes.clear()
