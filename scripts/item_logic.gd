@@ -82,6 +82,7 @@ func _apply_physics_state(should_freeze: bool, impulse: Vector3, pos: Vector3, r
 
 	if should_freeze:
 		freeze = true
+		_frozen_by_jitter = false # Clear jitter flag if explicitly frozen by player
 		top_level = true
 		if has_node("CollisionShape3D"):
 			get_node("CollisionShape3D").disabled = true
@@ -90,6 +91,7 @@ func _apply_physics_state(should_freeze: bool, impulse: Vector3, pos: Vector3, r
 	# 2. Handle the "Release" state (Dropping or Throwing)
 	sleeping = false
 	freeze = false
+	_frozen_by_jitter = false # Clear jitter flag if released
 	top_level = false
 	if has_node("CollisionShape3D"):
 		get_node("CollisionShape3D").disabled = false
@@ -130,6 +132,10 @@ func _ready():
 	# Connecting your original proximity signals
 	$NameDetectionArea.body_entered.connect(_on_player_nearby)
 	$NameDetectionArea.body_exited.connect(_on_player_left)
+
+	# Enable contact monitoring for jitter detection
+	contact_monitor = true
+	max_contacts_reported = 5
 
 func show_name(should_show: bool):
 	$NamePivot.visible = should_show
@@ -262,8 +268,70 @@ func request_unlock_from_cart():
 		else:
 			unlock_from_cart()
 
+# --- Jitter Detection & Freeze logic ---
+var _jitter_time: float = 0.0
+var _last_velocity: Vector3 = Vector3.ZERO
+var _supporting_bodies: Array[Node] = []
+var _frozen_by_jitter: bool = false
+var _support_original_positions: Dictionary = {}
+
 func _physics_process(delta):
-	pass
+	if not is_multiplayer_authority(): return
+
+	# Wake up logic
+	if freeze and _frozen_by_jitter:
+		var should_wake_up = false
+		for body in _supporting_bodies:
+			if not is_instance_valid(body) or body.is_queued_for_deletion():
+				should_wake_up = true
+				break
+			if body is Node3D:
+				var original_pos = _support_original_positions.get(body, null)
+				if original_pos != null and body.global_position.distance_to(original_pos) > 0.1:
+					should_wake_up = true
+					break
+
+		if should_wake_up:
+			freeze = false
+			_frozen_by_jitter = false
+			_jitter_time = 0.0
+			_supporting_bodies.clear()
+			_support_original_positions.clear()
+		return
+
+	# Detection logic
+	if not freeze and not sleeping:
+		var current_vel = linear_velocity.length()
+		var current_ang = angular_velocity.length()
+
+		# Small threshold for jitter, large threshold for actual falling
+		if current_vel > 0.001 and current_vel < 0.5 and current_ang < 1.0:
+			# Check if velocity reverses or stays small
+			var dir_dot = linear_velocity.normalized().dot(_last_velocity.normalized())
+			if current_vel < 0.1 or dir_dot < 0.5:
+				_jitter_time += delta
+			else:
+				_jitter_time = max(0.0, _jitter_time - delta)
+		elif current_vel >= 0.5 or current_ang >= 1.0:
+			_jitter_time = 0.0
+
+		_last_velocity = linear_velocity
+
+		if _jitter_time > 1.5:
+			# Jitter detected! Freeze the item and record supports
+			var colliders = get_colliding_bodies()
+			if colliders.size() > 0:
+				_supporting_bodies.clear()
+				_support_original_positions.clear()
+				for body in colliders:
+					_supporting_bodies.append(body)
+					if body is Node3D:
+						_support_original_positions[body] = body.global_position
+
+				freeze = true
+				_frozen_by_jitter = true
+				_jitter_time = 0.0
+				sleeping = true
 
 
 # --- 6. CLEANUP ---
