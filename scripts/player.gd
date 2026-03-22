@@ -936,6 +936,8 @@ func use_furniture(furniture_node: Node3D):
 	if carried_item != null:
 		drop_item()
 	current_furniture = furniture_node
+	if current_furniture is RigidBody3D:
+		current_furniture.freeze = true
 	# Optional: Disable collision mask if needed so player doesn't pop out
 	set_collision_mask_value(1, false)
 	is_sitting = true
@@ -946,6 +948,8 @@ func leave_furniture():
 	if current_furniture != null:
 		if current_furniture.has_method("leave"):
 			current_furniture.leave(self)
+		if current_furniture is RigidBody3D:
+			current_furniture.freeze = false
 		current_furniture = null
 		# Optional: re-enable collision mask
 		set_collision_mask_value(1, true)
