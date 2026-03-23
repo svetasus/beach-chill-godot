@@ -6,6 +6,10 @@ const JUMP_VELOCITY = 4.5
 const THROW_FORCE = 16.0
 const DIG_DIST = 1.5
 
+@export var SWIM_SPEED: float = 3.0
+@export var WATER_JUMP_VELOCITY: float = 3.0
+@export var WATER_FLOAT_OFFSET: float = -0.5
+
 @onready var shapecast = $Body/Head/Camera3D/InteractionShape
 @onready var hand = $Body/Head/Camera3D/HandMarker
 @onready var action_label = $PlayerUI/ActionLabel
@@ -45,6 +49,8 @@ var can_place = true
 var current_furniture = null
 var _highlighted_node = null
 
+var water_areas_count: int = 0
+var current_water_surface_height: float = 0.0
 
 # Stores item names and their counts: {"Pink Shell": 3, "Old Coin": 1}
 var collection = {}
@@ -143,6 +149,16 @@ func _ready():
 	$Body/Head/Camera3D/CatchZone.body_entered.connect(_on_catch_zone_body_entered)
 
 
+func enter_water(surface_height: float):
+	water_areas_count += 1
+	current_water_surface_height = max(current_water_surface_height, surface_height)
+
+func exit_water():
+	water_areas_count -= 1
+	if water_areas_count <= 0:
+		water_areas_count = 0
+		current_water_surface_height = 0.0
+
 func _apply_camera_mode():
 	# Update camera
 	if is_third_person:
@@ -174,15 +190,37 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 
-	# Add the gravity.
+	# Determine if we're actually deep enough to be "swimming"
+	# WATER_FLOAT_OFFSET is negative (e.g. -0.5), so we add it to the surface height to get the float line.
+	var float_line = current_water_surface_height + WATER_FLOAT_OFFSET
+	# Only start swimming if we're not on the floor, fulfilling the constraint "if player still in the ground, they shouldn't start to swim"
+	var is_swimming = water_areas_count > 0 and global_position.y <= float_line and not is_on_floor()
+
+	# Always add the gravity unless perfectly resting on the floor.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
+
+	if is_swimming:
+		# Apply buoyancy as an acceleration that fights gravity
+		# If the player is below the float line, buoyancy pushes them up.
+		var depth = float_line - global_position.y
+		# Gravity is pulling down, so buoyancy pushes up with enough force to counteract it plus push towards surface
+		var buoyancy_acceleration = depth * 20.0
+		var water_drag = 4.0 # How much the water slows vertical movement
+
+		velocity.y += buoyancy_acceleration * delta
+		velocity.y -= velocity.y * water_drag * delta
 
 	# Handle jump.
 	if jump_queued:
 		jump_queued = false
 		if is_on_floor():
 			velocity.y = JUMP_VELOCITY
+		elif is_swimming:
+			# When jumping in water, we set the velocity so the player shoots up.
+			# Because buoyancy is now an acceleration (adding force) rather than a rigid lerp,
+			# the player will actually move upwards out of the water.
+			velocity.y = WATER_JUMP_VELOCITY
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
@@ -204,12 +242,14 @@ func _physics_process(delta: float) -> void:
 	else:
 		direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
+	var current_speed = SWIM_SPEED if is_swimming else SPEED
+
 	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		velocity.x = direction.x * current_speed
+		velocity.z = direction.z * current_speed
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
+		velocity.x = move_toward(velocity.x, 0, current_speed)
+		velocity.z = move_toward(velocity.z, 0, current_speed)
 		
 	move_and_slide()
 
