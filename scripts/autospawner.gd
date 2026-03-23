@@ -48,6 +48,12 @@ func _spawn_in_area(area: AutospawnArea):
 
 	# Spawn Items
 	if area.spawn_profile and area.spawn_profile.items.size() > 0 and area.item_scene:
+		var total_weight = 0.0
+		var loot_table = area.spawn_profile.items
+				
+		for item_data in loot_table:
+			total_weight += item_data.get_chance()
+		
 		for i in range(area.max_items):
 			var local_pos = Vector3(
 				randf_range(-extents.x, extents.x),
@@ -58,8 +64,20 @@ func _spawn_in_area(area: AutospawnArea):
 
 			var ground_pos = _get_ground_position(global_pos, 100.0) # Using a large fixed distance to guarantee floor hit
 			if ground_pos != Vector3.ZERO:
-				var item_data = area.spawn_profile.items.pick_random()
-				_spawn_item(area.item_scene, item_data, ground_pos)
+				#var item_data = area.spawn_profile.items.pick_random()
+				
+				# Generate a random number between 0 and the total weight
+				var random_weight = randf() * total_weight
+				
+				print("random weight: ", random_weight)
+				var current_weight = 0.0
+				
+				for item_data in loot_table:
+					current_weight += item_data.get_chance()
+					if random_weight <= current_weight:
+						var selected_resource = item_data
+						_spawn_item(area.item_scene, item_data, ground_pos)
+						break
 
 	# Spawn Treasures
 	if area.treasure_profile and area.treasure_profile.loot_table.size() > 0 and area.treasure_profile.treasure_scene:

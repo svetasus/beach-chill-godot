@@ -64,30 +64,50 @@ func _perform_spawn():
 		_sync_deletion.rpc()
 		return
 	
-	var selected_resource = loot_table.pick_random()
-	var loot_data_path = selected_resource.resource_path # Get the string path automatically
 	
-	# 3. Spawn the Container (BaseItem)
-	var loot_instance = base_item_scene.instantiate()
+	var total_weight = 0.0
+	for item_data in loot_table:
+		total_weight += item_data.get_chance()
+
+	# Generate a random number between 0 and the total weight
+	var random_weight = randf() * total_weight
 	
-	# IMPORTANT: Add to the world BEFORE setting data
-	# This ensures the MultiplayerSpawner sees it
-	var items_container = get_tree().root.get_node_or_null(Global.ITEMS_CONTAINER_PATH)
-	if items_container:
-		items_container.add_child(loot_instance, true)
-	else:
-		get_parent().add_child(loot_instance, true)
+	print("random weight: ", random_weight)
+	var current_weight = 0.0
 	
-	# 4. Initialize the Item
-	loot_instance.global_position = global_position + Vector3(0, 0.5, 0)
+	for item_data in loot_table:
+		current_weight += item_data.get_chance()
+		if random_weight <= current_weight:
+			var selected_resource = item_data
+			var loot_data_path = selected_resource.resource_path # Get the string path automatically
+			
+			# 3. Spawn the Container (BaseItem)
+			var loot_instance = base_item_scene.instantiate()
+			
+			# IMPORTANT: Add to the world BEFORE setting data
+			# This ensures the MultiplayerSpawner sees it
+			var items_container = get_tree().root.get_node_or_null(Global.ITEMS_CONTAINER_PATH)
+			if items_container:
+				items_container.add_child(loot_instance, true)
+			else:
+				get_parent().add_child(loot_instance, true)
+			
+			# 4. Initialize the Item
+			loot_instance.global_position = global_position + Vector3(0, 0.5, 0)
+			
+			# This triggers the _set_data() logic we wrote earlier!
+			loot_instance.data_path = loot_data_path 
+			
+			print(loot_instance.display_name)
+			# 5. The "Pop" Physics
+			# Since BaseItem IS a RigidBody3D, this works perfectly
+			var pop_force = Vector3(randf_range(-2, 2), 6, randf_range(-2, 2))
+			loot_instance.apply_central_impulse(pop_force)	
+
+			break						
+
+
 	
-	# This triggers the _set_data() logic we wrote earlier!
-	loot_instance.data_path = loot_data_path 
-	
-	# 5. The "Pop" Physics
-	# Since BaseItem IS a RigidBody3D, this works perfectly
-	var pop_force = Vector3(randf_range(-2, 2), 6, randf_range(-2, 2))
-	loot_instance.apply_central_impulse(pop_force)
 	
 	# 6. Delete the point
 	_sync_deletion.rpc()

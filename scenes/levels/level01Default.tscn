@@ -380,7 +380,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.7386, 2.04143, 3.74067)
 script = ExtResource("6_ic7dp")
 spawn_profile = ExtResource("7_gqja0")
 treasure_profile = ExtResource("8_uyy6t")
-max_items = 6
+max_items = 10
 max_treasures = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AutospawnAreas/Area3D"]

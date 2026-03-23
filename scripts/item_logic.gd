@@ -12,8 +12,8 @@ class_name Item
 		var old_val = data_path
 		data_path = val
 		# Debug prints preserved from your original version
-		print("--- [DEBUG] data_path SET ---")
-		print("    From: '", old_val, "'")
+		#print("--- [DEBUG] data_path SET ---")
+		#print("    From: '", old_val, "'")
 		print("    To:   '", val, "'")
 		
 		if val != "":

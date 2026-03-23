@@ -34,5 +34,17 @@ func get_value() -> int:
 		ItemValueType.EPIC:
 			return 40
 		ItemValueType.ARTIFACT:
-			return 60
+			return 80
 	return 10
+
+func get_chance() -> int:
+	match item_value_type:
+		ItemValueType.COMMON:
+			return 8
+		ItemValueType.RARE:
+			return 4
+		ItemValueType.EPIC:
+			return 2
+		ItemValueType.ARTIFACT:
+			return 1
+	return 1
