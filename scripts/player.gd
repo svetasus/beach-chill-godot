@@ -7,8 +7,8 @@ const THROW_FORCE = 16.0
 const DIG_DIST = 1.5
 
 @export var SWIM_SPEED: float = 3.0
-@export var WATER_JUMP_VELOCITY: float = 3.0
-@export var WATER_FLOAT_OFFSET: float = -0.5
+@export var WATER_JUMP_VELOCITY: float = 5.0
+@export var WATER_FLOAT_OFFSET: float = -0.3
 
 @onready var shapecast = $Body/Head/Camera3D/InteractionShape
 @onready var hand = $Body/Head/Camera3D/HandMarker
@@ -16,6 +16,7 @@ const DIG_DIST = 1.5
 @onready var placement_ray = $Body/Head/Camera3D/PlacementRay
 @onready var state_sit = $State_Sit
 @onready var state_stand = $State_Stand
+@onready var state_swim = $State_Swim
 
 @onready var tp_camera = $Body/SpringArm3D/ThirdPersonCamera
 @onready var tp_spring_arm = $Body/SpringArm3D
@@ -152,12 +153,18 @@ func _ready():
 func enter_water(surface_height: float):
 	water_areas_count += 1
 	current_water_surface_height = max(current_water_surface_height, surface_height)
+	if state_swim: state_swim.show()
+	if state_stand: state_stand.hide()
 
 func exit_water():
 	water_areas_count -= 1
 	if water_areas_count <= 0:
 		water_areas_count = 0
 		current_water_surface_height = 0.0
+		
+	
+	if state_stand: state_stand.show()
+	if state_swim: state_swim.hide()
 
 func _apply_camera_mode():
 	# Update camera
@@ -1003,9 +1010,11 @@ func _update_sit_visuals(is_sitting: bool):
 	if is_sitting:
 		if state_sit: state_sit.show()
 		if state_stand: state_stand.hide()
+		if state_swim: state_swim.hide()
 	else:
 		if state_sit: state_sit.hide()
 		if state_stand: state_stand.show()
+		if state_swim: state_swim.hide()
 
 func get_interaction_target():
 	var active_shapecast = $Body/Head/Camera3D/InteractionShape

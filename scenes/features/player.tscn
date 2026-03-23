@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://b4v64l3u3emau"]
+[gd_scene load_steps=22 format=3 uid="uid://b4v64l3u3emau"]
 
 [ext_resource type="Script" uid="uid://bop6eska7b3tl" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://ipa8enh86p2g" path="res://scripts/inventory_ui.gd" id="2_g2els"]
@@ -75,12 +75,16 @@ height = 1.2
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_k03tp"]
 radius = 0.05
-height = 0.15
+height = 0.2
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_sbhj3"]
-top_radius = 0.25
-bottom_radius = 0.25
-height = 0.3
+top_radius = 0.3
+bottom_radius = 0.3
+height = 0.2
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_sbhj3"]
+radius = 0.1
+height = 0.4
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 collision_layer = 2
@@ -258,6 +262,33 @@ mesh = SubResource("CapsuleMesh_k03tp")
 [node name="Belly2" type="MeshInstance3D" parent="State_Sit"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.0947106, -0.336148)
 mesh = SubResource("CylinderMesh_sbhj3")
+
+[node name="State_Swim" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.057386, 0)
+
+[node name="Belly" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(1, 0, 0, 0, 0.703868, 0.220953, 0, -0.159463, 0.975284, 0, 0.176268, 0.0961602)
+mesh = SubResource("CapsuleMesh_t4epb")
+
+[node name="Leg1" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(1.99001, 0, 0, 0, 0.280381, 1.98368, 0, -0.959889, 0.579432, -0.191183, -0.192443, 0.471406)
+mesh = SubResource("CapsuleMesh_k03tp")
+
+[node name="Leg2" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(1.99001, 0, 0, 0, 0.280381, 1.98368, 0, -0.959889, 0.579432, 0.191, -0.192591, 0.471731)
+mesh = SubResource("CapsuleMesh_k03tp")
+
+[node name="Belly2" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(1, 0, 0, 0, 0.699065, 0.715059, 0, -0.715059, 0.699065, 0, -0.100143, 0.285619)
+mesh = SubResource("CylinderMesh_sbhj3")
+
+[node name="Hand1" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(0.707107, -0.707107, 0, -3.09086e-08, -3.09086e-08, -1, 0.707107, 0.707107, -4.37114e-08, 0.267561, 0.402452, -0.215389)
+mesh = SubResource("CapsuleMesh_sbhj3")
+
+[node name="Hand2" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(0.707107, 0.707107, -3.09086e-08, 0, -4.37114e-08, -1, -0.707107, 0.707107, -3.09086e-08, -0.268, 0.402, -0.215)
+mesh = SubResource("CapsuleMesh_sbhj3")
 
 [node name="State_Stand" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.057386, 0)
