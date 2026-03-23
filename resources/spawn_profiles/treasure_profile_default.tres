@@ -11,7 +11,6 @@
 [resource]
 script = ExtResource("4_xx73n")
 loot_table = Array[ExtResource("2_ufpv0")]([ExtResource("3_xx73n"), ExtResource("4_q0cei")])
-loot_chances = Array[int]([0, 0])
 base_item_scene = ExtResource("1_t3d6j")
 sand_particles = ExtResource("3_iqw0t")
 treasure_scene = ExtResource("5_q0cei")

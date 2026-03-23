@@ -106,5 +106,14 @@ func _disable_nodes_recursive(node: Node):
 	node.set_physics_process(false)
 	if node is RigidBody3D or node is StaticBody3D or node is Area3D:
 		node.process_mode = Node.PROCESS_MODE_DISABLED
+		
+		# Disconnect signals on the preview so the editor doesn't accidentally save them to main.tscn!
+		if node.has_signal("body_entered"):
+			for conn in node.get_signal_connection_list("body_entered"):
+				node.disconnect("body_entered", conn["callable"])
+		if node.has_signal("body_exited"):
+			for conn in node.get_signal_connection_list("body_exited"):
+				node.disconnect("body_exited", conn["callable"])
+
 	for child in node.get_children():
 		_disable_nodes_recursive(child)
