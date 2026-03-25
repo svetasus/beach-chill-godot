@@ -21,8 +21,14 @@ func _rpc_set_label_text(text: String):
 func interact(player: Node3D):
 	if not player.is_in_group("players"): return
 
-	# Teleport player back to the entrance marker
-	if entrance_node and is_instance_valid(entrance_node):
+	_rpc_request_exit.rpc_id(1, player.get_path())
+
+@rpc("any_peer", "call_local")
+func _rpc_request_exit(player_path: NodePath):
+	if not multiplayer.is_server(): return
+
+	var player = get_node_or_null(player_path)
+	if player and is_instance_valid(player) and entrance_node and is_instance_valid(entrance_node):
 		var spawn_marker = entrance_node.get_node_or_null("SpawnPoint")
 		if spawn_marker:
 			player.teleport(spawn_marker.global_position, spawn_marker.global_rotation)
