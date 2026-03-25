@@ -9,8 +9,6 @@ func _input(event):
 		if not visible:
 			# 1. Show the chat box and focus it
 			show()
-			var chat_log = get_parent().get_node_or_null("ChatLog")
-			if chat_log: chat_log.show()
 			call_deferred("grab_focus")
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 			# STOP the player from moving
@@ -37,8 +35,6 @@ func send_chat():
 	# 3. Clean up
 	text = ""
 	hide()
-	var chat_log = get_parent().get_node_or_null("ChatLog")
-	if chat_log: chat_log.hide()
 	# Tell the player they can move again
 	var my_id = multiplayer.get_unique_id()
 	var my_player = get_node_or_null(Global.PLAYERS_CONTAINER_PATH + str(my_id))
@@ -55,6 +51,4 @@ func _gui_input(event):
 	if event is InputEventMouseButton and event.pressed:
 		release_focus()
 		hide()
-		var chat_log = get_parent().get_node_or_null("ChatLog")
-		if chat_log: chat_log.hide()
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

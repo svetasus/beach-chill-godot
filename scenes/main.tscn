@@ -31,7 +31,6 @@ script = ExtResource("1_o6xl0")
 [node name="MultiplayerMenu" parent="CanvasLayer" instance=ExtResource("3_85g3d")]
 
 [node name="ChatLog" parent="CanvasLayer" instance=ExtResource("5_chatlog")]
-visible = false
 
 [node name="Chat" type="LineEdit" parent="CanvasLayer"]
 visible = false
