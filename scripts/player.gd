@@ -213,7 +213,7 @@ func _physics_process(delta: float) -> void:
 		var depth = float_line - global_position.y
 		# Gravity is pulling down, so buoyancy pushes up with enough force to counteract it plus push towards surface
 		var buoyancy_acceleration = depth * 20.0
-		var water_drag = 4.0 # How much the water slows vertical movement
+		var water_drag = 2.0 # How much the water slows vertical movement
 
 		velocity.y += buoyancy_acceleration * delta
 		velocity.y -= velocity.y * water_drag * delta
