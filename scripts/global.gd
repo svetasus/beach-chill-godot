@@ -20,3 +20,5 @@ const HIGHLIGHT_OBJECT_MAT_PATH: String = "res://resources/materials/post_proces
 var split_money_in_team: bool = false
 var account_id: String = ""
 var peer_to_account: Dictionary = {}
+
+var chat_proximity_radius: float = 20.0

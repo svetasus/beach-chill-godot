@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7t8r2m8d3s0"]
+
+[ext_resource type="Script" uid="uid://cqj158m9n2j4w" path="res://scripts/chat_log.gd" id="1_chatlog"]
+
+[node name="ChatLog" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_chatlog")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -350.0
+offset_right = 420.0
+offset_bottom = -20.0
+grow_vertical = 0
+mouse_filter = 2
+alignment = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+horizontal_scroll_mode = 0
+
+[node name="ChatHistory" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+alignment = 2

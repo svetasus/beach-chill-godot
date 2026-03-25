@@ -654,6 +654,20 @@ func apply_eye_color(c):
 func receive_message(text: String):
 	if multiplayer.get_remote_sender_id() != get_multiplayer_authority():
 		return 
+
+	# Only process proximity if we have a valid local player
+	var my_id = multiplayer.get_unique_id()
+	var local_player = get_node_or_null(Global.PLAYERS_CONTAINER_PATH + str(my_id))
+	var distance = 0.0
+
+	if local_player and is_instance_valid(local_player):
+		distance = local_player.global_position.distance_to(global_position)
+
+	# Log the message in the new ChatLog if within proximity, or if it's the local player
+	if local_player == null or local_player == self or distance <= Global.chat_proximity_radius:
+		var chat_log = get_node_or_null("/root/Main/CanvasLayer/ChatLog")
+		if chat_log and chat_log.has_method("add_message"):
+			chat_log.add_message(name, text, eye_color)
 		
 	$Nickname.text = text
 	$Nickname.modulate = Color.YELLOW # Highlight the text
