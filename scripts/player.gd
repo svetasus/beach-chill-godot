@@ -1307,7 +1307,27 @@ func _update_highlight(target_node: Node) -> void:
 					m.layers &= ~HIGHLIGHT_LAYER
 		_highlight_meshes.clear()
 
-		_get_meshes_recursive(_highlighted_node, _highlight_meshes)
+		# Performance Optimization: Cache meshes on the target node to avoid O(N) recursive crawls
+		if _highlighted_node.has_meta("_cached_meshes"):
+			var cached = _highlighted_node.get_meta("_cached_meshes")
+			var valid_cache = true
+			# Validate cached meshes (in case any were freed or the tree changed)
+			for m in cached:
+				if is_instance_valid(m):
+					_highlight_meshes.append(m)
+				else:
+					# If any are invalid, the cache is stale; clear and re-crawl
+					valid_cache = false
+					break
+
+			if not valid_cache:
+				_highlight_meshes.clear()
+				_get_meshes_recursive(_highlighted_node, _highlight_meshes)
+				_highlighted_node.set_meta("_cached_meshes", _highlight_meshes.duplicate())
+		else:
+			_get_meshes_recursive(_highlighted_node, _highlight_meshes)
+			_highlighted_node.set_meta("_cached_meshes", _highlight_meshes.duplicate())
+
 		# Add the highlight layer bit to new meshes
 		for m in _highlight_meshes:
 			if is_instance_valid(m):
