@@ -85,7 +85,6 @@ func spawn_house_for_player(player_id: int):
 
 	# Instantiate and Add House
 	var house = house_scene.instantiate()
-	house.name = "House_" + str(player_id)
 
 	if houses_container == null:
 		houses_container = get_node_or_null(Global.HOUSES_CONTAINER_PATH)
@@ -96,7 +95,6 @@ func spawn_house_for_player(player_id: int):
 
 	# Instantiate and Add Entrance
 	var entrance = entrance_scene.instantiate()
-	entrance.name = "HouseEntrance_" + str(player_id)
 
 	if entrances_container == null:
 		entrances_container = get_node_or_null(Global.HOUSE_ENTRANCES_CONTAINER_PATH)
