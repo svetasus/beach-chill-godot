@@ -27,6 +27,7 @@ size = Vector3(1.5, 1, 0.1)
 mesh = SubResource("BoxMesh_o6l7b")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+visible = false
 shape = SubResource("BoxShape3D_s1hli")
 
 [node name="ArtifactSlots" type="Node3D" parent="."]
