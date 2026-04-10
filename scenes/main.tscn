@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://ct6wef0wj1t8f"]
+[gd_scene load_steps=20 format=3 uid="uid://ct6wef0wj1t8f"]
 
 [ext_resource type="Script" uid="uid://oofej86k011a" path="res://scripts/main.gd" id="1_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://c4wtfvlv2judr" path="res://scenes/features/multiplayerMenu.tscn" id="3_85g3d"]
@@ -44,11 +44,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.49036, 0.65, -6.30109)
 visible = false
 
 [node name="ArtifactCombiner" parent="World" instance=ExtResource("16_jbj1t")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.56874, 1.09213, 15.3878)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.78402, -1.16793, -6.51708)
 visible = false
 
 [node name="CollectibleBasket" parent="World" instance=ExtResource("15_jbj1t")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.90326, 1.32555, 13.2021)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.90326, 2.55856, 13.2021)
 
 [node name="Containers" type="Node3D" parent="World"]
 
@@ -75,11 +75,11 @@ loot_table = Array[ExtResource("8_0ld40")]([ExtResource("7_a8y0u"), ExtResource(
 [node name="ItemsContainer" type="Node3D" parent="World/Containers"]
 
 [node name="ArmChair" parent="World/Containers/ItemsContainer" instance=ExtResource("12_trceg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2275, 8.83197, 17.2769)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2275, 2.49236, 17.2769)
 data = ExtResource("17_yc10j")
 
 [node name="CombinerFull" parent="World" instance=ExtResource("16_gqmmt")]
-transform = Transform3D(0.273254, 0, -0.961942, 0, 1, 0, 0.961942, 0, 0.273254, 5.88062, 6.89604, 14.2767)
+transform = Transform3D(0.273254, 0, -0.961942, 0, 1, 0, 0.961942, 0, 0.273254, 5.88062, 2.47704, 14.2767)
 
 [node name="MultiplayerSpawners" type="Node3D" parent="."]
 
@@ -120,6 +120,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.93131, 0, 17.1483)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.66695, 0.241481, -2.45948)
 
 [node name="Shop" parent="." instance=ExtResource("20_yc10j")]
-transform = Transform3D(-0.679185, 0, -0.733967, 0, 1, 0, 0.733967, 0, -0.679185, 5.8209, 7.396, 19.0013)
+transform = Transform3D(-0.679185, 0, -0.733967, 0, 1, 0, 0.733967, 0, -0.679185, 5.8209, 2.93046, 19.0013)
 
 [connection signal="spawned" from="MultiplayerSpawners/MultiplayerSpawner_Players" to="." method="_on_multiplayer_spawner_spawned"]

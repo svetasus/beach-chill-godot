@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c7t8r2m8d3s0"]
 
-[ext_resource type="Script" uid="uid://cqj158m9n2j4w" path="res://scripts/chat_log.gd" id="1_chatlog"]
+[ext_resource type="Script" uid="uid://cs551lb7n1qtv" path="res://scripts/chat_log.gd" id="1_chatlog"]
 
 [node name="ChatLog" type="Control"]
 layout_mode = 3

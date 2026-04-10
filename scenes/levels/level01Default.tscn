@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://7bo1jg4ha4dw"]
+[gd_scene load_steps=54 format=3 uid="uid://7bo1jg4ha4dw"]
 
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_66c2g"]
 [ext_resource type="Material" uid="uid://bm4ar1a4q50vg" path="res://resources/materials/ocean_material.tres" id="3_6mrmg"]
@@ -77,13 +77,13 @@ size = Vector3(15, 1, 20)
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_mqw0e"]
 points = PackedVector3Array(-1.691, -0.042, 0, 1.343, 1.021, 0, 2.136, 0.996, 0, 2.134, -0.096, 0, -1.691, -0.042, 3, 1.343, 1.021, 3, 2.136, 0.996, 3, 2.134, -0.096, 3)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_l22oy"]
+size = Vector3(10, 3, 15)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wujm3"]
 albedo_texture = ExtResource("1_66c2g")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qa2r2"]
-albedo_texture = ExtResource("3_um12m")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fj0rs"]
 albedo_texture = ExtResource("3_um12m")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g2io6"]
@@ -160,6 +160,9 @@ size = Vector3(100, 5, 100)
 
 [sub_resource type="BoxMesh" id="BoxMesh_qa2r2"]
 size = Vector3(100, 5, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fj0rs"]
+albedo_texture = ExtResource("3_um12m")
 
 [node name="Level01Default" type="Node3D"]
 
@@ -275,6 +278,12 @@ shape = SubResource("BoxShape3D_76b23cc97af8")
 transform = Transform3D(0.999129, -0.0417187, 0, 0.0417187, 0.999129, 0, 0, 0, 1, -9.68638, -0.0791695, 1.26821)
 shape = SubResource("ConvexPolygonShape3D_mqw0e")
 
+[node name="GroundCollision2" type="StaticBody3D" parent="LevelDesign"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelDesign/GroundCollision2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.78, 0.83, 10.2)
+shape = SubResource("BoxShape3D_l22oy")
+
 [node name="CSGCombiner3D3" type="CSGCombiner3D" parent="LevelDesign"]
 use_collision = true
 
@@ -323,26 +332,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.4892, -0.0338497, 7.04586)
 size = Vector3(25, 1, 50)
 material = SubResource("StandardMaterial3D_qa2r2")
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="LevelDesign/CSGCombiner3D3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.79274, -3.22033, 10.2676)
-size = Vector3(10, 20, 15)
-material = SubResource("StandardMaterial3D_fj0rs")
-
 [node name="CSGPolygon3D5" type="CSGPolygon3D" parent="LevelDesign/CSGCombiner3D3"]
-transform = Transform3D(0.99447, 0.102292, 0.0237875, -0.102005, 0.994698, -0.012992, -0.0249903, 0.0104937, 0.999633, -8.91914, 3.80366, 2.79739)
+transform = Transform3D(0.99447, 0.102292, 0.0237875, -0.102005, 0.994698, -0.012992, -0.0249903, 0.0104937, 0.999633, -8.91914, 2.62795, 2.79739)
 polygon = PackedVector2Array(-5.75952, -4.00278, 1.34039, -0.0154471, 3.003, 0.0672207, 3.41369, -3.38051)
 depth = 5.0
 material = SubResource("StandardMaterial3D_amqpa")
 
 [node name="CSGPolygon3D6" type="CSGPolygon3D" parent="LevelDesign/CSGCombiner3D3"]
-transform = Transform3D(0.00202272, -0.0128527, -0.999916, -0.102005, 0.994698, -0.012992, 0.994782, 0.102022, 0.000700951, -1.19624, 6.94615, 6.71161)
-polygon = PackedVector2Array(-5.75952, -4.00278, 1.34039, -0.0154471, 3.003, 0.0672207, 3.41369, -3.38051)
+transform = Transform3D(0.00202272, -0.0128527, -0.999916, -0.0791488, 0.996777, -0.0129725, 0.996861, 0.0791677, 0.000998921, -1.19624, 6.94615, 6.71161)
+visible = false
+polygon = PackedVector2Array(-5.75952, -4.00278, 0.922859, -2.23936, 3.33938, -2.10514, 3.41369, -3.38051)
 depth = 4.0
 material = SubResource("StandardMaterial3D_amqpa")
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="LevelDesign/CSGCombiner3D3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.16075, 1.11908, 0.388582)
-size = Vector3(10, 5, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.07666, -0.0566269, 0.388582)
+size = Vector3(6, 5, 5)
 material = SubResource("StandardMaterial3D_g2io6")
 
 [node name="CSGBox3D9" type="CSGBox3D" parent="LevelDesign/CSGCombiner3D3"]
@@ -388,7 +393,7 @@ mesh = SubResource("CylinderMesh_8if6k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 
 [node name="PlayerSpawnMarkers" type="Node3D" parent="Markers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.54652, 6.76486, 10.4414)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.54652, 2.60763, 10.4414)
 
 [node name="Marker3D" type="Marker3D" parent="Markers/PlayerSpawnMarkers"]
 transform = Transform3D(0.966483, 0, -0.256728, 0, 1, 0, 0.256728, 0, 0.966483, 1.363, 1, -4.52713)
@@ -414,7 +419,7 @@ script = ExtResource("tent_sp_script")
 tent_scene = ExtResource("tent_scene")
 
 [node name="HouseEnterMarkers" type="Node3D" parent="Markers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.41999, 7.07405, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.41999, 2.36905, 0)
 
 [node name="Marker3D" type="Marker3D" parent="Markers/HouseEnterMarkers"]
 transform = Transform3D(0.545912, 0, -0.837842, 0, 1, 0, 0.837842, 0, 0.545912, 1.52498, 0, -1.0026)
@@ -468,7 +473,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.91364, 0.636461, -14.255)
 script = ExtResource("6_ic7dp")
 spawn_profile = ExtResource("12_gnpat")
 treasure_profile = ExtResource("8_uyy6t")
-max_items = 2
 max_treasures = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AutospawnAreas/ToolsArea"]
@@ -478,7 +482,7 @@ shape = SubResource("BoxShape3D_r84l6")
 mesh = SubResource("BoxMesh_gqja0")
 
 [node name="Area3D2" type="Area3D" parent="AutospawnAreas"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.6221, 0.428391, -24.1662)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.42935, 6.02452, 0.0226231)
 script = ExtResource("6_ic7dp")
 spawn_profile = ExtResource("7_gqja0")
 treasure_profile = ExtResource("8_uyy6t")
@@ -515,3 +519,11 @@ shape = SubResource("BoxShape3D_wujm3")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WaterArea"]
 visible = false
 mesh = SubResource("BoxMesh_qa2r2")
+
+[node name="CSGCombiner3D4" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.80351)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.79274, 0.830019, 10.2676)
+size = Vector3(10, 3, 15)
+material = SubResource("StandardMaterial3D_fj0rs")
