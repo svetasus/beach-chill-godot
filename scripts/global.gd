@@ -22,3 +22,9 @@ var account_id: String = ""
 var peer_to_account: Dictionary = {}
 
 var chat_proximity_radius: float = 20.0
+
+func sanitize_filename(input: String) -> String:
+	var regex = RegEx.new()
+	# Only allow alphanumeric, underscores and hyphens.
+	regex.compile("[^a-zA-Z0-9_-]")
+	return regex.sub(input, "", true)

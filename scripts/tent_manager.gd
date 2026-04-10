@@ -99,7 +99,7 @@ func get_save_path(player_id: int) -> String:
 	var account_id = Global.peer_to_account.get(player_id, "")
 	if account_id == "":
 		account_id = str(player_id) # fallback
-	return "user://tent_data_" + account_id + ".save"
+	return "user://tent_data_" + Global.sanitize_filename(account_id) + ".save"
 
 func save_tent_for_player(player_id: int, is_disconnecting: bool):
 	if not multiplayer.is_server(): return
