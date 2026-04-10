@@ -86,6 +86,14 @@ height = 0.2
 radius = 0.1
 height = 0.4
 
+[ext_resource type="Script" path="res://scripts/task_data.gd" id="1_task_data"]
+[ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="10_tasklist"]
+[ext_resource type="PackedScene" uid="uid://d25l6qnd91x1n" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="11_taskelem"]
+
+[ext_resource type="Resource" uid="uid://d3x123456789a" path="res://resources/tasks/task1.tres" id="12_task1"]
+[ext_resource type="Resource" uid="uid://c3x123456789b" path="res://resources/tasks/task2.tres" id="13_task2"]
+[ext_resource type="Resource" uid="uid://e3x123456789c" path="res://resources/tasks/task3.tres" id="14_task3"]
+
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 collision_layer = 2
 collision_mask = 13
@@ -235,6 +243,12 @@ grow_horizontal = 2
 size_flags_horizontal = 4
 script = ExtResource("4_qlg0r")
 notification_prefab = ExtResource("5_tuyoq")
+
+
+[node name="TaskListUI" parent="PlayerUI" instance=ExtResource("10_tasklist")]
+task_prefab = ExtResource("11_taskelem")
+default_tasks = Array[ExtResource("1_task_data")]([ExtResource("12_task1"), ExtResource("13_task2"), ExtResource("14_task3")])
+
 
 [node name="ZoneDetector" type="Area3D" parent="."]
 collision_layer = 0
