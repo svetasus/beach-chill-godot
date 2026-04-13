@@ -125,6 +125,9 @@ func _ready():
 		
 		load_money()
 		update_money_ui()
+		var tasks_ui = $PlayerUI/TaskListUI
+		if tasks_ui and tasks_ui.has_method("load_tasks"):
+			tasks_ui.load_tasks()
 		
 	else:
 		# THIS IS SOMEONE ELSE: Turn off their camera on my screen
@@ -315,13 +318,13 @@ func _input(event):
 	
 	
 	# If I press Escape, give me my mouse back!
-	if event.is_action_pressed("ui_cancel"): # 'ui_cancel' is usually the Esc key
+	if event.is_action_pressed("ui_cancel") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED: # 'ui_cancel' is usually the Esc key
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
 	# If I click the screen, grab the mouse again
 	if event is InputEventMouseButton and event.pressed:
 		if is_multiplayer_authority():
-			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/InventoryUI != null and $PlayerUI/InventoryUI.visible)
+			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/InventoryUI != null and $PlayerUI/InventoryUI.visible) or ($PlayerUI/TaskListUI != null and $PlayerUI/TaskListUI.visible)
 			if not is_ui_open:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -332,6 +335,9 @@ func _input(event):
 	if event.is_action_pressed("jump") and not is_typing:
 		jump_queued = true
 	
+	if event is InputEventKey and event.pressed and event.keycode == KEY_J and not is_typing:
+		toggle_tasks()
+
 	if event.is_action_pressed("inventory"):
 		toggle_inventory()
 	
@@ -510,6 +516,8 @@ func pick_up(item):
 	if item.get_multiplayer_authority() == multiplayer.get_unique_id():
 		carried_item = item
 		placement_ray.add_exception(item)
+		if "data" in item and item.data != null:
+			emit_task_event("gather", item.data)
 		
 		# If it's a naturally spawned item, mark it as claimed by a player so it gets saved
 		if "is_autospawned" in carried_item:
@@ -1089,6 +1097,22 @@ func add_to_collection(data: ItemData):
 	if is_multiplayer_authority():
 		$PlayerUI/NotificationArea.display_message("Found: " + data.display_name + "!")
 
+
+func toggle_tasks():
+	if not is_multiplayer_authority(): return
+
+	var tasks_ui = $PlayerUI/TaskListUI
+	if not tasks_ui: return
+
+	tasks_ui.visible = !tasks_ui.visible
+
+	if tasks_ui.visible:
+		var inv_ui = $PlayerUI/InventoryUI
+		if inv_ui: inv_ui.visible = false
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	else:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
 func toggle_inventory():
 	if not is_multiplayer_authority(): return
 	
@@ -1096,6 +1120,8 @@ func toggle_inventory():
 	inv_ui.visible = !inv_ui.visible
 	
 	if inv_ui.visible:
+		var tasks_ui = $PlayerUI/TaskListUI
+		if tasks_ui: tasks_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		# FORCE A REFRESH SO IT'S NOT EMPTY
 		inv_ui.refresh_ui(collection) 
@@ -1188,7 +1214,23 @@ func receive_money(amount: int):
 	update_money_ui()
 	show_floating_money(amount)
 
+
+@rpc("any_peer", "call_local")
+func emit_task_event(action: String, item_data_or_path):
+	if not is_multiplayer_authority(): return
+	var item_data: ItemData
+	if typeof(item_data_or_path) == TYPE_STRING:
+		item_data = load(item_data_or_path) as ItemData
+	else:
+		item_data = item_data_or_path
+
+	if item_data != null:
+		var tasks_ui = $PlayerUI/TaskListUI
+		if tasks_ui and tasks_ui.has_method("handle_task_event"):
+			tasks_ui.handle_task_event(action, item_data)
+
 func update_money_ui():
+
 	var money_label = $PlayerUI/MoneyLabel
 	if money_label:
 		money_label.text = "Money: $" + str(money)

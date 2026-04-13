@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TaskData" load_steps=2 format=3 uid="uid://e3x123456789c"]
+
+[ext_resource type="Script" path="res://scripts/task_data.gd" id="1_task_data"]
+
+[resource]
+script = ExtResource("1_task_data")
+description = "Gather 5 of any items"
+action = "gather"
+any_item = true
+item_type = 0
+target_count = 5
+reward_money = 100
+id = "task_gather_any_01"

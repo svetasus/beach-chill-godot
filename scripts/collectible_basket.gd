@@ -47,12 +47,16 @@ func _on_body_entered(body: Node3D) -> void:
 						for player in players_container.get_children():
 							if player.has_method("receive_money"):
 								player.receive_money.rpc_id(player.name.to_int(), split_money)
+								if player.has_method("emit_task_event"):
+									player.emit_task_event.rpc_id(player.name.to_int(), "sell", item_path)
 			else:
 				var players_container = get_node_or_null(Global.PLAYERS_CONTAINER_PATH)
 				if players_container:
 					var player_node = players_container.get_node_or_null(str(thrower_id))
 					if player_node and player_node.has_method("receive_money"):
 						player_node.receive_money.rpc_id(thrower_id, money_value)
+						if player_node.has_method("emit_task_event"):
+							player_node.emit_task_event.rpc_id(thrower_id, "sell", item_path)
 
 			# --- THE SYNC ---
 			# We pass all captured data so clients don't have to look it up

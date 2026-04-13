@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TaskData" load_steps=2 format=3 uid="uid://c3x123456789b"]
+
+[ext_resource type="Script" path="res://scripts/task_data.gd" id="1_task_data"]
+
+[resource]
+script = ExtResource("1_task_data")
+description = "Sell 2 rare items"
+action = "sell"
+any_item = false
+item_type = 1
+target_count = 2
+reward_money = 150
+id = "task_sell_rare_01"
