@@ -13,6 +13,7 @@ class_name TaskData
 
 @export var target_count: int = 3
 @export var reward_money: int = 100
+@export var task_priority: int = 2
 
 # Unique ID to match TaskData with TaskState in saves
 @export var id: String = ""

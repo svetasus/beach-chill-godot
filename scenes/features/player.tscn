@@ -246,6 +246,16 @@ script = ExtResource("4_qlg0r")
 notification_prefab = ExtResource("5_tuyoq")
 
 
+[node name="MainTasksContainer" type="VBoxContainer" parent="PlayerUI"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 320.0
+offset_bottom = -20.0
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="TaskListUI" parent="PlayerUI" instance=ExtResource("10_tasklist")]
 task_prefab = ExtResource("11_taskelem")
 default_tasks = Array[ExtResource("1_task_data")]([ExtResource("12_task1"), ExtResource("13_task2"), ExtResource("14_task3")])
