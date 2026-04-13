@@ -5,6 +5,14 @@
 [ext_resource type="PackedScene" uid="uid://cbcwb7nuw340m" path="res://ui/inventorySlot.tscn" id="3_qhqgy"]
 [ext_resource type="Script" uid="uid://ck2hp6el2v8jf" path="res://scripts/notification_area.gd" id="4_qlg0r"]
 [ext_resource type="PackedScene" uid="uid://c1yiyhtvd41gy" path="res://scenes/features/UI/userNotifPop.tscn" id="5_tuyoq"]
+[ext_resource type="Script" path="res://scripts/task_data.gd" id="1_task_data"]
+[ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="10_tasklist"]
+[ext_resource type="PackedScene" uid="uid://d25l6qnd91x1n" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="11_taskelem"]
+
+[ext_resource type="Resource" uid="uid://d3x123456789a" path="res://resources/tasks/task1.tres" id="12_task1"]
+[ext_resource type="Resource" uid="uid://c3x123456789b" path="res://resources/tasks/task2.tres" id="13_task2"]
+[ext_resource type="Resource" uid="uid://e3x123456789c" path="res://resources/tasks/task3.tres" id="14_task3"]
+
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_tp"]
 height = 3.0
@@ -86,13 +94,6 @@ height = 0.2
 radius = 0.1
 height = 0.4
 
-[ext_resource type="Script" path="res://scripts/task_data.gd" id="1_task_data"]
-[ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="10_tasklist"]
-[ext_resource type="PackedScene" uid="uid://d25l6qnd91x1n" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="11_taskelem"]
-
-[ext_resource type="Resource" uid="uid://d3x123456789a" path="res://resources/tasks/task1.tres" id="12_task1"]
-[ext_resource type="Resource" uid="uid://c3x123456789b" path="res://resources/tasks/task2.tres" id="13_task2"]
-[ext_resource type="Resource" uid="uid://e3x123456789c" path="res://resources/tasks/task3.tres" id="14_task3"]
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 collision_layer = 2
