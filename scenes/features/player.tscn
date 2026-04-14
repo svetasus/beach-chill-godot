@@ -180,7 +180,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.11225, 0)
 billboard = 1
 text = "PLAYER"
 
+[ext_resource type="PackedScene" uid="uid://chvj7t3x3a3f5" path="res://scenes/features/UI/inventoryHUD.tscn" id="15_invhud"]
+
 [node name="PlayerUI" type="CanvasLayer" parent="."]
+
+[node name="InventoryHUD" parent="PlayerUI" instance=ExtResource("15_invhud")]
 
 [node name="ActionLabel" type="Label" parent="PlayerUI"]
 anchors_preset = 7

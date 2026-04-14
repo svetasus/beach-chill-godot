@@ -38,7 +38,47 @@ var rotation_offset: float = 0.0
 var current_ui: Control = null
 
 var is_typing = false
-var carried_item = null
+var carried_items: Array[Node] = [null, null, null]
+var current_slot_index: int = 0
+var carried_item:
+	get:
+		return carried_items[current_slot_index]
+	set(value):
+		carried_items[current_slot_index] = value
+
+signal inventory_slots_updated(slots, active_index)
+
+func switch_slot(index: int):
+	if index < 0 or index >= carried_items.size(): return
+	if current_slot_index == index: return
+
+	var old_item = carried_item
+	if is_instance_valid(old_item):
+		# Put away the old item
+		old_item.visible = false
+		if old_item.has_method("set_ghost_appearance"):
+			old_item.set_ghost_appearance(false)
+
+		# If it's a tool, stop its logic
+		var anchor = old_item.get_node_or_null("MeshAnchor")
+		if anchor and anchor.get_child_count() > 0:
+			var potential_tool = anchor.get_child(0)
+			if potential_tool.has_method("update_proximity"):
+				potential_tool.update_proximity(null)
+
+	current_slot_index = index
+	var new_item = carried_item
+
+	if is_instance_valid(new_item):
+		# Equip the new item
+		new_item.visible = true
+		if new_item.has_method("set_ghost_appearance") and get_held_tool() == null:
+			new_item.set_ghost_appearance(true)
+
+		# It's already frozen from pick_up, so it's ready to snap in _process
+
+	inventory_slots_updated.emit(carried_items, current_slot_index)
+
 var catch_cooldown = false
 var last_hovered_item = null
 
@@ -125,6 +165,7 @@ func _ready():
 		
 		load_money()
 		update_money_ui()
+		inventory_slots_updated.emit(carried_items, current_slot_index)
 		var tasks_ui = $PlayerUI/TaskListUI
 		if tasks_ui and tasks_ui.has_method("load_tasks"):
 			tasks_ui.load_tasks()
@@ -338,6 +379,14 @@ func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_J and not is_typing:
 		toggle_tasks()
 
+	if event is InputEventKey and event.pressed and not is_typing:
+		if event.keycode == KEY_1:
+			switch_slot(0)
+		elif event.keycode == KEY_2:
+			switch_slot(1)
+		elif event.keycode == KEY_3:
+			switch_slot(2)
+
 	if event.is_action_pressed("inventory"):
 		toggle_inventory()
 	
@@ -428,6 +477,7 @@ func check_interaction():
 				_rpc_request_deposit.rpc_id(1, target.get_path(), carried_item.get_path())
 				# Drop it locally so our hand is empty
 				carried_item = null 
+				inventory_slots_updated.emit(carried_items, current_slot_index)
 				#_remove_ghost()
 			
 			# Scenario B: Our hands are empty -> OPEN UI
@@ -515,6 +565,7 @@ func pick_up(item):
 	
 	if item.get_multiplayer_authority() == multiplayer.get_unique_id():
 		carried_item = item
+		inventory_slots_updated.emit(carried_items, current_slot_index)
 		placement_ray.add_exception(item)
 		if "data" in item and item.data != null:
 			emit_task_event("gather", item.data)
@@ -580,6 +631,7 @@ func drop_item():
 		
 			
 	carried_item = null
+	inventory_slots_updated.emit(carried_items, current_slot_index)
 	rotation_offset = 0.0
 	
 	var final_pos = item.global_position
@@ -616,6 +668,7 @@ func throw_item():
 	
 	var item = carried_item
 	carried_item = null # This stops the _process snap-to-hand IMMEDIATELY
+	inventory_slots_updated.emit(carried_items, current_slot_index)
 	item.scale = Vector3.ONE
 
 	
@@ -771,7 +824,10 @@ func _process(_delta):
 	if carried_item:
 		update_ghost_preview()
 		
-	
+	# Process inactive carried items to keep them out of sight but attached to player position
+	for i in range(carried_items.size()):
+		if i != current_slot_index and is_instance_valid(carried_items[i]):
+			carried_items[i].global_transform = hand.global_transform
 	
 	nearby_treasures = nearby_treasures.filter(func(t): return is_instance_valid(t))
 	
