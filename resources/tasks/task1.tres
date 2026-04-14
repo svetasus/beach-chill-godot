@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="TaskData" load_steps=2 format=3 uid="uid://d3x123456789a"]
+[gd_resource type="Resource" script_class="TaskData" load_steps=2 format=3 uid="uid://d3x1234568aaa"]
 
-[ext_resource type="Script" path="res://scripts/task_data.gd" id="1_task_data"]
+[ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/task_data.gd" id="1_task_data"]
 
 [resource]
 script = ExtResource("1_task_data")
@@ -8,6 +8,7 @@ description = "Gather 3 shells"
 action = "gather"
 any_item = false
 item_type = 0
-target_count = 3
+target_count = 5
 reward_money = 50
+task_priority = 2
 id = "task_gather_shells_01"

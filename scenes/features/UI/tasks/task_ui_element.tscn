@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://d25l6qnd91x1n"]
+[gd_scene load_steps=2 format=3 uid="uid://d25l6qnea1x1n"]
 
-[ext_resource type="Script" path="res://scripts/task_ui_element.gd" id="1_task_ui_element"]
+[ext_resource type="Script" uid="uid://dgmnlld221gll" path="res://scripts/task_ui_element.gd" id="1_task_ui_element"]
 
 [node name="TaskUIElement" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 100)
@@ -11,11 +11,11 @@ script = ExtResource("1_task_ui_element")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
-mouse_filter = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -34,8 +34,8 @@ autowrap_mode = 2
 
 [node name="PinButton" type="Button" parent="MarginContainer/VBoxContainer/HeaderHBox"]
 layout_mode = 2
-text = "Pin"
 mouse_filter = 1
+text = "Pin"
 
 [node name="CountLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
