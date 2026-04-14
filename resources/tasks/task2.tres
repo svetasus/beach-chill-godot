@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="TaskData" load_steps=2 format=3 uid="uid://c3x123456789b"]
+[gd_resource type="Resource" script_class="TaskData" load_steps=2 format=3 uid="uid://c3x1234568aab"]
 
-[ext_resource type="Script" path="res://scripts/task_data.gd" id="1_task_data"]
+[ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/task_data.gd" id="1_task_data"]
 
 [resource]
 script = ExtResource("1_task_data")
@@ -10,4 +10,5 @@ any_item = false
 item_type = 1
 target_count = 2
 reward_money = 150
+task_priority = 2
 id = "task_sell_rare_01"

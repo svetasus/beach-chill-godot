@@ -51,7 +51,7 @@ height = 0.06
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_onrkg"]
 radius = 0.45
-height = 1.25
+height = 1.4
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4flbx"]
 properties/0/path = NodePath(".:eye_color")
@@ -79,7 +79,7 @@ radius = 0.7
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_t4epb"]
 radius = 0.32
-height = 1.2
+height = 1.15
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_k03tp"]
 radius = 0.05
@@ -169,7 +169,7 @@ mesh = SubResource("CylinderMesh_sweqy")
 skeleton = NodePath("../../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.459103, -0.0564287)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.317773, -0.0564287)
 shape = SubResource("CapsuleShape3D_onrkg")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
@@ -316,13 +316,13 @@ mesh = SubResource("CapsuleMesh_sbhj3")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.057386, 0)
 
 [node name="Belly" type="MeshInstance3D" parent="State_Stand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.118018, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22502, 0)
 mesh = SubResource("CapsuleMesh_t4epb")
 
 [node name="Leg1" type="MeshInstance3D" parent="State_Stand"]
-transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, -0.191183, -0.387647, -0.125949)
+transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, -0.191183, -0.279983, -0.125949)
 mesh = SubResource("CapsuleMesh_k03tp")
 
 [node name="Leg2" type="MeshInstance3D" parent="State_Stand"]
-transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, 0.191, -0.388, -0.126)
+transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, 0.191, -0.280336, -0.126)
 mesh = SubResource("CapsuleMesh_k03tp")
