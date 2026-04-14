@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="TaskData" load_steps=2 format=3 uid="uid://bn8hv33260ge0"]
+
+[ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/task_data.gd" id="1_qe3uv"]
+
+[resource]
+script = ExtResource("1_qe3uv")
+description = "Task description"
+action = "sell"
+any_item = true
+item_type = 0
+target_count = 1
+reward_money = 10
+task_priority = 2
+id = ""
+metadata/_custom_type_script = "uid://deunliagk8ke1"

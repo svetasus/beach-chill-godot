@@ -36,7 +36,10 @@ func init_tasks():
 		tasks_container.add_child(ui_elem)
 		ui_elem.setup(task_data, state)
 		ui_elem.claim_reward.connect(_on_claim_reward)
+		ui_elem.toggle_pin.connect(_on_toggle_pin)
 		task_elements[task_data.id] = ui_elem
+
+	update_main_gui_tasks()
 
 func handle_task_event(action: String, item_data: ItemData):
 	var updated = false
@@ -72,6 +75,43 @@ func handle_task_event(action: String, item_data: ItemData):
 
 	if updated:
 		save_tasks()
+		update_main_gui_tasks()
+
+func _on_toggle_pin(task_id: String):
+	var state = task_states.get(task_id)
+	if not state: return
+
+	if state.is_pinned:
+		state.is_pinned = false
+	else:
+		# Count currently pinned
+		var pinned_count = 0
+		for t_id in task_states:
+			if task_states[t_id].is_pinned:
+				pinned_count += 1
+
+		if pinned_count >= 3:
+			# Find oldest pinned
+			var oldest_id = ""
+			var oldest_time = INF
+			for t_id in task_states:
+				if task_states[t_id].is_pinned and task_states[t_id].pin_timestamp < oldest_time:
+					oldest_time = task_states[t_id].pin_timestamp
+					oldest_id = t_id
+
+			if oldest_id != "":
+				task_states[oldest_id].is_pinned = false
+				if task_elements.has(oldest_id):
+					task_elements[oldest_id].update_ui()
+
+		state.is_pinned = true
+		state.pin_timestamp = Time.get_unix_time_from_system()
+
+	if task_elements.has(task_id):
+		task_elements[task_id].update_ui()
+
+	save_tasks()
+	update_main_gui_tasks()
 
 func _on_claim_reward(task_id: String, reward_money: int):
 	var state = task_states.get(task_id)
@@ -84,6 +124,52 @@ func _on_claim_reward(task_id: String, reward_money: int):
 			# we assume owner is player.gd
 			owner.receive_money(reward_money)
 		save_tasks()
+		update_main_gui_tasks()
+
+func update_main_gui_tasks():
+	if not owner or not owner.has_node("PlayerUI/MainTasksContainer"): return
+	var main_container = owner.get_node("PlayerUI/MainTasksContainer")
+
+	# Clear existing
+	for child in main_container.get_children():
+		child.queue_free()
+
+	# Filter active tasks (not reward claimed)
+	var active_tasks = []
+	for task_data in default_tasks:
+		if not task_data: continue
+		var state = task_states.get(task_data.id)
+		if state and not state.reward_claimed:
+			active_tasks.append({"data": task_data, "state": state})
+
+	# Sort
+	active_tasks.sort_custom(func(a, b):
+		# 1. Pinned
+		if a.state.is_pinned != b.state.is_pinned:
+			return a.state.is_pinned # true comes before false
+
+		# 2. Priority
+		if a.data.task_priority != b.data.task_priority:
+			return a.data.task_priority < b.data.task_priority # lower is better
+
+		# 3. Completion percentage
+		var pct_a = float(a.state.current_count) / float(a.data.target_count) if a.data.target_count > 0 else 0.0
+		var pct_b = float(b.state.current_count) / float(b.data.target_count) if b.data.target_count > 0 else 0.0
+		if pct_a != pct_b:
+			return pct_a > pct_b # higher is better
+
+		return false
+	)
+
+	# Take top 3
+	var top_tasks = active_tasks.slice(0, 3)
+
+	for t in top_tasks:
+		var ui_elem = task_prefab.instantiate()
+		main_container.add_child(ui_elem)
+		ui_elem.setup(t.data, t.state)
+		if ui_elem.has_method("set_is_main_gui"):
+			ui_elem.set_is_main_gui(true)
 
 func get_save_path() -> String:
 	if owner and owner.has_method("get_save_path"):
