@@ -13,6 +13,8 @@
 [ext_resource type="Resource" uid="uid://c3x1234568aab" path="res://resources/tasks/task2.tres" id="13_task2"]
 [ext_resource type="Resource" uid="uid://dsefjue6qb4lq" path="res://resources/tasks/task5.tres" id="13_vlnj5"]
 [ext_resource type="Resource" uid="uid://8j6h17wm1eik" path="res://resources/tasks/task3.tres" id="14_task3"]
+[ext_resource type="PackedScene" uid="uid://chvj7t3x3a3f5" path="res://scenes/features/UI/inventoryHUD.tscn" id="15_invhud"]
+
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_tp"]
 height = 3.0
@@ -181,6 +183,8 @@ billboard = 1
 text = "PLAYER"
 
 [node name="PlayerUI" type="CanvasLayer" parent="."]
+
+[node name="InventoryHUD" parent="PlayerUI" instance=ExtResource("15_invhud")]
 
 [node name="ActionLabel" type="Label" parent="PlayerUI"]
 anchors_preset = 7

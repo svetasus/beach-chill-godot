@@ -1,0 +1,147 @@
+[gd_scene load_steps=2 format=3 uid="uid://chvj7t3x3a3f5"]
+
+[ext_resource type="Script" path="res://scripts/inventory_hud.gd" id="1_invhud"]
+
+[node name="InventoryHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -120.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("1_invhud")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Slot0" type="Control" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Panel" type="Panel" parent="HBoxContainer/Slot0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Slot0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="HBoxContainer/Slot0/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="HBoxContainer/Slot0/VBoxContainer"]
+layout_mode = 2
+text = "Empty"
+horizontal_alignment = 1
+
+[node name="NumberLabel" type="Label" parent="HBoxContainer/Slot0"]
+layout_mode = 1
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 15.0
+offset_bottom = 28.0
+text = "1"
+
+[node name="Slot1" type="Control" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Panel" type="Panel" parent="HBoxContainer/Slot1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Slot1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="HBoxContainer/Slot1/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="HBoxContainer/Slot1/VBoxContainer"]
+layout_mode = 2
+text = "Empty"
+horizontal_alignment = 1
+
+[node name="NumberLabel" type="Label" parent="HBoxContainer/Slot1"]
+layout_mode = 1
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 15.0
+offset_bottom = 28.0
+text = "2"
+
+[node name="Slot2" type="Control" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Panel" type="Panel" parent="HBoxContainer/Slot2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Slot2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="HBoxContainer/Slot2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="HBoxContainer/Slot2/VBoxContainer"]
+layout_mode = 2
+text = "Empty"
+horizontal_alignment = 1
+
+[node name="NumberLabel" type="Label" parent="HBoxContainer/Slot2"]
+layout_mode = 1
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 15.0
+offset_bottom = 28.0
+text = "3"
