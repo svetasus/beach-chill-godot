@@ -40,6 +40,7 @@ func _print_hierarchy(node, indent):
 var timer = 0.0
 
 var active_treasure = null 
+var last_revealed_treasure = null
 
 var near_blip = 0.25
 var far_blip = 2.0
@@ -47,11 +48,29 @@ var far_blip = 2.0
 var near_pitch = 1.4
 var far_pitch = 0.3
 
+var max_charges: int = Global.max_detector_charges
+var charges: int = Global.max_detector_charges
 
 func get_action_name() -> String:
 	return "Detect"
 
+func apply_item(item: Node3D) -> bool:
+	if item is Item and item.data and item.data.name == "detector_battery":
+		if charges < max_charges:
+			_rpc_add_charge.rpc(1)
+			# Only the server should destroy the item if it's networked,
+			# but this will be called locally when E is pressed.
+			# Let's let the player script handle the item destruction by requesting it.
+			return true
+	return false
 
+@rpc("any_peer", "call_local")
+func _rpc_add_charge(amount: int):
+	charges = mini(charges + amount, max_charges)
+
+@rpc("any_peer", "call_local")
+func _rpc_consume_charge():
+	charges -= 1
 
 func _process(delta):
 	# If we are not in the tree or networking isn't ready, skip
@@ -65,6 +84,11 @@ func _process(delta):
 	# If you want it to beep for everyone, remove the authority check.
 	if not multiplayer.has_multiplayer_peer() or not is_multiplayer_authority(): return
 	
+	if charges <= 0:
+		if active_treasure and is_instance_valid(active_treasure) and active_treasure.has_method("hide_location"):
+			active_treasure.hide_location()
+		return
+
 	if not active_treasure or not is_instance_valid(active_treasure):
 		active_treasure = null
 		return
@@ -77,6 +101,9 @@ func _process(delta):
 	if active_treasure.has_method("reveal_location"):
 		if distance < 3.0:
 			active_treasure.reveal_location(distance)
+			if active_treasure != last_revealed_treasure:
+				last_revealed_treasure = active_treasure
+				_rpc_consume_charge.rpc()
 		else:
 			active_treasure.hide_location()
 	

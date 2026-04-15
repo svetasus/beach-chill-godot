@@ -217,6 +217,13 @@ func get_alt_interaction_text() -> String:
 
 	return "[R] Interact"
 
+func apply_item(item: Node3D) -> bool:
+	if $MeshAnchor.get_child_count() > 0:
+		var skin = $MeshAnchor.get_child(0)
+		if skin.has_method("apply_item"):
+			return skin.apply_item(item)
+	return false
+
 # --- 5. COLLISION RECURSION ---
 
 func _update_collision_from_skin(skin_node):
