@@ -6,7 +6,7 @@ extends Control
 	$HBoxContainer/Slot2
 ]
 
-var active_slot_color = Color(1.0, 1.0, 1.0, 0.5)
+var active_slot_color = Color(0.0, 0.0, 0.0, 1.0)
 var inactive_slot_color = Color(0.2, 0.2, 0.2, 0.5)
 
 func _ready():
