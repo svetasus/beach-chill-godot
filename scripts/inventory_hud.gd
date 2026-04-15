@@ -3,7 +3,8 @@ extends Control
 @onready var slots = [
 	$HBoxContainer/Slot0,
 	$HBoxContainer/Slot1,
-	$HBoxContainer/Slot2
+	$HBoxContainer/Slot2,
+	$Slot3
 ]
 
 var active_slot_color = Color(0.0, 0.0, 0.0, 1.0)
@@ -15,7 +16,7 @@ func _ready():
 		player.inventory_slots_updated.connect(_on_inventory_slots_updated)
 
 	# Initial clear
-	for i in range(3):
+	for i in range(4):
 		_update_slot(i, null, i == 0)
 
 func _on_inventory_slots_updated(items: Array, active_index: int):
@@ -46,6 +47,9 @@ func _update_slot(index: int, item: Node, is_active: bool):
 			icon.texture = null
 			icon.hide()
 	else:
-		label.text = "Empty"
+		if index == 3:
+			label.text = "No Tool"
+		else:
+			label.text = "Empty"
 		icon.texture = null
 		icon.hide()

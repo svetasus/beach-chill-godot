@@ -2,6 +2,14 @@
 
 [ext_resource type="Script" path="res://scripts/inventory_hud.gd" id="1_invhud"]
 
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_circle"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
 [node name="InventoryHUD" type="Control"]
 layout_mode = 3
 anchors_preset = 3
@@ -145,3 +153,48 @@ offset_top = 5.0
 offset_right = 15.0
 offset_bottom = 28.0
 text = "3"
+
+[node name="Slot3" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = -110.0
+offset_right = -10.0
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Slot3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_circle")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Slot3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Slot3/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="Slot3/VBoxContainer"]
+layout_mode = 2
+text = "No Tool"
+horizontal_alignment = 1
+
+[node name="NumberLabel" type="Label" parent="Slot3"]
+layout_mode = 1
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 15.0
+offset_bottom = 28.0
+text = "T"

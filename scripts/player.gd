@@ -38,7 +38,7 @@ var rotation_offset: float = 0.0
 var current_ui: Control = null
 
 var is_typing = false
-var carried_items: Array[Node] = [null, null, null]
+var carried_items: Array[Node] = [null, null, null, null]
 var current_slot_index: int = 0
 var carried_item:
 	get:
@@ -386,6 +386,8 @@ func _input(event):
 			switch_slot(1)
 		elif event.keycode == KEY_3:
 			switch_slot(2)
+		elif event.keycode == KEY_T:
+			switch_slot(3)
 
 	if event.is_action_pressed("inventory"):
 		toggle_inventory()
@@ -564,6 +566,47 @@ func pick_up(item):
 		return
 	
 	if item.get_multiplayer_authority() == multiplayer.get_unique_id():
+		var is_tool = false
+		if "data" in item and item.data != null and item.data.is_tool:
+			is_tool = true
+
+		if is_tool:
+			if is_instance_valid(carried_items[3]):
+				$PlayerUI/NotificationArea.display_message("You can't pick up another tool")
+
+				# Give up authority, restore state
+				item.sync_authority.rpc(1, false, Vector3.ZERO, item.global_position, item.global_rotation.y)
+				return
+			else:
+				if carried_item == null:
+					switch_slot(3)
+				else:
+					carried_items[3] = item
+					var item_node = item
+					item_node.visible = false
+					if item_node.has_method("set_ghost_appearance"):
+						item_node.set_ghost_appearance(false)
+
+					var anchor = item_node.get_node_or_null("MeshAnchor")
+					if anchor and anchor.get_child_count() > 0:
+						var potential_tool = anchor.get_child(0)
+						if potential_tool.has_method("update_proximity"):
+							potential_tool.update_proximity(null)
+
+					inventory_slots_updated.emit(carried_items, current_slot_index)
+					placement_ray.add_exception(item)
+					if "data" in item and item.data != null:
+						emit_task_event("gather", item.data)
+
+					if "is_autospawned" in item:
+						item.is_autospawned = false
+					return
+		else:
+			if current_slot_index == 3:
+				$PlayerUI/NotificationArea.display_message("You can't pick up a non-tool into the tool slot")
+				item.sync_authority.rpc(1, false, Vector3.ZERO, item.global_position, item.global_rotation.y)
+				return
+
 		carried_item = item
 		inventory_slots_updated.emit(carried_items, current_slot_index)
 		placement_ray.add_exception(item)
