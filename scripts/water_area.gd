@@ -1,6 +1,8 @@
 extends Area3D
 class_name WaterArea
 
+var _cached_surface_height: float = 0.0
+
 func _ready():
 	# Configure collision settings:
 	# layer 4 (bit 3) and mask 2 (bit 1 for player layer)
@@ -12,7 +14,16 @@ func _ready():
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 
-func get_water_surface_height() -> float:
+	child_entered_tree.connect(_on_child_tree_changed)
+	child_exited_tree.connect(_on_child_tree_changed)
+
+	_update_surface_height()
+
+func _on_child_tree_changed(child: Node):
+	if child is CollisionShape3D:
+		_update_surface_height()
+
+func _update_surface_height():
 	var max_y = global_position.y
 	# Search for all collision shapes to find the highest point
 	for child in get_children():
@@ -34,7 +45,10 @@ func get_water_surface_height() -> float:
 			if top_y > max_y:
 				max_y = top_y
 
-	return max_y
+	_cached_surface_height = max_y
+
+func get_water_surface_height() -> float:
+	return _cached_surface_height
 
 func _on_body_entered(body: Node3D):
 	if body.has_method("enter_water"):
