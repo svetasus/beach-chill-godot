@@ -54,8 +54,11 @@ var charges: int = Global.max_detector_charges
 func get_action_name() -> String:
 	return "Detect"
 
+func get_interaction_text() -> String:
+	return "(" + str(charges) + "/" + str(max_charges) + " charges)"
+
 func apply_item(item: Node3D) -> bool:
-	if item is Item and item.data and item.data.name == "detector_battery":
+	if "data" in item and item.data and item.data.name == "detector_battery":
 		if charges < max_charges:
 			_rpc_add_charge.rpc(1)
 			# Only the server should destroy the item if it's networked,

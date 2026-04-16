@@ -208,14 +208,14 @@ func alt_interact(player: Node3D):
 			skin.interact(player)
 
 func get_alt_interaction_text() -> String:
-	if not data or not data.is_furniture: return ""
-
 	if $MeshAnchor.get_child_count() > 0:
 		var skin = $MeshAnchor.get_child(0)
 		if skin.has_method("get_interaction_text"):
 			return skin.get_interaction_text()
 
-	return "[R] Interact"
+	if data and data.is_furniture:
+		return "[R] Interact"
+	return ""
 
 func apply_item(item: Node3D) -> bool:
 	if $MeshAnchor.get_child_count() > 0:
