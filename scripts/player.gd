@@ -414,6 +414,10 @@ func _input(event):
 					check_interaction()
 				elif potential_target.has_meta("is_cart_basket"):
 					check_interaction()
+				elif potential_target is Item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_battery" and potential_target.data and potential_target.data.name == "detector_01":
+					check_interaction()
+				elif potential_target is Item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_01" and potential_target.data and potential_target.data.name == "detector_battery":
+					check_interaction()
 				else:
 					var tool = get_held_tool()
 
