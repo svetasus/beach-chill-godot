@@ -23,6 +23,8 @@ var peer_to_account: Dictionary = {}
 
 var chat_proximity_radius: float = 20.0
 
+var max_detector_charges: int = 10
+
 func sanitize_filename(input: String) -> String:
 	var regex = RegEx.new()
 	# Only allow alphanumeric, underscores and hyphens.

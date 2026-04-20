@@ -13,6 +13,7 @@ const DIG_DIST = 1.5
 @onready var shapecast = $Body/Head/Camera3D/InteractionShape
 @onready var hand = $Body/Head/Camera3D/HandMarker
 @onready var action_label = $PlayerUI/ActionLabel
+@onready var hint_label = $PlayerUI/HintLabel
 @onready var placement_ray = $Body/Head/Camera3D/PlacementRay
 @onready var state_sit = $State_Sit
 @onready var state_stand = $State_Stand
@@ -154,6 +155,8 @@ func _ready():
 		_apply_camera_mode()
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		$PlayerUI.show()
+		if hint_label:
+			hint_label.hide()
 		
 		set_physics_process(true)
 		set_collision_layer_value(1, true)
@@ -413,6 +416,10 @@ func _input(event):
 					check_interaction()
 				elif potential_target.has_meta("is_cart_basket"):
 					check_interaction()
+				elif potential_target is Item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_battery" and potential_target.data and potential_target.data.name == "detector_01":
+					check_interaction()
+				elif potential_target is Item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_01" and potential_target.data and potential_target.data.name == "detector_battery":
+					check_interaction()
 				else:
 					var tool = get_held_tool()
 
@@ -478,7 +485,8 @@ func check_interaction():
 				# Tell the Server to do the storage math
 				_rpc_request_deposit.rpc_id(1, target.get_path(), carried_item.get_path())
 				# Drop it locally so our hand is empty
-				carried_item = null 
+				carried_item = null
+				carried_items[current_slot_index] = null
 				inventory_slots_updated.emit(carried_items, current_slot_index)
 				#_remove_ghost()
 			
@@ -509,6 +517,15 @@ func check_interaction():
 		elif target is Item and target.freeze == true:
 			print("Someone is already holding this!")
 			return
+
+		elif target is Item and carried_item != null and carried_item is Item:
+			if target.has_method("apply_item") and target.apply_item(carried_item):
+				carried_item.destroy_item.rpc()
+				carried_item = null
+				carried_items[current_slot_index] = null
+				inventory_slots_updated.emit(carried_items, current_slot_index)
+			elif carried_item.has_method("apply_item") and carried_item.apply_item(target):
+				target.destroy_item.rpc()
 
 		# ... rest of your existing logic (Crates, etc.)
 		elif target.is_in_group("interactables"):
@@ -674,6 +691,7 @@ func drop_item():
 		
 			
 	carried_item = null
+	carried_items[current_slot_index] = null
 	inventory_slots_updated.emit(carried_items, current_slot_index)
 	rotation_offset = 0.0
 	
@@ -711,6 +729,7 @@ func throw_item():
 	
 	var item = carried_item
 	carried_item = null # This stops the _process snap-to-hand IMMEDIATELY
+	carried_items[current_slot_index] = null
 	inventory_slots_updated.emit(carried_items, current_slot_index)
 	item.scale = Vector3.ONE
 
@@ -1019,6 +1038,8 @@ func update_action_ui():
 			highlight_target = c
 			break
 
+	var hint_text = ""
+
 	if current_ui != null and is_instance_valid(current_ui):
 		target_text = ""
 		highlight_target = null
@@ -1059,6 +1080,20 @@ func update_action_ui():
 			elif potential_target.has_meta("is_cart_basket"):
 				target_text = "[E] Deposit in cart"
 				highlight_target = potential_target.get_meta("cart_node")
+			elif potential_target is Item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_battery" and potential_target.data and potential_target.data.name == "detector_01":
+				var detector_skin = potential_target.get_node_or_null("MeshAnchor").get_child(0) if potential_target.has_node("MeshAnchor") and potential_target.get_node("MeshAnchor").get_child_count() > 0 else null
+				if detector_skin and "charges" in detector_skin:
+					target_text = "[E] charge detector +1 (" + str(detector_skin.charges) + "/" + str(detector_skin.max_charges) + " now)"
+				else:
+					target_text = "[E] charge detector"
+				highlight_target = potential_target
+			elif potential_target is Item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_01" and potential_target.data and potential_target.data.name == "detector_battery":
+				var detector_skin = carried_item.get_node_or_null("MeshAnchor").get_child(0) if carried_item.has_node("MeshAnchor") and carried_item.get_node("MeshAnchor").get_child_count() > 0 else null
+				if detector_skin and "charges" in detector_skin:
+					target_text = "[E] charge detector +1 (" + str(detector_skin.charges) + "/" + str(detector_skin.max_charges) + " now)"
+				else:
+					target_text = "[E] charge detector"
+				highlight_target = potential_target
 			else:
 				var tool = get_held_tool()
 				if tool and tool.can_interact_with(current_treasure):
@@ -1080,10 +1115,22 @@ func update_action_ui():
 				else:
 					target_text = "You can't place it here"
 
+	if carried_item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_01":
+		var detector_skin = carried_item.get_node_or_null("MeshAnchor").get_child(0) if carried_item.has_node("MeshAnchor") and carried_item.get_node("MeshAnchor").get_child_count() > 0 else null
+		if detector_skin and "charges" in detector_skin and detector_skin.charges <= 0:
+			hint_text = "Needs batteries, buy them in shop"
+
 	if target_text == "" or target_text == "You can't place it here":
 		_update_highlight(null)
 	else:
 		_update_highlight(highlight_target)
+
+	if hint_label:
+		if hint_text != "":
+			hint_label.text = hint_text
+			hint_label.show()
+		else:
+			hint_label.hide()
 
 	# Only update if the text changed to avoid flickering
 	if action_label.text != target_text:
