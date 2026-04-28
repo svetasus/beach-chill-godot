@@ -15,7 +15,7 @@ func _ready():
 	body_exited.connect(_on_body_exited)
 
 	child_entered_tree.connect(_on_child_tree_changed)
-	child_exited_tree.connect(_on_child_tree_changed)
+	child_exiting_tree.connect(_on_child_tree_changed)
 
 	_update_surface_height()
 
