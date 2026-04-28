@@ -1,5 +1,14 @@
 extends Node3D
 
+var door_sound = preload("res://sounds/door_sound.ogg")
+
+func _play_door_sound(player: Node3D):
+	if player and player.has_node("InteractAudioPlayer"):
+		var audio_player = player.get_node("InteractAudioPlayer")
+		audio_player.stream = door_sound
+		audio_player.play()
+
+
 @onready var spawn_point = $SpawnPoint
 @onready var label = $Label3D
 
@@ -20,6 +29,7 @@ func _rpc_set_label_text(text: String):
 
 func interact(player: Node3D):
 	if not player.is_in_group("players"): return
+	_play_door_sound(player)
 
 	_rpc_request_exit.rpc_id(1, player.get_path())
 

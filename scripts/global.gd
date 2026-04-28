@@ -30,3 +30,18 @@ func sanitize_filename(input: String) -> String:
 	# Only allow alphanumeric, underscores and hyphens.
 	regex.compile("[^a-zA-Z0-9_-]")
 	return regex.sub(input, "", true)
+
+# --- AUDIO SETTINGS ---
+var sfx_volume: float = 1.0 :
+	set(value):
+		sfx_volume = clamp(value, 0.0, 1.0)
+		var bus_idx = AudioServer.get_bus_index("SFX")
+		if bus_idx >= 0:
+			AudioServer.set_bus_volume_db(bus_idx, linear_to_db(sfx_volume))
+
+var ambience_volume: float = 1.0 :
+	set(value):
+		ambience_volume = clamp(value, 0.0, 1.0)
+		var bus_idx = AudioServer.get_bus_index("Ambience")
+		if bus_idx >= 0:
+			AudioServer.set_bus_volume_db(bus_idx, linear_to_db(ambience_volume))

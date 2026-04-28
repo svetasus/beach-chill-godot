@@ -1,3 +1,6 @@
+[ext_resource type="AudioStream" uid="uid://bd0x5i0k47rwi" path="res://sounds/sand_walk_sound.ogg" id="sand_walk_sound"]
+[ext_resource type="AudioStream" uid="uid://dy2vs687it1n8" path="res://sounds/sand_walk_sound_2.ogg" id="sand_walk_sound_2"]
+[ext_resource type="AudioStream" uid="uid://1fqev85lufm7" path="res://sounds/interact_sound.ogg" id="interact_sound"]
 [gd_scene load_steps=31 format=3 uid="uid://b4v64l3u3emau"]
 
 [ext_resource type="Script" uid="uid://bop6eska7b3tl" path="res://scripts/player.gd" id="1_3vyb7"]
@@ -346,3 +349,10 @@ mesh = SubResource("CapsuleMesh_k03tp")
 [node name="Leg2" type="MeshInstance3D" parent="State_Stand"]
 transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, 0.191, -0.280336, -0.126)
 mesh = SubResource("CapsuleMesh_k03tp")
+
+[node name="WalkAudioPlayer" type="AudioStreamPlayer3D" parent="."]
+bus = &"SFX"
+
+[node name="InteractAudioPlayer" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("interact_sound")
+bus = &"SFX"
