@@ -1,22 +1,22 @@
-[ext_resource type="AudioStream" uid="uid://bd0x5i0k47rwi" path="res://sounds/sand_walk_sound.ogg" id="sand_walk_sound"]
-[ext_resource type="AudioStream" uid="uid://dy2vs687it1n8" path="res://sounds/sand_walk_sound_2.ogg" id="sand_walk_sound_2"]
-[ext_resource type="AudioStream" uid="uid://1fqev85lufm7" path="res://sounds/interact_sound.ogg" id="interact_sound"]
 [gd_scene load_steps=31 format=3 uid="uid://b4v64l3u3emau"]
 
 [ext_resource type="Script" uid="uid://bop6eska7b3tl" path="res://scripts/player.gd" id="1_3vyb7"]
-[ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/task_data.gd" id="1_task_data"]
-[ext_resource type="Script" uid="uid://ipa8enh86p2g" path="res://scripts/inventory_ui.gd" id="2_g2els"]
-[ext_resource type="PackedScene" uid="uid://cbcwb7nuw340m" path="res://ui/inventorySlot.tscn" id="3_qhqgy"]
-[ext_resource type="Script" uid="uid://ck2hp6el2v8jf" path="res://scripts/notification_area.gd" id="4_qlg0r"]
-[ext_resource type="PackedScene" uid="uid://c1yiyhtvd41gy" path="res://scenes/features/UI/userNotifPop.tscn" id="5_tuyoq"]
-[ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="10_tasklist"]
-[ext_resource type="PackedScene" uid="uid://d25l6qnea1x1n" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="11_taskelem"]
-[ext_resource type="Resource" uid="uid://bn8hv33260ge0" path="res://resources/tasks/task4.tres" id="12_f4yut"]
-[ext_resource type="Resource" uid="uid://d3x1234568aaa" path="res://resources/tasks/task1.tres" id="12_task1"]
-[ext_resource type="Resource" uid="uid://c3x1234568aab" path="res://resources/tasks/task2.tres" id="13_task2"]
-[ext_resource type="Resource" uid="uid://dsefjue6qb4lq" path="res://resources/tasks/task5.tres" id="13_vlnj5"]
-[ext_resource type="Resource" uid="uid://8j6h17wm1eik" path="res://resources/tasks/task3.tres" id="14_task3"]
-[ext_resource type="PackedScene" uid="uid://chvj7t3x3a3f5" path="res://scenes/features/UI/inventoryHUD.tscn" id="15_invhud"]
+[ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/task_data.gd" id="2_task_data"]
+[ext_resource type="Script" uid="uid://ipa8enh86p2g" path="res://scripts/inventory_ui.gd" id="3_g2els"]
+[ext_resource type="PackedScene" uid="uid://cbcwb7nuw340m" path="res://ui/inventorySlot.tscn" id="4_qhqgy"]
+[ext_resource type="Script" uid="uid://ck2hp6el2v8jf" path="res://scripts/notification_area.gd" id="5_qlg0r"]
+[ext_resource type="PackedScene" uid="uid://c1yiyhtvd41gy" path="res://scenes/features/UI/userNotifPop.tscn" id="6_tuyoq"]
+[ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="7_tasklist"]
+[ext_resource type="PackedScene" uid="uid://d25l6qnea1x1n" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="8_taskelem"]
+[ext_resource type="Resource" uid="uid://bn8hv33260ge0" path="res://resources/tasks/task4.tres" id="9_f4yut"]
+[ext_resource type="Resource" uid="uid://d3x1234568aaa" path="res://resources/tasks/task1.tres" id="10_task1"]
+[ext_resource type="Resource" uid="uid://c3x1234568aab" path="res://resources/tasks/task2.tres" id="11_task2"]
+[ext_resource type="Resource" uid="uid://dsefjue6qb4lq" path="res://resources/tasks/task5.tres" id="12_vlnj5"]
+[ext_resource type="Resource" uid="uid://8j6h17wm1eik" path="res://resources/tasks/task3.tres" id="13_task3"]
+[ext_resource type="PackedScene" uid="uid://chvj7t3x3a3f5" path="res://scenes/features/UI/inventoryHUD.tscn" id="14_invhud"]
+[ext_resource type="AudioStream" uid="uid://bd0x5i0k47rwi" path="res://sounds/sand_walk_sound.ogg" id="15_4w7k7"]
+[ext_resource type="AudioStream" uid="uid://dy2vs687it1n8" path="res://sounds/sand_walk_sound_2.ogg" id="16_vlj2d"]
+[ext_resource type="AudioStream" uid="uid://1fqev85lufm7" path="res://sounds/interact_sound.ogg" id="17_dpg8g"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_tp"]
 height = 3.0
@@ -186,7 +186,7 @@ text = "PLAYER"
 
 [node name="PlayerUI" type="CanvasLayer" parent="."]
 
-[node name="InventoryHUD" parent="PlayerUI" instance=ExtResource("15_invhud")]
+[node name="InventoryHUD" parent="PlayerUI" instance=ExtResource("14_invhud")]
 
 [node name="HintLabel" type="Label" parent="PlayerUI"]
 anchors_preset = 8
@@ -228,8 +228,8 @@ offset_left = 393.0
 offset_top = 150.0
 offset_right = 1436.0
 offset_bottom = 872.0
-script = ExtResource("2_g2els")
-slot_prefab = ExtResource("3_qhqgy")
+script = ExtResource("3_g2els")
+slot_prefab = ExtResource("4_qhqgy")
 
 [node name="PanelContainer" type="PanelContainer" parent="PlayerUI/InventoryUI"]
 layout_mode = 1
@@ -264,8 +264,8 @@ anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
 size_flags_horizontal = 4
-script = ExtResource("4_qlg0r")
-notification_prefab = ExtResource("5_tuyoq")
+script = ExtResource("5_qlg0r")
+notification_prefab = ExtResource("6_tuyoq")
 
 [node name="MainTasksContainer" type="VBoxContainer" parent="PlayerUI"]
 anchors_preset = 9
@@ -277,9 +277,9 @@ offset_bottom = -394.0
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TaskListUI" parent="PlayerUI" instance=ExtResource("10_tasklist")]
-task_prefab = ExtResource("11_taskelem")
-default_tasks = Array[ExtResource("1_task_data")]([ExtResource("12_task1"), ExtResource("13_task2"), ExtResource("14_task3"), ExtResource("12_f4yut"), ExtResource("13_vlnj5")])
+[node name="TaskListUI" parent="PlayerUI" instance=ExtResource("7_tasklist")]
+task_prefab = ExtResource("8_taskelem")
+default_tasks = Array[ExtResource("2_task_data")]([ExtResource("10_task1"), ExtResource("11_task2"), ExtResource("13_task3"), ExtResource("9_f4yut"), ExtResource("12_vlnj5")])
 
 [node name="ZoneDetector" type="Area3D" parent="."]
 collision_layer = 0
@@ -354,5 +354,5 @@ mesh = SubResource("CapsuleMesh_k03tp")
 bus = &"SFX"
 
 [node name="InteractAudioPlayer" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("interact_sound")
+stream = ExtResource("17_dpg8g")
 bus = &"SFX"
