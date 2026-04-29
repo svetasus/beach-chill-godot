@@ -1,4 +1,13 @@
 extends CharacterBody3D
+var interact_sound = preload("res://sounds/interact_sound.ogg")
+
+
+var sand_walk_sound = preload("res://sounds/sand_walk_sound.ogg")
+var sand_walk_sound_2 = preload("res://sounds/sand_walk_sound_2.ogg")
+
+var footstep_timer: float = 0.0
+const FOOTSTEP_INTERVAL: float = 0.5 # time between steps
+
 
 
 const SPEED = 5.0
@@ -305,6 +314,15 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, current_speed)
 		velocity.z = move_toward(velocity.z, 0, current_speed)
 		
+
+	if is_on_floor() and direction != Vector3.ZERO:
+		footstep_timer += delta
+		if footstep_timer >= FOOTSTEP_INTERVAL / (current_speed / SPEED):
+			_play_footstep_sound()
+			footstep_timer = 0.0
+	else:
+		footstep_timer = 0.0
+
 	move_and_slide()
 
 	# Stair-stepping logic (like the cart's floor checking)
@@ -534,6 +552,9 @@ func check_interaction():
 
 func pick_up(item):
 	if not is_multiplayer_authority(): return
+
+	$InteractAudioPlayer.stream = interact_sound
+	$InteractAudioPlayer.play()
 	
 	if item == null:
 		return
@@ -1544,3 +1565,12 @@ func _on_highlight_fade_out_complete() -> void:
 		if is_instance_valid(m):
 			m.layers &= ~HIGHLIGHT_LAYER
 	_highlight_meshes.clear()
+
+
+func _play_footstep_sound():
+	if not $WalkAudioPlayer.playing:
+		if randf() > 0.5:
+			$WalkAudioPlayer.stream = sand_walk_sound
+		else:
+			$WalkAudioPlayer.stream = sand_walk_sound_2
+		$WalkAudioPlayer.play()

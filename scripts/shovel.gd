@@ -1,5 +1,8 @@
 extends Tool
 
+var dig_sound = preload("res://sounds/shovel_dig_sound_up.ogg")
+
+
 var initial_rotation: Vector3 # Store the mesh's starting pose
 #@onready var pivot = get_parent().get_node("Model")
 @onready var pivot = $Model
@@ -38,6 +41,7 @@ func use_tool(target):
 
 func play_dig_animation():
 	var tween = create_tween()
+	_play_dig_sound()
 
 	# Using 'set_trans' makes the movement feel more like a physical impact
 	tween.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -52,3 +56,18 @@ func play_dig_animation():
 	# 3. Return to rest
 	tween.tween_property(pivot, "rotation:x", initial_rotation.x, 0.1)
 	
+
+
+func _play_dig_sound():
+	# Check if the player holding the shovel has an WalkAudioPlayer/InteractAudioPlayer to reuse, or spawn an ephemeral AudioStreamPlayer3D
+	var player = null
+	var players = get_tree().get_nodes_in_group("players")
+	for p in players:
+		if p.get_multiplayer_authority() == get_parent().get_multiplayer_authority():
+			player = p
+			break
+
+	if player and player.has_node("InteractAudioPlayer"):
+		var audio_player = player.get_node("InteractAudioPlayer")
+		audio_player.stream = dig_sound
+		audio_player.play()
