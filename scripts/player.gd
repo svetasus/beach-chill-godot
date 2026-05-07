@@ -42,6 +42,8 @@ var rotation_offset: float = 0.0
 
 var current_ui: Control = null
 
+var footstep_iterator : int = 0
+
 var is_typing = false
 var carried_items: Array[Node] = [null, null, null, null]
 var current_slot_index: int = 0
@@ -1563,11 +1565,14 @@ func _on_highlight_fade_out_complete() -> void:
 
 
 func _play_footstep_sound():
+	
 	if not $WalkAudioPlayer.playing:
-		if randf() > 0.5:
+		
+		if (footstep_iterator%2==0):
 			$WalkAudioPlayer.stream = Global.sand_walk_sound
 			$WalkAudioPlayer.volume_db = Global.walk_sound_1_volume
 		else:
 			$WalkAudioPlayer.stream = Global.sand_walk_sound_2
 			$WalkAudioPlayer.volume_db = Global.walk_sound_2_volume
 		$WalkAudioPlayer.play()
+		footstep_iterator += 1
