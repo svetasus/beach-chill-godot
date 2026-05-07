@@ -41,6 +41,20 @@ void fragment() {
 
     // --- REFRACTION ---
     vec2 refraction_offset = vec2(combined_noise) * refraction_strength;
+
+    // Read depth at the refracted UV
+    float refracted_depth_raw = texture(depth_texture, SCREEN_UV + refraction_offset).r;
+    vec3 refracted_ndc = vec3((SCREEN_UV + refraction_offset) * 2.0 - 1.0, refracted_depth_raw);
+    vec4 refracted_view = INV_PROJECTION_MATRIX * vec4(refracted_ndc, 1.0);
+    refracted_view.xyz /= refracted_view.w;
+    float refracted_linear_depth = -refracted_view.z;
+
+    // If the refracted pixel is closer than the water fragment itself, it's an object in front.
+    // So we shouldn't use the offset.
+    if (refracted_linear_depth < -VERTEX.z) {
+        refraction_offset = vec2(0.0);
+    }
+
     vec3 refraction_color = texture(screen_texture, SCREEN_UV + refraction_offset).rgb;
 
 
