@@ -32,6 +32,15 @@ func sanitize_filename(input: String) -> String:
 	return regex.sub(input, "", true)
 
 # --- AUDIO SETTINGS ---
+var interact_sound = preload("res://sounds/interact_sound.ogg")
+var sand_walk_sound = preload("res://sounds/sand_walk_sound.ogg")
+var sand_walk_sound_2 = preload("res://sounds/sand_walk_sound_2.ogg")
+var dig_sound = preload("res://sounds/shovel_dig_sound_up.ogg")
+var door_sound = preload("res://sounds/door_sound.ogg")
+
+var walk_sound_1_volume: float = 0.0
+var walk_sound_2_volume: float = 0.0
+
 var sfx_volume: float = 1.0 :
 	set(value):
 		sfx_volume = clamp(value, 0.0, 1.0)

@@ -1,11 +1,10 @@
 extends Node3D
 
-var door_sound = preload("res://sounds/door_sound.ogg")
 
 func _play_door_sound(player: Node3D):
 	if player and player.has_node("InteractAudioPlayer"):
 		var audio_player = player.get_node("InteractAudioPlayer")
-		audio_player.stream = door_sound
+		audio_player.stream = Global.door_sound
 		audio_player.play()
 
 
