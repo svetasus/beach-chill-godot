@@ -107,12 +107,14 @@ script = ExtResource("1_3vyb7")
 transform = Transform3D(0.618226, 0, 0, 0, 0.40337, 0, 0, 0, 0.652061, 0, 0, 0)
 
 [node name="ThirdPersonInteractionShape" type="ShapeCast3D" parent="Body"]
+collide_with_areas = true
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, -1)
 shape = SubResource("CylinderShape3D_tp")
 collision_mask = 4
 collide_with_areas = true
 
 [node name="ThirdPersonPlacementRay" type="RayCast3D" parent="Body"]
+collide_with_areas = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1.5)
 target_position = Vector3(0, -3, 0)
 collision_mask = 5
@@ -143,12 +145,14 @@ transform = Transform3D(1, 7.10543e-15, 1.77636e-15, 0, 1, 0, 0, 0, 1, -6.10643e
 shape = SubResource("SphereShape3D_4flbx")
 
 [node name="InteractionShape" type="ShapeCast3D" parent="Body/Head/Camera3D"]
+collide_with_areas = true
 transform = Transform3D(1, -2.08301e-08, -3.78156e-08, -3.87962e-08, -0.0492854, -0.998785, 1.8941e-08, 0.998785, -0.0492856, 2.22816e-09, -0.0764315, 0.489192)
 shape = SubResource("CylinderShape3D_4flbx")
 collision_mask = 4
 collide_with_areas = true
 
 [node name="PlacementRay" type="RayCast3D" parent="Body/Head/Camera3D"]
+collide_with_areas = true
 target_position = Vector3(0, 0, -5)
 collision_mask = 5
 

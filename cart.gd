@@ -75,9 +75,7 @@ func deposit_item_cart(item_node: Node3D):
 			
 		# Sync this optimal placement to all clients
 		if item_node.has_method("sync_authority"):
-			# Setting authority to 1 (Server) explicitly unfreezes it so it acts
-			# as a physical entity sitting in the cart.
-			item_node.sync_authority.rpc(1, false, Vector3.ZERO, drop_pos, global_rotation.y)
+			item_node.sync_authority.rpc(1, 0, Vector3.ZERO, drop_pos, global_rotation.y, 0.0)
 
 		print("SERVER: Physical item locked into cart at index ", inventory_nodes.size() - 1)
 

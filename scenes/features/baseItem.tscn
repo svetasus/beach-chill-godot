@@ -4,37 +4,26 @@
 [ext_resource type="Script" uid="uid://dppyd1qn2x4ot" path="res://scripts/item_name_pivot.gd" id="2_6muww"]
 [ext_resource type="Material" uid="uid://bngpgyipxn0vv" path="res://resources/materials/ghost_item_material.tres" id="2_jpn51"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_item"]
-rough = true
-
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_11e83"]
-properties/0/path = NodePath(".:linear_velocity")
+properties/0/path = NodePath(".:position")
 properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:angular_velocity")
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:position")
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:data_path")
 properties/2/spawn = true
 properties/2/replication_mode = 2
-properties/3/path = NodePath(".:rotation")
+properties/3/path = NodePath(".:is_held")
 properties/3/spawn = true
 properties/3/replication_mode = 2
-properties/4/path = NodePath(".:data_path")
-properties/4/spawn = true
-properties/4/replication_mode = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_762re"]
 radius = 2.5
 
-[node name="Item" type="RigidBody3D" groups=["interactables"]]
+[node name="Item" type="Area3D" groups=["interactables"]]
 collision_layer = 4
 collision_mask = 5
-mass = 5.0
-physics_material_override = SubResource("PhysicsMaterial_item")
-gravity_scale = 3.0
-linear_damp = 2.0
-angular_damp = 2.0
 script = ExtResource("1_s8enn")
 ghost_material = ExtResource("2_jpn51")
 

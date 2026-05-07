@@ -134,7 +134,7 @@ func save_tent_for_player(player_id: int, is_disconnecting: bool):
 			if not (item is Item) or item.data_path == "": continue
 
 			# Ensure we only save sleeping or loosely dropped items, not ones currently held
-			if item.freeze and item.get_multiplayer_authority() != 1: continue
+			if item.get("is_held") == true: continue
 
 			if item.get("is_autospawned") == true: continue
 
