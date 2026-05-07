@@ -1,7 +1,5 @@
 extends Tool
 
-var dig_sound = preload("res://sounds/shovel_dig_sound_up.ogg")
-
 
 var initial_rotation: Vector3 # Store the mesh's starting pose
 #@onready var pivot = get_parent().get_node("Model")
@@ -69,5 +67,5 @@ func _play_dig_sound():
 
 	if player and player.has_node("InteractAudioPlayer"):
 		var audio_player = player.get_node("InteractAudioPlayer")
-		audio_player.stream = dig_sound
+		audio_player.stream = Global.dig_sound
 		audio_player.play()

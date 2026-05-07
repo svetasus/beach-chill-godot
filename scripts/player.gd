@@ -1,9 +1,4 @@
 extends CharacterBody3D
-var interact_sound = preload("res://sounds/interact_sound.ogg")
-
-
-var sand_walk_sound = preload("res://sounds/sand_walk_sound.ogg")
-var sand_walk_sound_2 = preload("res://sounds/sand_walk_sound_2.ogg")
 
 var footstep_timer: float = 0.0
 const FOOTSTEP_INTERVAL: float = 0.5 # time between steps
@@ -553,7 +548,7 @@ func check_interaction():
 func pick_up(item):
 	if not is_multiplayer_authority(): return
 
-	$InteractAudioPlayer.stream = interact_sound
+	$InteractAudioPlayer.stream = Global.interact_sound
 	$InteractAudioPlayer.play()
 	
 	if item == null:
@@ -1570,7 +1565,9 @@ func _on_highlight_fade_out_complete() -> void:
 func _play_footstep_sound():
 	if not $WalkAudioPlayer.playing:
 		if randf() > 0.5:
-			$WalkAudioPlayer.stream = sand_walk_sound
+			$WalkAudioPlayer.stream = Global.sand_walk_sound
+			$WalkAudioPlayer.volume_db = Global.walk_sound_1_volume
 		else:
-			$WalkAudioPlayer.stream = sand_walk_sound_2
+			$WalkAudioPlayer.stream = Global.sand_walk_sound_2
+			$WalkAudioPlayer.volume_db = Global.walk_sound_2_volume
 		$WalkAudioPlayer.play()
