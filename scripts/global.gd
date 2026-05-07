@@ -38,8 +38,8 @@ var sand_walk_sound_2 = preload("res://sounds/sand_walk_sound_2.ogg")
 var dig_sound = preload("res://sounds/shovel_dig_sound_up.ogg")
 var door_sound = preload("res://sounds/door_sound.ogg")
 
-var walk_sound_1_volume: float = 0.0
-var walk_sound_2_volume: float = 0.0
+var walk_sound_1_volume: float = 0.7
+var walk_sound_2_volume: float = 0.8
 
 var sfx_volume: float = 1.0 :
 	set(value):
