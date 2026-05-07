@@ -1,4 +1,4 @@
-extends RigidBody3D
+extends Area3D
 class_name Item
 
 # --- 1. DATA & MULTIPLAYER SYNC ---
