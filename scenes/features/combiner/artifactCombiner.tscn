@@ -78,4 +78,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.846, 0.47111, 0.543)
 mesh = SubResource("CapsuleMesh_rihgq")
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="area_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
+[connection signal="area_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

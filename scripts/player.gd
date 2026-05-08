@@ -201,6 +201,7 @@ func _ready():
 		
 	# Connect the 'Catch' signal
 	$Body/Head/Camera3D/CatchZone.body_entered.connect(_on_catch_zone_body_entered)
+	$Body/Head/Camera3D/CatchZone.area_entered.connect(_on_catch_zone_body_entered)
 
 
 func enter_water(surface_height: float):
@@ -528,8 +529,8 @@ func check_interaction():
 				_rpc_request_cart_deposit.rpc_id(1, cart_node.get_path(), carried_item.get_path())
 				drop_item()
 				
-		# NEW GUARD: If someone else is already the boss of this item and it's 'frozen' (held), ignore it!
-		elif target is Item and target.freeze == true:
+		# NEW GUARD: If someone else is already the boss of this item and it's held by them, ignore it!
+		elif target is Item and target.get("is_held") == true and target.get_multiplayer_authority() != multiplayer.get_unique_id():
 			print("Someone is already holding this!")
 			return
 
@@ -566,21 +567,14 @@ func pick_up(item):
 			print("CANNOT PICK UP: You are driving a cart!")
 			return
 
-	if item.freeze == true and item.get_multiplayer_authority() != multiplayer.get_unique_id():
-		# Check if it's locked to a cart. If so, let's unlock it and take it.
-		# Note: locked_to_cart is a server-side only variable in item_logic.
-		# However, if it's a cart item, its freeze state might be true and authority might be server(1).
-		# Let's request the server to unlock it.
-		if item.get_multiplayer_authority() == 1:
-			# Potentially locked to cart, try to pick it up anyway
-			if item.has_method("request_unlock_from_cart"):
-				item.request_unlock_from_cart.rpc_id(1)
-		else:
-			print("CANNOT PICK UP: Someone else is already the boss of this!")
-			return
-	
-	if item is RigidBody3D:
-		item.freeze = false
+	if item.get("is_held") == true and item.get_multiplayer_authority() != multiplayer.get_unique_id():
+		print("CANNOT PICK UP: Someone else is already the boss of this!")
+		return
+
+	if item.get_multiplayer_authority() == 1:
+		if item.has_method("request_unlock_from_cart"):
+			item.request_unlock_from_cart.rpc_id(1)
+
 	
 	var my_id = multiplayer.get_unique_id()
 	
@@ -588,7 +582,10 @@ func pick_up(item):
 	# This triggers the 'sync_authority' function on EVERYONE'S computer.
 	if item.has_method("sync_authority"):
 		#print("sync_auth found")
-		item.sync_authority.rpc(my_id,true)
+		item.sync_authority.rpc(my_id, 1) # 1 = HELD
+
+	if "is_flying" in item:
+		item.is_flying = false
 	
 	# 2. WAIT: Give the network one physics frame to process the RPC
 	await get_tree().physics_frame
@@ -610,7 +607,7 @@ func pick_up(item):
 				$PlayerUI/NotificationArea.display_message("You can't pick up another tool")
 
 				# Give up authority, restore state
-				item.sync_authority.rpc(1, false, Vector3.ZERO, item.global_position, item.global_rotation.y)
+				item.sync_authority.rpc(1, 0, Vector3.ZERO, item.global_position, item.global_rotation.y, 0.0)
 				return
 			else:
 				if carried_item == null:
@@ -639,7 +636,7 @@ func pick_up(item):
 		else:
 			if current_slot_index == 3:
 				$PlayerUI/NotificationArea.display_message("You can't pick up a non-tool into the tool slot")
-				item.sync_authority.rpc(1, false, Vector3.ZERO, item.global_position, item.global_rotation.y)
+				item.sync_authority.rpc(1, 0, Vector3.ZERO, item.global_position, item.global_rotation.y, 0.0)
 				return
 
 		carried_item = item
@@ -671,7 +668,6 @@ func pick_up(item):
 		# 3. PHYSICS & TOP LEVEL: 
 		# Setting top_level = true means the item moves in Global Space, 
 		# not "relative" to your hand. This is essential for the Ghost Preview.
-		carried_item.freeze = true
 		
 		# 4. INITIAL SNAP: Put it at the hand's position immediately
 		if is_third_person:
@@ -716,17 +712,24 @@ func drop_item():
 	var final_pos = item.global_position
 	var final_rot = item.global_rotation.y
 	
-	if item is RigidBody3D:
-		item.freeze = false
-		item.linear_velocity = Vector3.ZERO
-		item.angular_velocity = Vector3.ZERO
-		# Snap it one last time to be sure
-		item.global_position = final_pos
-		item.global_rotation.y = final_rot
+	# Downward raycast to snap to floor
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(final_pos + Vector3(0, 0.1, 0), final_pos + Vector3(0, -100.0, 0))
+	query.exclude = [self.get_rid()]
+	var result = space_state.intersect_ray(query)
+
+	if result:
+		final_pos = result.position
+		# Move slightly up to avoid clipping
+		final_pos.y += 0.05
+
+	# Snap it one last time to be sure
+	item.global_position = final_pos
+	item.global_rotation.y = final_rot
 	
 	# 2. KEEP authority as yourself! 
-	# Only unfreeze it, but don't give it back to ID 1.
-	item.sync_authority.rpc(multiplayer.get_unique_id(), false, Vector3.ZERO, final_pos, final_rot)
+	# Keep authority but don't give it back to ID 1.
+	item.sync_authority.rpc(multiplayer.get_unique_id(), 0, Vector3.ZERO, final_pos, final_rot, 0.0)
 	
 	#print("Dropped ", item.name)
 
@@ -762,7 +765,38 @@ func throw_item():
 		launch_dir = (-hand.global_transform.basis.z + Vector3(0, 0.3, 0)).normalized()
 		item.global_position = hand.global_position + (launch_dir * 0.5)
 
-	var final_velocity = launch_dir * THROW_FORCE
+	var throw_distance = 6.0
+	var throw_duration = 0.5
+
+	# Determine forward horizontal target
+	var horizontal_dir = launch_dir
+	horizontal_dir.y = 0
+	if horizontal_dir.length_squared() > 0.001:
+		horizontal_dir = horizontal_dir.normalized()
+	else:
+		horizontal_dir = -global_transform.basis.z.normalized()
+
+	var target_xz = item.global_position + (horizontal_dir * throw_distance)
+
+	# Raycast straight down from the target horizontal position to find the floor
+	var space_state = get_world_3d().direct_space_state
+	var start_pos = target_xz + Vector3(0, 5.0, 0) # Start a bit above in case we are throwing onto a ledge
+	var end_pos = target_xz + Vector3(0, -100.0, 0)
+
+	var query = PhysicsRayQueryParameters3D.create(start_pos, end_pos)
+	query.exclude = [self.get_rid()]
+
+	var result = space_state.intersect_ray(query)
+	var final_target = target_xz # Fallback
+
+	if result:
+		final_target = result.position
+		# Move slightly up to avoid clipping into floor
+		final_target.y += 0.2
+	else:
+		# Fallback if no floor is found
+		final_target.y = item.global_position.y - throw_distance
+
 	
 	# 3. THE "DE-PARENTING" WAIT
 	# We wait for the physics engine to acknowledge the item is no longer 
@@ -771,13 +805,13 @@ func throw_item():
 	
 	# 4. ATOMIC RPC
 	var my_id = multiplayer.get_unique_id()
-	item.sync_authority.rpc(my_id, false, final_velocity,Vector3.ZERO,0.0)
+	item.sync_authority.rpc(my_id, 2, final_target, Vector3.ZERO, 0.0, throw_duration) # 2 = THROWN
 	
 	# 5. HANDOVER
-	get_tree().create_timer(0.3).timeout.connect(func():
+	get_tree().create_timer(throw_duration).timeout.connect(func():
 		if is_instance_valid(item):
 			# Hand back to server (1) so anyone can pick it up
-			item.sync_authority.rpc(1, false, item.linear_velocity, item.global_position, item.global_rotation.y)
+			item.sync_authority.rpc(1, 0, Vector3.ZERO, item.global_position, item.global_rotation.y, 0.0)
 	)
 
 
@@ -828,12 +862,11 @@ func _on_catch_zone_body_entered(body):
 	if carried_item != null or catch_cooldown: return
 	
 	# Only catch if it's a throwable object and NOT currently held by anyone
-	if body.is_in_group("interactables") and body is RigidBody3D:
+	if body.is_in_group("interactables"):
 		# Check if the object is 'flying' (not frozen)
-		if body.freeze == false:
-			if body.linear_velocity.length() > 2.0:
-				print("Auto-Catch!")
-				pick_up(body)
+		if "is_flying" in body and body.is_flying:
+			print("Auto-Catch!")
+			pick_up(body)
 				
 				
 				
@@ -1025,14 +1058,62 @@ func update_ghost_preview():
 			else:
 				can_place = false
 	else:
-		# Fallback: If not looking at a surface, keep item in hand
-		if is_third_person:
-			# Fallback for third person, put it slightly in front of player at height 1.0
-			carried_item.global_position = global_position + (global_transform.basis.z * -1.0) + Vector3(0, 1.0, 0)
-			carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
+		# Fallback: If not looking at a surface, maintain distance in air
+		carried_item.visible = true
+		if carried_item.has_method("set_ghost_appearance"):
+			carried_item.set_ghost_appearance(true)
+
+		var fallback_target = active_placement_ray.global_position + active_placement_ray.target_position.rotated(Vector3.UP, active_placement_ray.global_rotation.y)
+		var max_dist = active_placement_ray.target_position.length()
+
+		var aim_dir = -active_placement_ray.global_transform.basis.z.normalized()
+		fallback_target = active_placement_ray.global_position + (aim_dir * max_dist)
+
+		# Downward raycast from the end point just in case ground is slightly out of reach
+		var space_state = get_world_3d().direct_space_state
+		var query = PhysicsRayQueryParameters3D.create(fallback_target, fallback_target + Vector3(0, -100.0, 0))
+		query.exclude = [self.get_rid()]
+		var result = space_state.intersect_ray(query)
+
+		var final_pos = fallback_target
+		if result:
+			# Get the same Y-offset logic as the ground hit
+			var y_offset = 0.0
+			var min_y = 0.0
+			var found_collision = false
+			var item_inv_trans = carried_item.global_transform.affine_inverse()
+			var search_nodes = []
+			var anchor = carried_item.get_node_or_null("MeshAnchor")
+			if anchor:
+				search_nodes = anchor.find_children("*", "CollisionShape3D", true, false)
+
+			for node in search_nodes:
+				if node.shape:
+					var shape_mesh = node.shape.get_debug_mesh()
+					if shape_mesh:
+						var shape_aabb = shape_mesh.get_aabb()
+						var local_trans = item_inv_trans * node.global_transform
+						var final_aabb = local_trans * shape_aabb
+						if not found_collision:
+							min_y = final_aabb.position.y
+							found_collision = true
+						else:
+							min_y = min(min_y, final_aabb.position.y)
+
+			if found_collision:
+				y_offset = -min_y
+			y_offset *= carried_item.scale.y
+
+			final_pos = result.position + Vector3(0, y_offset, 0)
+
+		carried_item.global_position = final_pos
+		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
+
+		# Validate placement regarding tent state
+		if get_tent_for_position(final_pos) == get_tent_for_position(global_position):
+			can_place = true
 		else:
-			carried_item.global_transform = hand.global_transform
-		can_place = true
+			can_place = false
 
 	if carried_item.has_method("set_ghost_valid"):
 		carried_item.set_ghost_valid(can_place)

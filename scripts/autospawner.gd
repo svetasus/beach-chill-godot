@@ -101,7 +101,8 @@ func _get_ground_position(start_pos: Vector3, ray_length: float) -> Vector3:
 	if result:
 		# Using a higher offset (1.5) so long items like shovels or detectors
 		# don't clip into the ground when they spawn and settle.
-		return result.position + Vector3(0, 1.5, 0)
+		# But since we use Area3D now, we don't need a high offset, just enough to not clip.
+		return result.position + Vector3(0, 0.1, 0)
 	return Vector3.ZERO
 
 func _spawn_item(item_scene: PackedScene, item_data: ItemData, pos: Vector3):

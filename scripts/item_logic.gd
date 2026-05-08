@@ -1,4 +1,4 @@
-extends RigidBody3D
+extends Area3D
 class_name Item
 
 # --- 1. DATA & MULTIPLAYER SYNC ---
@@ -62,8 +62,18 @@ func _apply_material_to_anchor(node: Node, active: bool, valid: bool = true):
 	for child in node.get_children():
 		_apply_material_to_anchor(child, active, valid)
 
+var is_flying: bool = false
+var is_held: bool = false
+var throw_tween: Tween
+
+enum State {
+	RESTING = 0,
+	HELD = 1,
+	THROWN = 2
+}
+
 @rpc("any_peer", "call_local")
-func sync_authority(peer_id: int, should_freeze: bool, impulse: Vector3 = Vector3.ZERO, pos: Vector3 = Vector3.ZERO, rot_y: float = 0.0):
+func sync_authority(peer_id: int, state: int, target_pos: Vector3 = Vector3.ZERO, pos: Vector3 = Vector3.ZERO, rot_y: float = 0.0, throw_duration: float = 0.5):
 	if not is_node_ready():
 		await ready
 	# SAFETY: If the basket is already deleting this, stop syncing
@@ -76,51 +86,61 @@ func sync_authority(peer_id: int, should_freeze: bool, impulse: Vector3 = Vector
 		$MultiplayerSynchronizer.set_multiplayer_authority(peer_id)
 	
 	# 2. WAIT A TINY BIT (Deferred)
-	_apply_physics_state.call_deferred(should_freeze, impulse, pos, rot_y)
+	_apply_state.call_deferred(state, target_pos, pos, rot_y, throw_duration)
 
-func _apply_physics_state(should_freeze: bool, impulse: Vector3, pos: Vector3, rot_y: float):
 
-	if should_freeze:
-		freeze = true
-		_frozen_by_jitter = false # Clear jitter flag if explicitly frozen by player
+func _apply_state(state: int, target_pos: Vector3, pos: Vector3, rot_y: float, throw_duration: float):
+
+	# Update the state internally
+	is_held = (state == State.HELD)
+
+	if is_held:
 		top_level = true
 		if has_node("CollisionShape3D"):
 			get_node("CollisionShape3D").disabled = true
-		return # Exit early so we don't accidentally unfreeze below
+		is_flying = false
+		if throw_tween and throw_tween.is_running():
+			throw_tween.kill()
+		return
 	
-	# 2. Handle the "Release" state (Dropping or Throwing)
-	sleeping = false
-	freeze = false
-	_frozen_by_jitter = false # Clear jitter flag if released
+	# Handle the "Release" state (Dropping or Throwing)
 	top_level = false
 	if has_node("CollisionShape3D"):
 		get_node("CollisionShape3D").disabled = false
 	
-	# Move to the ghost/hand position
+	# Move to the start position if placing or starting throw
 	if pos != Vector3.ZERO:
 		global_position = pos
-		if impulse == Vector3.ZERO:
-			global_rotation = Vector3(0, rot_y, 0)
-			sleeping = true # Settle immediately for cozy placement
-		else:
-			# If it's a throw, let it keep its natural rotation from the air
-			global_rotation.y = rot_y
+		global_rotation.y = rot_y
 
-	# Decide: Is this a Placement or a Physics Drop?
-	if impulse == Vector3.ZERO:
-		# This is a GENTLE placement (E key)
-		# We freeze it so it doesn't slide on other items
-		freeze = false
-		sleeping = true 
-		linear_velocity = Vector3.ZERO
-		angular_velocity = Vector3.ZERO
-	else:
-		# This is a THROW or a physics drop
-		# We UNFREEZE it so it can fall and react to gravity
-		freeze = false
-		linear_velocity = impulse
-		angular_velocity = Vector3(randf(), randf(), randf()) * 2.0
+	if throw_tween and throw_tween.is_running():
+		throw_tween.kill()
+		is_flying = false
 
+	if state == State.THROWN and target_pos != Vector3.ZERO:
+		is_flying = true
+		throw_tween = create_tween()
+		throw_tween.set_parallel(true)
+
+		# Tween X and Z directly to target
+		var target_xz = Vector3(target_pos.x, global_position.y, target_pos.z)
+		var current_xz = Vector3(global_position.x, global_position.y, global_position.z)
+		throw_tween.tween_property(self, "global_position:x", target_pos.x, throw_duration).set_ease(Tween.EASE_IN_OUT)
+		throw_tween.tween_property(self, "global_position:z", target_pos.z, throw_duration).set_ease(Tween.EASE_IN_OUT)
+
+		var arc_height = current_xz.distance_to(target_xz) * 0.4
+		if arc_height < 1.0: arc_height = 1.0
+
+		var mid_y = max(global_position.y, target_pos.y) + arc_height
+
+		# Animate Y (Up, then Down)
+		throw_tween.tween_property(self, "global_position:y", mid_y, throw_duration / 2.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		throw_tween.tween_property(self, "global_position:y", target_pos.y, throw_duration / 2.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN).set_delay(throw_duration / 2.0)
+
+		# Spin around Y while flying
+		throw_tween.tween_property(self, "global_rotation:y", global_rotation.y + PI * 2, throw_duration)
+
+		throw_tween.chain().tween_callback(func(): is_flying = false)
 
 
 func _ready():
@@ -132,10 +152,6 @@ func _ready():
 	# Connecting your original proximity signals
 	$NameDetectionArea.body_entered.connect(_on_player_nearby)
 	$NameDetectionArea.body_exited.connect(_on_player_left)
-
-	# Enable contact monitoring for jitter detection
-	contact_monitor = true
-	max_contacts_reported = 5
 
 func show_name(should_show: bool):
 	$NamePivot.visible = should_show
@@ -275,72 +291,6 @@ func request_unlock_from_cart():
 		else:
 			unlock_from_cart()
 
-# --- Jitter Detection & Freeze logic ---
-var _jitter_time: float = 0.0
-var _last_velocity: Vector3 = Vector3.ZERO
-var _supporting_bodies: Array[Node] = []
-var _frozen_by_jitter: bool = false
-var _support_original_positions: Dictionary = {}
-
-func _physics_process(delta):
-	if not is_multiplayer_authority(): return
-
-	# Wake up logic
-	if freeze and _frozen_by_jitter:
-		var should_wake_up = false
-		for body in _supporting_bodies:
-			if not is_instance_valid(body) or body.is_queued_for_deletion():
-				should_wake_up = true
-				break
-			if body is Node3D:
-				var original_pos = _support_original_positions.get(body, null)
-				if original_pos != null and body.global_position.distance_to(original_pos) > 0.1:
-					should_wake_up = true
-					break
-
-		if should_wake_up:
-			freeze = false
-			_frozen_by_jitter = false
-			_jitter_time = 0.0
-			_supporting_bodies.clear()
-			_support_original_positions.clear()
-		return
-
-	# Detection logic
-	if not freeze and not sleeping:
-		var current_vel = linear_velocity.length()
-		var current_ang = angular_velocity.length()
-
-		# Small threshold for jitter, large threshold for actual falling
-		if current_vel > 0.001 and current_vel < 0.5 and current_ang < 1.0:
-			# Check if velocity reverses or stays small
-			var dir_dot = linear_velocity.normalized().dot(_last_velocity.normalized())
-			if current_vel < 0.1 or dir_dot < 0.5:
-				_jitter_time += delta
-			else:
-				_jitter_time = max(0.0, _jitter_time - delta)
-		elif current_vel >= 0.5 or current_ang >= 1.0:
-			_jitter_time = 0.0
-
-		_last_velocity = linear_velocity
-
-		if _jitter_time > 1.5:
-			# Jitter detected! Freeze the item and record supports
-			var colliders = get_colliding_bodies()
-			if colliders.size() > 0:
-				_supporting_bodies.clear()
-				_support_original_positions.clear()
-				for body in colliders:
-					_supporting_bodies.append(body)
-					if body is Node3D:
-						_support_original_positions[body] = body.global_position
-
-				freeze = true
-				_frozen_by_jitter = true
-				_jitter_time = 0.0
-				sleeping = true
-
-
 # --- 6. CLEANUP ---
 
 @rpc("any_peer", "call_local", "reliable")
@@ -349,7 +299,6 @@ func destroy_item():
 		visible = false
 		collision_layer = 0
 		collision_mask = 0
-		freeze = true
 
 		# Give the RPC time to reach clients before actually deleting
 		if multiplayer.is_server():

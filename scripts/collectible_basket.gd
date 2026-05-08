@@ -33,8 +33,6 @@ func _on_body_entered(body: Node3D) -> void:
 				sync_node.process_mode = PROCESS_MODE_DISABLED
 			
 			# --- LOCAL CLEANUP ---
-			if body is RigidBody3D:
-				body.freeze = true
 			body.hide()
 			
 			# --- MONEY LOGIC ---
@@ -97,10 +95,8 @@ func sync_collection(node_path: NodePath, data_path: String, player_id: int, col
 		item_node.hide()
 		item_node.process_mode = PROCESS_MODE_DISABLED
 		
-		if item_node is RigidBody3D:
-			item_node.freeze = true
-			item_node.collision_layer = 0
-			item_node.collision_mask = 0
+		item_node.collision_layer = 0
+		item_node.collision_mask = 0
 		
 		# 2. Kill the Synchronizer immediately
 		if item_node.has_node("MultiplayerSynchronizer"):
