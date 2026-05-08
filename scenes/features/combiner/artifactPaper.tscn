@@ -21,42 +21,6 @@ transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.0505838, 0.0009999
 modulate = Color(0, 0, 0, 0.776471)
 texture = ExtResource("2_brjiv")
 
-[node name="Fragments" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.001, 0, 0.004)
-
-[node name="SpriteFragment1" type="Sprite3D" parent="Fragments"]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.064, -0.0243207, 0)
-sorting_offset = 0.1
-texture = ExtResource("3_km1y7")
-
-[node name="SpriteFragment2" type="Sprite3D" parent="Fragments"]
-transform = Transform3D(0.07, 0, 0, 0, 0.07, 0, 0, 0, 0.07, 0.0512329, -0.0243207, 0)
-sorting_offset = 0.1
-texture = ExtResource("4_pj0pq")
-
-[node name="SpriteFragment3" type="Sprite3D" parent="Fragments"]
-transform = Transform3D(0.06, 0, 0, 0, 0.06, 0, 0, 0, 0.06, -0.00391475, -0.0243207, 0)
-sorting_offset = 0.1
-texture = ExtResource("5_v7ws0")
-
-[node name="Notes" type="Node3D" parent="."]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.038, 0.005)
-
-[node name="SpriteNote1" type="Sprite3D" parent="Notes"]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.280433, -0.572549, 0.03)
-sorting_offset = 0.5
-texture = ExtResource("6_mon45")
-
-[node name="SpriteNote2" type="Sprite3D" parent="Notes"]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.20511, -0.572549, 0.03)
-sorting_offset = 0.5
-texture = ExtResource("6_mon45")
-
-[node name="SpriteNote3" type="Sprite3D" parent="Notes"]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.00847524, -0.336751, 0.03)
-sorting_offset = 0.5
-texture = ExtResource("7_1w01i")
-
 [node name="SpriteFinalArtifact" type="Sprite3D" parent="."]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.0509698, 0.003)
 sorting_offset = 0.5
@@ -67,3 +31,66 @@ transform = Transform3D(0.07, 0, 0, 0, 0.07, 0, 0, 0, 0.07, 0.061, 0.037, 0.005)
 sorting_offset = 1.0
 modulate = Color(0.83, 0.83, 0.83, 1)
 texture = ExtResource("8_f1r12")
+
+[node name="Layout3Parts" type="Node3D" parent="."]
+
+[node name="Fragments" type="Node3D" parent="Layout3Parts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.001, 0, 0.004)
+
+[node name="SpriteFragment1" type="Sprite3D" parent="Layout3Parts/Fragments"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.064, -0.0243207, 0)
+sorting_offset = 0.1
+texture = ExtResource("3_km1y7")
+
+[node name="SpriteFragment2" type="Sprite3D" parent="Layout3Parts/Fragments"]
+transform = Transform3D(0.07, 0, 0, 0, 0.07, 0, 0, 0, 0.07, 0.0512329, -0.0243207, 0)
+sorting_offset = 0.1
+texture = ExtResource("4_pj0pq")
+
+[node name="SpriteFragment3" type="Sprite3D" parent="Layout3Parts/Fragments"]
+transform = Transform3D(0.06, 0, 0, 0, 0.06, 0, 0, 0, 0.06, -0.00391475, -0.0243207, 0)
+sorting_offset = 0.1
+texture = ExtResource("5_v7ws0")
+
+[node name="Notes" type="Node3D" parent="Layout3Parts"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.038, 0.005)
+
+[node name="SpriteNote1" type="Sprite3D" parent="Layout3Parts/Notes"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.280433, -0.572549, 0.03)
+sorting_offset = 0.5
+texture = ExtResource("6_mon45")
+
+[node name="SpriteNote2" type="Sprite3D" parent="Layout3Parts/Notes"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.20511, -0.572549, 0.03)
+sorting_offset = 0.5
+texture = ExtResource("6_mon45")
+
+[node name="SpriteNote3" type="Sprite3D" parent="Layout3Parts/Notes"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.00847524, -0.336751, 0.03)
+sorting_offset = 0.5
+texture = ExtResource("7_1w01i")
+
+[node name="Layout2Parts" type="Node3D" parent="."]
+visible = false
+
+[node name="Fragments" type="Node3D" parent="Layout2Parts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.001, 0, 0.004)
+
+[node name="SpriteFragment1" type="Sprite3D" parent="Layout2Parts/Fragments"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.0280433, -0.0192549, 0.003)
+sorting_offset = 0.1
+texture = ExtResource("3_km1y7")
+
+[node name="SpriteFragment2" type="Sprite3D" parent="Layout2Parts/Fragments"]
+transform = Transform3D(0.07, 0, 0, 0, 0.07, 0, 0, 0, 0.07, 0.020511, -0.0192549, 0.003)
+sorting_offset = 0.1
+texture = ExtResource("4_pj0pq")
+
+[node name="Notes" type="Node3D" parent="Layout2Parts"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.038, 0.005)
+
+[node name="SpriteNote1" type="Sprite3D" parent="Layout2Parts/Notes"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, -0.572549, 0.03)
+sorting_offset = 0.5
+texture = ExtResource("7_1w01i")
+

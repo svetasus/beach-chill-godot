@@ -1,6 +1,6 @@
 extends StaticBody3D
 
-@export var recipes: Array[ArtifactData] = []
+@export var recipe_list: ArtifactRecipeList
 @export var paper_scene: PackedScene = preload("res://scenes/features/combiner/artifactPaper.tscn")
 @export var paper_scale: Vector3 = Vector3(2.2, 2.2, 2.2)
 
@@ -11,40 +11,30 @@ var paper_positions: Array[Vector3] = [
 	Vector3(0.288, -0.162, 0)
 ]
 
-var items_in_zone: Array[Node3D] = []
-
 @onready var artifact_slots = $ArtifactSlots
+var combiner_node: Node3D = null
 
 func _ready():
 	if multiplayer.is_server():
 		# Assuming blueprintBoard and ArtifactCombiner are siblings inside CombinerFull
-		var detection_area = get_parent().get_node_or_null("ArtifactCombiner/DetectionArea")
-		if detection_area:
-			detection_area.body_entered.connect(_on_detection_area_body_entered)
-			detection_area.body_exited.connect(_on_detection_area_body_exited)
-
-func _on_detection_area_body_entered(body: Node3D) -> void:
-	if not multiplayer.is_server(): return
-	if body.is_in_group("interactables") and not items_in_zone.has(body):
-		items_in_zone.append(body)
-		check_and_update_board()
-
-func _on_detection_area_body_exited(body: Node3D) -> void:
-	if not multiplayer.is_server(): return
-	if items_in_zone.has(body):
-		items_in_zone.erase(body)
-		check_and_update_board()
+		combiner_node = get_parent().get_node_or_null("ArtifactCombiner")
+		if combiner_node:
+			combiner_node.items_changed.connect(check_and_update_board)
 
 func check_and_update_board():
 	if not multiplayer.is_server(): return
+	if recipe_list == null: return
 
-	items_in_zone = items_in_zone.filter(func(item): return is_instance_valid(item))
+	if not combiner_node: return
+
+	var items_in_zone = combiner_node.items_in_zone
 
 	var current_parts_data = []
 	for item in items_in_zone:
-		var d = item.get("data")
-		if d != null:
-			current_parts_data.append(d)
+		if is_instance_valid(item):
+			var d = item.get("data")
+			if d != null:
+				current_parts_data.append(d)
 
 	if current_parts_data.is_empty():
 		rpc("update_board_rpc", [])
@@ -52,7 +42,7 @@ func check_and_update_board():
 
 	var matched_recipes_paths = []
 
-	for recipe in recipes:
+	for recipe in recipe_list.recipes:
 		if recipe == null: continue
 		var contains_all = true
 		for part_data in current_parts_data:
@@ -88,29 +78,59 @@ func update_board_rpc(matched_recipe_paths: Array):
 
 			# Setup textures
 			var sprite_final = paper.get_node("SpriteFinalArtifact")
-			var sprite_frag1 = paper.get_node("Fragments/SpriteFragment1")
-			var sprite_frag2 = paper.get_node("Fragments/SpriteFragment2")
-			var sprite_frag3 = paper.get_node("Fragments/SpriteFragment3")
+			var sprite_outline = paper.get_node("SpriteOutline")
+			var sprite_final_notes = paper.get_node("SpriteFinalNotes")
 
-			var sprite_note1 = paper.get_node("Notes/SpriteNote1")
-			var sprite_note2 = paper.get_node("Notes/SpriteNote2")
-			var sprite_note3 = paper.get_node("Notes/SpriteNote3")
+			var layout_2 = paper.get_node_or_null("Layout2Parts")
+			var layout_3 = paper.get_node_or_null("Layout3Parts")
+
+			if layout_2: layout_2.visible = false
+			if layout_3: layout_3.visible = false
 
 			if recipe.result_item and recipe.result_item.item_icon:
 				sprite_final.texture = recipe.result_item.item_icon
+				sprite_outline.texture = recipe.result_item.item_icon
 
-			if recipe.required_parts.size() > 0 and recipe.required_parts[0] and recipe.required_parts[0].item_icon:
-				sprite_frag1.texture = recipe.required_parts[0].item_icon
-			if recipe.required_parts.size() > 1 and recipe.required_parts[1] and recipe.required_parts[1].item_icon:
-				sprite_frag2.texture = recipe.required_parts[1].item_icon
-			if recipe.required_parts.size() > 2 and recipe.required_parts[2] and recipe.required_parts[2].item_icon:
-				sprite_frag3.texture = recipe.required_parts[2].item_icon
+			var local_player = null
+			for p in get_tree().get_nodes_in_group("players"):
+				if p.is_multiplayer_authority():
+					local_player = p
+					break # Needs to be the local client player
+			var has_crafted = false
+			if local_player and "collection" in local_player:
+				if local_player.collection.has(recipe.result_item.name):
+					has_crafted = true
 
-			if recipe.required_parts.size() == 2:
-				sprite_note2.visible = false
-				sprite_frag3.visible = false
+			if has_crafted:
+				sprite_final.visible = true
+				sprite_final_notes.visible = true
+				sprite_outline.visible = false
+			else:
+				sprite_final.visible = false
+				sprite_final_notes.visible = false
+				sprite_outline.visible = true
 
-				sprite_frag1.global_position = sprite_note1.global_position
-				sprite_frag2.global_position = sprite_note2.global_position
+			# Determine which layout to show based on parts size
+			var active_layout = null
+			if recipe.required_parts.size() == 2 and layout_2:
+				layout_2.visible = true
+				active_layout = layout_2
+			elif recipe.required_parts.size() >= 3 and layout_3:
+				layout_3.visible = true
+				active_layout = layout_3
+			elif layout_3:
+				# fallback to 3 parts if missing layout_2
+				layout_3.visible = true
+				active_layout = layout_3
 
-				sprite_note1.transform.origin.x = 0
+			if active_layout:
+				var sprite_frag1 = active_layout.get_node_or_null("Fragments/SpriteFragment1")
+				var sprite_frag2 = active_layout.get_node_or_null("Fragments/SpriteFragment2")
+				var sprite_frag3 = active_layout.get_node_or_null("Fragments/SpriteFragment3")
+
+				if sprite_frag1 and recipe.required_parts.size() > 0 and recipe.required_parts[0] and recipe.required_parts[0].item_icon:
+					sprite_frag1.texture = recipe.required_parts[0].item_icon
+				if sprite_frag2 and recipe.required_parts.size() > 1 and recipe.required_parts[1] and recipe.required_parts[1].item_icon:
+					sprite_frag2.texture = recipe.required_parts[1].item_icon
+				if sprite_frag3 and recipe.required_parts.size() > 2 and recipe.required_parts[2] and recipe.required_parts[2].item_icon:
+					sprite_frag3.texture = recipe.required_parts[2].item_icon
