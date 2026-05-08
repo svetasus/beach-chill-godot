@@ -25,8 +25,8 @@ const DIG_DIST = 1.5
 
 @onready var tp_camera = $Body/SpringArm3D/ThirdPersonCamera
 @onready var tp_spring_arm = $Body/SpringArm3D
-@onready var tp_shapecast = $Body/ThirdPersonInteractionShape
-@onready var tp_placement_ray = $Body/ThirdPersonPlacementRay
+@onready var tp_shapecast = $ThirdPersonInteractionShape
+@onready var tp_placement_ray = $ThirdPersonPlacementRay
 
 @export var is_third_person: bool = false
 @export var mouse_sensitivity = 0.002

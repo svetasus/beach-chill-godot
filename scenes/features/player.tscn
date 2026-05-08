@@ -104,15 +104,15 @@ script = ExtResource("1_3vyb7")
 [node name="Body" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.618226, 0, 0, 0, 0.40337, 0, 0, 0, 0.652061, 0, 0, 0)
 
-[node name="ThirdPersonInteractionShape" type="ShapeCast3D" parent="Body"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, -1)
+[node name="ThirdPersonInteractionShape" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.40337, -0.652061)
 shape = SubResource("CylinderShape3D_tp")
 collision_mask = 4
 collide_with_areas = true
 
-[node name="ThirdPersonPlacementRay" type="RayCast3D" parent="Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1.5)
-target_position = Vector3(0, -3, 0)
+[node name="ThirdPersonPlacementRay" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.40337, -0.9780915)
+target_position = Vector3(0, -1.21011, 0)
 collision_mask = 5
 
 [node name="SpringArm3D" type="SpringArm3D" parent="Body"]
