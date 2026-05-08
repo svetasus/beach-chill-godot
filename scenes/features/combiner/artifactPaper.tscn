@@ -1,0 +1,69 @@
+[gd_scene load_steps=9 format=3 uid="uid://co6i0ku26i8aq"]
+
+[ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_gj4of"]
+[ext_resource type="Texture2D" uid="uid://c7wkfs2j16n1j" path="res://textures/bear_statue.png" id="2_brjiv"]
+[ext_resource type="Texture2D" uid="uid://b7f6mq0plwe5p" path="res://textures/artefact_001.png" id="3_km1y7"]
+[ext_resource type="Texture2D" uid="uid://dbkn2fcnui8a4" path="res://textures/artefact_001_2.png" id="4_pj0pq"]
+[ext_resource type="Texture2D" uid="uid://bsldxclny3fyk" path="res://textures/pinkshell.png" id="5_v7ws0"]
+[ext_resource type="Texture2D" uid="uid://cnoe80sil1hsb" path="res://textures/plus.png" id="6_mon45"]
+[ext_resource type="Texture2D" uid="uid://dnduuuq27ib4c" path="res://textures/ravno.png" id="7_1w01i"]
+[ext_resource type="Texture2D" uid="uid://be3nkjullevsi" path="res://textures/done.png" id="8_f1r12"]
+
+[node name="Artifact_001_Bear" type="Node3D"]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 0, 0, 0)
+
+[node name="SpritePaper" type="Sprite3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.12, 0, 0, 0, 0.1, 0, 0.010684, 0)
+texture = ExtResource("1_gj4of")
+
+[node name="SpriteOutline" type="Sprite3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.0505838, 0.000999998)
+modulate = Color(0, 0, 0, 0.776471)
+texture = ExtResource("2_brjiv")
+
+[node name="Fragments" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.001, 0, 0.004)
+
+[node name="SpriteFragment1" type="Sprite3D" parent="Fragments"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.064, -0.0243207, 0)
+sorting_offset = 0.1
+texture = ExtResource("3_km1y7")
+
+[node name="SpriteFragment2" type="Sprite3D" parent="Fragments"]
+transform = Transform3D(0.07, 0, 0, 0, 0.07, 0, 0, 0, 0.07, 0.0512329, -0.0243207, 0)
+sorting_offset = 0.1
+texture = ExtResource("4_pj0pq")
+
+[node name="SpriteFragment3" type="Sprite3D" parent="Fragments"]
+transform = Transform3D(0.06, 0, 0, 0, 0.06, 0, 0, 0, 0.06, -0.00391475, -0.0243207, 0)
+sorting_offset = 0.1
+texture = ExtResource("5_v7ws0")
+
+[node name="Notes" type="Node3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.038, 0.005)
+
+[node name="SpriteNote1" type="Sprite3D" parent="Notes"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.280433, -0.572549, 0.03)
+sorting_offset = 0.5
+texture = ExtResource("6_mon45")
+
+[node name="SpriteNote2" type="Sprite3D" parent="Notes"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.20511, -0.572549, 0.03)
+sorting_offset = 0.5
+texture = ExtResource("6_mon45")
+
+[node name="SpriteNote3" type="Sprite3D" parent="Notes"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.00847524, -0.336751, 0.03)
+sorting_offset = 0.5
+texture = ExtResource("7_1w01i")
+
+[node name="SpriteFinalArtifact" type="Sprite3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.0509698, 0.003)
+sorting_offset = 0.5
+texture = ExtResource("2_brjiv")
+
+[node name="SpriteFinalNotes" type="Sprite3D" parent="."]
+transform = Transform3D(0.07, 0, 0, 0, 0.07, 0, 0, 0, 0.07, 0.061, 0.037, 0.005)
+sorting_offset = 1.0
+modulate = Color(0.83, 0.83, 0.83, 1)
+texture = ExtResource("8_f1r12")
