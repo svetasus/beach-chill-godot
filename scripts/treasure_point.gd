@@ -99,10 +99,26 @@ func _perform_spawn():
 			loot_instance.data_path = loot_data_path 
 			
 			print(loot_instance.display_name)
-			# 5. The "Pop" Physics
-			# Since BaseItem IS a RigidBody3D, this works perfectly
-			var pop_force = Vector3(randf_range(-2, 2), 6, randf_range(-2, 2))
-			loot_instance.apply_central_impulse(pop_force)	
+			# 5. The "Pop" Physics using Tween
+			# BaseItem is an Area3D, so we animate the pop
+			if loot_instance.has_method("sync_authority"):
+				var final_target = global_position + Vector3(randf_range(-1.5, 1.5), 0.0, randf_range(-1.5, 1.5))
+
+				# Raycast down to find floor for final target
+				var space_state = get_world_3d().direct_space_state
+				var query = PhysicsRayQueryParameters3D.create(final_target + Vector3(0, 1.0, 0), final_target + Vector3(0, -5.0, 0))
+				var result = space_state.intersect_ray(query)
+				if result:
+					final_target = result.position
+
+				# We temporarily set it as THROWN (2) with the server authority
+				loot_instance.sync_authority(1, 2, final_target, global_position + Vector3(0, 0.5, 0), 0.0, 0.6)
+
+				# Then revert to RESTING (0)
+				get_tree().create_timer(0.6).timeout.connect(func():
+					if is_instance_valid(loot_instance):
+						loot_instance.sync_authority(1, 0, Vector3.ZERO, final_target, 0.0, 0.0)
+				)
 
 			break						
 

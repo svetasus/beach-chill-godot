@@ -1078,45 +1078,13 @@ func update_ghost_preview():
 		query.exclude = [self.get_rid()]
 		var result = space_state.intersect_ray(query)
 
-		var final_pos = fallback_target
-		if result:
-			# Get the same Y-offset logic as the ground hit
-			var y_offset = 0.0
-			var min_y = 0.0
-			var found_collision = false
-			var item_inv_trans = carried_item.global_transform.affine_inverse()
-			var search_nodes = []
-			var anchor = carried_item.get_node_or_null("MeshAnchor")
-			if anchor:
-				search_nodes = anchor.find_children("*", "CollisionShape3D", true, false)
+		# Fallback Option A: Keep it in our hand visually (do not project to distance)
+		carried_item.global_transform = hand.global_transform
+		carried_item.visible = true
+		if carried_item.has_method("set_ghost_appearance"):
+			carried_item.set_ghost_appearance(false) # Make it solid in hand
 
-			for node in search_nodes:
-				if node.shape:
-					var shape_mesh = node.shape.get_debug_mesh()
-					if shape_mesh:
-						var shape_aabb = shape_mesh.get_aabb()
-						var local_trans = item_inv_trans * node.global_transform
-						var final_aabb = local_trans * shape_aabb
-						if not found_collision:
-							min_y = final_aabb.position.y
-							found_collision = true
-						else:
-							min_y = min(min_y, final_aabb.position.y)
-
-			if found_collision:
-				y_offset = -min_y
-			y_offset *= carried_item.scale.y
-
-			final_pos = result.position + Vector3(0, y_offset, 0)
-
-		carried_item.global_position = final_pos
-		carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
-
-		# Validate placement regarding tent state
-		if get_tent_for_position(final_pos) == get_tent_for_position(global_position):
-			can_place = true
-		else:
-			can_place = false
+		can_place = false
 
 	if carried_item.has_method("set_ghost_valid"):
 		carried_item.set_ghost_valid(can_place)
