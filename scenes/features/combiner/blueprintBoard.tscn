@@ -1,5 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://bro3hk4j4ervr"]
 
+[ext_resource type="Script" path="res://scripts/combiner_papers.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_817k0"]
 [ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="1_pwd80"]
 [ext_resource type="Texture2D" uid="uid://c7wkfs2j16n1j" path="res://textures/bear_statue.png" id="2_4mol3"]
@@ -22,6 +23,10 @@ size = Vector3(1.5, 1, 0.1)
 size = Vector3(1.5, 1, 0.1)
 
 [node name="BlueprintBoard" type="StaticBody3D"]
+script = ExtResource("1_script")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_o6l7b")
@@ -33,61 +38,3 @@ shape = SubResource("BoxShape3D_s1hli")
 [node name="ArtifactSlots" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.051)
 
-[node name="Artifact_001_Bear" type="Node3D" parent="ArtifactSlots"]
-transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 0, 0.163154, 0)
-
-[node name="SpritePaper" type="Sprite3D" parent="ArtifactSlots/Artifact_001_Bear"]
-transform = Transform3D(0.2, 0, 0, 0, 0.12, 0, 0, 0, 0.1, 0, 0.010684, 0)
-texture = ExtResource("1_817k0")
-
-[node name="SpriteOutline" type="Sprite3D" parent="ArtifactSlots/Artifact_001_Bear"]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.0505838, 0.000999998)
-modulate = Color(0, 0, 0, 0.776471)
-texture = ExtResource("2_4mol3")
-
-[node name="Fragments" type="Node3D" parent="ArtifactSlots/Artifact_001_Bear"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.001, 0, 0.004)
-
-[node name="SpriteFragment1" type="Sprite3D" parent="ArtifactSlots/Artifact_001_Bear/Fragments"]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.064, -0.0243207, 0)
-sorting_offset = 0.1
-texture = ExtResource("3_yfn82")
-
-[node name="SpriteFragment2" type="Sprite3D" parent="ArtifactSlots/Artifact_001_Bear/Fragments"]
-transform = Transform3D(0.07, 0, 0, 0, 0.07, 0, 0, 0, 0.07, 0.0512329, -0.0243207, 0)
-sorting_offset = 0.1
-texture = ExtResource("4_817k0")
-
-[node name="SpriteFragment3" type="Sprite3D" parent="ArtifactSlots/Artifact_001_Bear/Fragments"]
-transform = Transform3D(0.06, 0, 0, 0, 0.06, 0, 0, 0, 0.06, -0.00391475, -0.0243207, 0)
-sorting_offset = 0.1
-texture = ExtResource("5_gf522")
-
-[node name="Notes" type="Node3D" parent="ArtifactSlots/Artifact_001_Bear"]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.038, 0.005)
-
-[node name="SpriteNote1" type="Sprite3D" parent="ArtifactSlots/Artifact_001_Bear/Notes"]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.280433, -0.572549, 0.03)
-sorting_offset = 0.5
-texture = ExtResource("6_gf522")
-
-[node name="SpriteNote2" type="Sprite3D" parent="ArtifactSlots/Artifact_001_Bear/Notes"]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.20511, -0.572549, 0.03)
-sorting_offset = 0.5
-texture = ExtResource("6_gf522")
-
-[node name="SpriteNote3" type="Sprite3D" parent="ArtifactSlots/Artifact_001_Bear/Notes"]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.00847524, -0.336751, 0.03)
-sorting_offset = 0.5
-texture = ExtResource("7_s1hli")
-
-[node name="SpriteFinalArtifact" type="Sprite3D" parent="ArtifactSlots/Artifact_001_Bear"]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.0509698, 0.003)
-sorting_offset = 0.5
-texture = ExtResource("2_4mol3")
-
-[node name="SpriteFinalNotes" type="Sprite3D" parent="ArtifactSlots/Artifact_001_Bear"]
-transform = Transform3D(0.07, 0, 0, 0, 0.07, 0, 0, 0, 0.07, 0.061, 0.037, 0.005)
-sorting_offset = 1.0
-modulate = Color(0.83, 0.83, 0.83, 1)
-texture = ExtResource("8_yje2l")

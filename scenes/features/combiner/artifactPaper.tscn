@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://dnduuuq27ib4c" path="res://textures/ravno.png" id="7_1w01i"]
 [ext_resource type="Texture2D" uid="uid://be3nkjullevsi" path="res://textures/done.png" id="8_f1r12"]
 
-[node name="Artifact_001_Bear" type="Node3D"]
+[node name="artifactPaper" type="Node3D"]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 0, 0, 0)
 
 [node name="SpritePaper" type="Sprite3D" parent="."]
