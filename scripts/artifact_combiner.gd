@@ -1,6 +1,7 @@
 extends Node3D
 
-@export var recipes: Array[ArtifactData] = []
+@export var recipe_list: ArtifactRecipeList
+signal items_changed()
 @export var spawn_point: Marker3D
 @export var item_scene: PackedScene 
 @export var vfx_scene: PackedScene
@@ -21,16 +22,19 @@ func _on_detection_area_body_entered(body: Node3D) -> void:
 	
 	if body.is_in_group("interactables") and not items_in_zone.has(body):
 		items_in_zone.append(body)
+		items_changed.emit()
 		check_for_combination()
 
 func _on_detection_area_body_exited(body: Node3D) -> void:
 	if not multiplayer.is_server(): return
 	if items_in_zone.has(body):
 		items_in_zone.erase(body)
+		items_changed.emit()
 
 # --- 2. MATCHING LOGIC (THE BRAIN) ---
 
 func check_for_combination():
+
 	# Server double-check
 	if not multiplayer.is_server(): return
 	
@@ -44,7 +48,8 @@ func check_for_combination():
 		if d != null:
 			current_parts_data.append(d)
 	
-	for recipe in recipes:
+	if recipe_list == null: return
+	for recipe in recipe_list.recipes:
 		if recipe == null: continue
 		if _matches_recipe(recipe, current_parts_data):
 			_combine(recipe)
@@ -74,11 +79,13 @@ func _combine(recipe: ArtifactData):
 	
 	# Identify the specific nodes to remove
 	var used_nodes = []
+	var crafter_id = 1
 	var temp_required = recipe.required_parts.duplicate()
 	
 	for item in items_in_zone:
 		if is_instance_valid(item) and item.get("data") in temp_required:
 			used_nodes.append(item)
+			crafter_id = item.get_multiplayer_authority()
 			temp_required.erase(item.data)
 	
 	# Delete ingredients
@@ -109,8 +116,14 @@ func _combine(recipe: ArtifactData):
 	if is_instance_valid(result_node):
 		result_node.data_path = recipe.result_item.resource_path
 	
+
 	# Inject Data (Synchronizer must replicate 'data' variable!)
 	if "data" in result_node:
 		result_node.data = recipe.result_item
 		if result_node.has_method("update_from_data"):
 			result_node.update_from_data()
+
+	# Add to collection
+	var player_node = get_tree().root.find_child(str(crafter_id), true, false)
+	if player_node and player_node.has_method("add_to_collection_rpc"):
+		player_node.rpc_id(crafter_id, "add_to_collection_rpc", recipe.result_item.resource_path)

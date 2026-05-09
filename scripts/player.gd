@@ -1249,6 +1249,15 @@ func get_interaction_target():
 	return null
 
 
+
+@rpc("any_peer", "call_local")
+func add_to_collection_rpc(data_path: String):
+	if multiplayer.get_remote_sender_id() != 1 and multiplayer.get_remote_sender_id() != 0: return
+	if not is_multiplayer_authority(): return
+	var data = load(data_path)
+	if data:
+		add_to_collection(data)
+
 func add_to_collection(data: ItemData):
 	var n = data.name
 	if collection.has(n):
