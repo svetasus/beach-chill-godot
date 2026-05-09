@@ -1,15 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://bro3hk4j4ervr"]
+[gd_scene load_steps=7 format=3 uid="uid://bro3hk4j4ervr"]
 
-[ext_resource type="Script" path="res://scripts/combiner_papers.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_817k0"]
 [ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="1_pwd80"]
-[ext_resource type="Texture2D" uid="uid://c7wkfs2j16n1j" path="res://textures/bear_statue.png" id="2_4mol3"]
-[ext_resource type="Texture2D" uid="uid://b7f6mq0plwe5p" path="res://textures/artefact_001.png" id="3_yfn82"]
-[ext_resource type="Texture2D" uid="uid://dbkn2fcnui8a4" path="res://textures/artefact_001_2.png" id="4_817k0"]
-[ext_resource type="Texture2D" uid="uid://bsldxclny3fyk" path="res://textures/pinkshell.png" id="5_gf522"]
-[ext_resource type="Texture2D" uid="uid://cnoe80sil1hsb" path="res://textures/plus.png" id="6_gf522"]
-[ext_resource type="Texture2D" uid="uid://dnduuuq27ib4c" path="res://textures/ravno.png" id="7_s1hli"]
-[ext_resource type="Texture2D" uid="uid://be3nkjullevsi" path="res://textures/done.png" id="8_yje2l"]
+[ext_resource type="Script" uid="uid://bmd8k18htly2o" path="res://scripts/combiner_papers.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://20mxdo55gyoo" path="res://resources/combiner_recipes/artifact_recipes_list.tres" id="2_ooa0y"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0xxm"]
 albedo_color = Color(0.923886, 0.542366, 0.329021, 1)
@@ -24,9 +17,9 @@ size = Vector3(1.5, 1, 0.1)
 
 [node name="BlueprintBoard" type="StaticBody3D"]
 script = ExtResource("1_script")
+recipe_list = ExtResource("2_ooa0y")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_o6l7b")
@@ -37,4 +30,3 @@ shape = SubResource("BoxShape3D_s1hli")
 
 [node name="ArtifactSlots" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.051)
-

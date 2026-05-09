@@ -17,6 +17,7 @@ size = Vector3(0.2, 0.05, 0.2)
 [node name="Shell004" type="Node3D"]
 
 [node name="Model" type="Node3D" parent="."]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
 shape = SubResource("CylinderShape3D_7oq0p")

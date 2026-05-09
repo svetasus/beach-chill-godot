@@ -18,6 +18,7 @@ radius = 0.12
 [node name="Shell001" type="Node3D"]
 
 [node name="Model" type="Node3D" parent="."]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 
 [node name="pink_shell" parent="Model" instance=ExtResource("1_v5ed8")]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)

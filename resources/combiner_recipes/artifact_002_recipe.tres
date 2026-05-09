@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ArtifactData" load_steps=7 format=3 uid="uid://cltfy4e7wtlgg"]
+
+[ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/item_data.gd" id="1_sf2gs"]
+[ext_resource type="Resource" uid="uid://k81noy3tielt" path="res://resources/items/shell_001_data.tres" id="2_0q2i8"]
+[ext_resource type="Script" uid="uid://b671fh65ycwbf" path="res://scripts/artifact_data.gd" id="2_d82jg"]
+[ext_resource type="Resource" uid="uid://dqqv0qpqsbk76" path="res://resources/items/shell_002_data.tres" id="3_wmuk0"]
+[ext_resource type="Resource" uid="uid://jq3hqufu1vc6" path="res://resources/items/shell_003_data.tres" id="4_kstup"]
+[ext_resource type="Resource" uid="uid://bkpvjoexlwll8" path="res://resources/items/detector_battery_data.tres" id="5_hvhyj"]
+
+[resource]
+script = ExtResource("2_d82jg")
+result_item = ExtResource("5_hvhyj")
+required_parts = Array[ExtResource("1_sf2gs")]([ExtResource("2_0q2i8"), ExtResource("3_wmuk0"), ExtResource("4_kstup")])
+recipe_name = "Battery"
+metadata/_custom_type_script = "uid://b671fh65ycwbf"

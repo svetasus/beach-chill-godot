@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ci0lk6s1jfvc8"]
+[gd_scene load_steps=12 format=3 uid="uid://ci0lk6s1jfvc8"]
 
 [ext_resource type="Material" uid="uid://b6phied1ls275" path="res://resources/materials/artifact_001_material.tres" id="1_47rm5"]
 
@@ -14,7 +14,11 @@ height = 0.8
 material = ExtResource("1_47rm5")
 size = Vector3(0.3, 0.3, 0.4)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_puejq"]
+albedo_color = Color(0.909804, 0.835294, 0.266667, 1)
+
 [sub_resource type="SphereMesh" id="SphereMesh_bdu43"]
+material = SubResource("StandardMaterial3D_puejq")
 radius = 0.3
 height = 0.6
 
@@ -63,7 +67,6 @@ mesh = SubResource("PrismMesh_eq82x")
 
 [node name="head" type="MeshInstance3D" parent="Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66353, 0)
-material_override = ExtResource("1_47rm5")
 mesh = SubResource("SphereMesh_bdu43")
 
 [node name="eye_left" type="MeshInstance3D" parent="Model"]

@@ -2,21 +2,22 @@
 
 [ext_resource type="Script" uid="uid://dkfnbyms2yfqe" path="res://scripts/artifact_combiner.gd" id="1_f0cbo"]
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="2_3jmie"]
-[ext_resource type="Script" uid="uid://b671fh65ycwbf" path="res://scripts/artifact_data.gd" id="2_w5t2g"]
-[ext_resource type="Resource" uid="uid://cusbt0rh2tqm3" path="res://resources/combiner_recipes/artifact_001_recipe.tres" id="3_ehuat"]
+[ext_resource type="Resource" uid="uid://20mxdo55gyoo" path="res://resources/combiner_recipes/artifact_recipes_list.tres" id="2_pta84"]
+[ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="4_scym8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ehuat"]
-size = Vector3(2, 1, 1)
+size = Vector3(2.5, 1, 1.6)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_w5t2g"]
-size = Vector3(2, 0.2, 1)
+size = Vector3(2.5, 0.2, 1.6)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ehuat"]
 albedo_color = Color(0.427451, 0.239216, 0.247059, 1)
+albedo_texture = ExtResource("4_scym8")
 
 [sub_resource type="BoxMesh" id="BoxMesh_ipgce"]
 material = SubResource("StandardMaterial3D_ehuat")
-size = Vector3(2, 0.2, 1)
+size = Vector3(2.5, 0.2, 1.6)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n5n7q"]
 albedo_color = Color(0.498039, 0.294118, 0.333333, 1)
@@ -24,12 +25,12 @@ albedo_color = Color(0.498039, 0.294118, 0.333333, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_rihgq"]
 material = SubResource("StandardMaterial3D_n5n7q")
 radius = 0.05
-height = 0.6
+height = 0.4
 
 [node name="ArtifactCombiner" type="StaticBody3D" node_paths=PackedStringArray("spawn_point")]
 collision_mask = 0
 script = ExtResource("1_f0cbo")
-recipes = Array[ExtResource("2_w5t2g")]([ExtResource("3_ehuat")])
+recipe_list = ExtResource("2_pta84")
 spawn_point = NodePath("ItemSpawnPoint")
 item_scene = ExtResource("2_3jmie")
 
@@ -62,19 +63,19 @@ mesh = SubResource("BoxMesh_ipgce")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.846289, 0.470672, -0.543)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3, 0.471, -0.543)
 mesh = SubResource("CapsuleMesh_rihgq")
 
 [node name="MeshInstance3D5" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.846, 0.47111, 0.543)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3, 0.169, 0.634)
 mesh = SubResource("CapsuleMesh_rihgq")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.846, 0.47111, -0.543)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3, 0.471, -0.543)
 mesh = SubResource("CapsuleMesh_rihgq")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.846, 0.47111, 0.543)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3, 0.169, 0.634)
 mesh = SubResource("CapsuleMesh_rihgq")
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]

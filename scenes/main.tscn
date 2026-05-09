@@ -1,5 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://ct6wef0wj1t8f"]
-[ext_resource type="AudioStream" uid="uid://dxjwqmm4enrh8" path="res://sounds/ocean_background_noise.ogg" id="ambience_stream"]
+[gd_scene load_steps=17 format=3 uid="uid://ct6wef0wj1t8f"]
 
 [ext_resource type="Script" uid="uid://oofej86k011a" path="res://scripts/main.gd" id="1_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://c4wtfvlv2judr" path="res://scenes/features/multiplayerMenu.tscn" id="3_85g3d"]
@@ -16,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://cxwxxb12348" path="res://scenes/features/house/houseManager.tscn" id="18_house_manager"]
 [ext_resource type="PackedScene" uid="uid://2oj6er2ejk2" path="res://scenes/features/cart.tscn" id="20_gqmmt"]
 [ext_resource type="PackedScene" uid="uid://fye4030235q2" path="res://scenes/features/playerShop.tscn" id="20_yc10j"]
+[ext_resource type="AudioStream" uid="uid://dxjwqmm4enrh8" path="res://sounds/ocean_background_noise.ogg" id="ambience_stream"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_o6xl0")
@@ -45,7 +45,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.78402, -1.16793, -6.51708)
 visible = false
 
 [node name="CollectibleBasket" parent="World" instance=ExtResource("15_jbj1t")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.90326, 1.15666, 13.2021)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.90326, 0.492211, 1.65393)
 
 [node name="Containers" type="Node3D" parent="World"]
 
@@ -108,11 +108,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.22321, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.66695, 0.241481, -2.45948)
 
 [node name="Shop" parent="." instance=ExtResource("20_yc10j")]
-transform = Transform3D(-0.679185, 0, -0.733967, 0, 1, 0, 0.733967, 0, -0.679185, 5.8209, 2.87366, 19.0013)
-
-[connection signal="spawned" from="MultiplayerSpawners/MultiplayerSpawner_Players" to="." method="_on_multiplayer_spawner_spawned"]
+transform = Transform3D(-0.679185, 0, -0.733967, 0, 1, 0, 0.733967, 0, -0.679185, 6.19802, 1.76228, 20.5948)
 
 [node name="AmbiencePlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("ambience_stream")
 autoplay = true
 bus = &"Ambience"
+
+[connection signal="spawned" from="MultiplayerSpawners/MultiplayerSpawner_Players" to="." method="_on_multiplayer_spawner_spawned"]

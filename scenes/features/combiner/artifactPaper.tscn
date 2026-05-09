@@ -93,4 +93,3 @@ transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.038, 0.005)
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, -0.572549, 0.03)
 sorting_offset = 0.5
 texture = ExtResource("7_1w01i")
-

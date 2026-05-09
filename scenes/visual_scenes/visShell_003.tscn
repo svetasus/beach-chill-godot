@@ -24,6 +24,7 @@ height = 0.1
 [node name="Shell003" type="Node3D"]
 
 [node name="Model" type="Node3D" parent="."]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
 mesh = SubResource("CylinderMesh_umd43")

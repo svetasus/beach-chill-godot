@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ArtifactRecipeList" load_steps=5 format=3 uid="uid://20mxdo55gyoo"]
+
+[ext_resource type="Script" uid="uid://b671fh65ycwbf" path="res://scripts/artifact_data.gd" id="1_iqpxf"]
+[ext_resource type="Resource" uid="uid://cusbt0rh2tqm3" path="res://resources/combiner_recipes/artifact_001_recipe.tres" id="2_6ygap"]
+[ext_resource type="Script" uid="uid://bvsbuabkq34j8" path="res://scripts/artifact_recipe_list.gd" id="2_ssqdb"]
+[ext_resource type="Resource" uid="uid://cltfy4e7wtlgg" path="res://resources/combiner_recipes/artifact_002_recipe.tres" id="3_r7iqc"]
+
+[resource]
+script = ExtResource("2_ssqdb")
+recipes = Array[ExtResource("1_iqpxf")]([ExtResource("2_6ygap"), ExtResource("3_r7iqc")])
+metadata/_custom_type_script = "uid://bvsbuabkq34j8"
