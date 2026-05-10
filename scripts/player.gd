@@ -998,14 +998,17 @@ func update_ghost_preview():
 		var min_y = 0.0
 		var found_collision = false
 		
+		var collision_anchor = carried_item.get_node_or_null("MeshAnchor")
+		if collision_anchor:
+			collision_anchor.transform = Transform3D.IDENTITY
+
 		# Helper to process a node's AABB in the item's local space
 		var item_inv_trans = carried_item.global_transform.affine_inverse()
 		
 		# Find all CollisionShape3D nodes (recursive) under MeshAnchor
 		var search_nodes = []
-		var anchor = carried_item.get_node_or_null("MeshAnchor")
-		if anchor:
-			search_nodes = anchor.find_children("*", "CollisionShape3D", true, false)
+		if collision_anchor:
+			search_nodes = collision_anchor.find_children("*", "CollisionShape3D", true, false)
 			
 		for node in search_nodes:
 			if node.shape:
