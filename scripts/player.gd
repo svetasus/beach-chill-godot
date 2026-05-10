@@ -761,6 +761,11 @@ func throw_item():
 	inventory_slots_updated.emit(carried_items, current_slot_index)
 	item.scale = Vector3.ONE
 
+		# Reset the anchor offset so it doesn't throw from under the ground!
+		var anchor = item.get_node_or_null("MeshAnchor")
+		if anchor:
+			anchor.transform = Transform3D.IDENTITY
+
 	
 	# 1. CALCULATE DATA
 	var launch_dir = Vector3.ZERO
@@ -1067,7 +1072,8 @@ func update_ghost_preview():
 		# Fallback: If not looking at a surface, reset MeshAnchor to default
 		var anchor = carried_item.get_node_or_null("MeshAnchor")
 		if anchor:
-			anchor.transform = Transform3D.IDENTITY
+				# In first person, if we don't look at a surface, we want the ghost to snap to our hands
+				anchor.global_transform = hand.global_transform
 		can_place = true
 
 	if carried_item.has_method("set_ghost_valid"):
