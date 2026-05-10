@@ -668,9 +668,7 @@ func pick_up(item):
 		carried_item.freeze = true
 		
 		# 4. INITIAL SNAP: Put it at the proper marker immediately
-		var is_tool = false
-		if "data" in item and item.data and "is_tool" in item.data and item.data.is_tool:
-			is_tool = true
+		# is_tool is already declared at line 605
 		if is_tool:
 			carried_item.global_transform = hand.global_transform
 		else:
@@ -1001,6 +999,8 @@ func update_ghost_preview():
 		var collision_anchor = carried_item.get_node_or_null("MeshAnchor")
 		if collision_anchor:
 			collision_anchor.transform = Transform3D.IDENTITY
+			# Force transform updates so nested children get their global transforms re-computed immediately!
+			collision_anchor.force_update_transform()
 
 		# Helper to process a node's AABB in the item's local space
 		var item_inv_trans = carried_item.global_transform.affine_inverse()
