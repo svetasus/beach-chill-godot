@@ -16,6 +16,7 @@ const DIG_DIST = 1.5
 
 @onready var shapecast = $Body/Head/Camera3D/InteractionShape
 @onready var hand = $Body/Head/Camera3D/HandMarker
+@onready var head_item_marker = $Body/Head/HeadItemMarker
 @onready var action_label = $PlayerUI/ActionLabel
 @onready var hint_label = $PlayerUI/HintLabel
 @onready var placement_ray = $Body/Head/Camera3D/PlacementRay
@@ -655,30 +656,25 @@ func pick_up(item):
 		if carried_item.has_method("set_ghost_appearance") and get_held_tool() == null:
 			carried_item.set_ghost_appearance(true)
 		
-		# THE FIX: Tell the Synchronizer to stop sending position updates
-		# while we are manually controlling the transform.
-		if item.has_node("MultiplayerSynchronizer"):
-			item.get_node("MultiplayerSynchronizer").set_process(false)
-			item.get_node("MultiplayerSynchronizer").set_physics_process(false)
-			
-		
-		# 1. DISABLE SYNC: Stop the network from fighting your manual movement
+		# 1. ENABLE SYNC: Let the network sync the root transform.
 		var sync = carried_item.get_node_or_null("MultiplayerSynchronizer")
 		if sync:
-			sync.set_process(false)
-			sync.set_physics_process(false)
+			sync.set_process(true)
+			sync.set_physics_process(true)
 		
 		# 3. PHYSICS & TOP LEVEL: 
 		# Setting top_level = true means the item moves in Global Space, 
-		# not "relative" to your hand. This is essential for the Ghost Preview.
+		# not "relative" to your hand.
 		carried_item.freeze = true
 		
-		# 4. INITIAL SNAP: Put it at the hand's position immediately
-		if is_third_person:
-			carried_item.global_position = global_position + (global_transform.basis.z * -1.0) + Vector3(0, 1.0, 0)
-			carried_item.global_rotation = Vector3(0, self.global_rotation.y, 0)
-		else:
+		# 4. INITIAL SNAP: Put it at the proper marker immediately
+		var is_tool = false
+		if "data" in item and item.data and "is_tool" in item.data and item.data.is_tool:
+			is_tool = true
+		if is_tool:
 			carried_item.global_transform = hand.global_transform
+		else:
+			carried_item.global_transform = head_item_marker.global_transform
 
 	#print("SUCCESS: Picked up ", item.name)
 
@@ -716,6 +712,22 @@ func drop_item():
 	var final_pos = item.global_position
 	var final_rot = item.global_rotation.y
 	
+	var is_tool = false
+	if "data" in item and item.data and "is_tool" in item.data and item.data.is_tool:
+		is_tool = true
+
+	var anchor = item.get_node_or_null("MeshAnchor")
+	if anchor and not is_tool:
+		if is_third_person:
+			# In third person, it's just on the head. Let's drop it slightly in front.
+			final_pos = global_position + (global_transform.basis.z * -1.0) + Vector3(0, 0.5, 0)
+			final_rot = self.global_rotation.y
+		else:
+			# In first person, use the anchor's preview location, then reset the anchor
+			final_pos = anchor.global_position
+			final_rot = anchor.global_rotation.y
+		anchor.transform = Transform3D.IDENTITY
+
 	if item is RigidBody3D:
 		item.freeze = false
 		item.linear_velocity = Vector3.ZERO
@@ -907,7 +919,14 @@ func _process(_delta):
 	# Process inactive carried items to keep them out of sight but attached to player position
 	for i in range(carried_items.size()):
 		if i != current_slot_index and is_instance_valid(carried_items[i]):
-			carried_items[i].global_transform = hand.global_transform
+			var is_tool = false
+			var inactive_item = carried_items[i]
+			if "data" in inactive_item and inactive_item.data and "is_tool" in inactive_item.data and inactive_item.data.is_tool:
+				is_tool = true
+			if is_tool:
+				inactive_item.global_transform = hand.global_transform
+			else:
+				inactive_item.global_transform = head_item_marker.global_transform
 	
 	nearby_treasures = nearby_treasures.filter(func(t): return is_instance_valid(t))
 	
@@ -949,9 +968,26 @@ func update_ghost_preview():
 		carried_item.global_transform = hand.global_transform
 		return
 	
-	var active_placement_ray = placement_ray
+	# For non-tools, the physical object stays on the head so other players see it there.
+	carried_item.global_transform = head_item_marker.global_transform
+
 	if is_third_person:
-		active_placement_ray = tp_placement_ray
+		# We don't do raycast ghost in 3rd person for items, disable visual ghost mode
+		if carried_item.has_method("set_ghost_appearance"):
+			carried_item.set_ghost_appearance(false)
+		carried_item.visible = true
+
+		# Reset the anchor just in case it was offset in first person
+		var anchor = carried_item.get_node_or_null("MeshAnchor")
+		if anchor:
+			anchor.transform = Transform3D.IDENTITY
+
+		can_place = true
+		if carried_item.has_method("set_ghost_valid"):
+			carried_item.set_ghost_valid(can_place)
+		return
+
+	var active_placement_ray = placement_ray
 
 	# Use the RayCast to find the floor or other items
 	if active_placement_ray.is_colliding():
@@ -1013,11 +1049,11 @@ func update_ghost_preview():
 			if carried_item.has_method("set_ghost_appearance"):
 				carried_item.set_ghost_appearance(true)
 
-			# 2. GLIDE: Set position at hit point + feet offset
-			carried_item.global_position = hit_point + Vector3(0, y_offset, 0)
-
-			# 3. ROTATION: Keep it upright and apply scroll offset
-			carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
+			# 2. GLIDE & ROTATION: Only move the MeshAnchor visually, leave the physical rigid body on the head
+			var anchor = carried_item.get_node_or_null("MeshAnchor")
+			if anchor:
+				anchor.global_position = hit_point + Vector3(0, y_offset, 0)
+				anchor.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
 
 			# Validate placement regarding tent state
 			if get_tent_for_position(hit_point) == get_tent_for_position(global_position):
@@ -1025,13 +1061,10 @@ func update_ghost_preview():
 			else:
 				can_place = false
 	else:
-		# Fallback: If not looking at a surface, keep item in hand
-		if is_third_person:
-			# Fallback for third person, put it slightly in front of player at height 1.0
-			carried_item.global_position = global_position + (global_transform.basis.z * -1.0) + Vector3(0, 1.0, 0)
-			carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
-		else:
-			carried_item.global_transform = hand.global_transform
+		# Fallback: If not looking at a surface, reset MeshAnchor to default
+		var anchor = carried_item.get_node_or_null("MeshAnchor")
+		if anchor:
+			anchor.transform = Transform3D.IDENTITY
 		can_place = true
 
 	if carried_item.has_method("set_ghost_valid"):
