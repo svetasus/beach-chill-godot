@@ -670,9 +670,11 @@ func pick_up(item):
 		# 4. INITIAL SNAP: Put it at the proper marker immediately
 		# is_tool is already declared at line 605
 		if is_tool:
-			carried_item.global_transform = hand.global_transform
+			carried_item.global_position = hand.global_position
+			carried_item.global_basis = hand.global_basis.orthonormalized().scaled(carried_item.scale)
 		else:
-			carried_item.global_transform = head_item_marker.global_transform
+			carried_item.global_position = head_item_marker.global_position
+			carried_item.global_basis = head_item_marker.global_basis.orthonormalized().scaled(carried_item.scale)
 
 	#print("SUCCESS: Picked up ", item.name)
 
@@ -724,7 +726,9 @@ func drop_item():
 			# In first person, use the anchor's preview location, then reset the anchor
 			final_pos = anchor.global_position
 			final_rot = anchor.global_rotation.y
+		var old_scale = anchor.scale
 		anchor.transform = Transform3D.IDENTITY
+		anchor.scale = old_scale
 
 	if item is RigidBody3D:
 		item.freeze = false
@@ -764,7 +768,9 @@ func throw_item():
 	# Reset the anchor offset so it doesn't throw from under the ground!
 	var anchor = item.get_node_or_null("MeshAnchor")
 	if anchor:
+		var old_scale = anchor.scale
 		anchor.transform = Transform3D.IDENTITY
+		anchor.scale = old_scale
 	
 	# 1. CALCULATE DATA
 	var launch_dir = Vector3.ZERO
@@ -775,6 +781,7 @@ func throw_item():
 	else:
 		launch_dir = (-hand.global_transform.basis.z + Vector3(0, 0.3, 0)).normalized()
 		item.global_position = hand.global_position + (launch_dir * 0.5)
+		item.global_rotation = self.global_rotation
 
 	var final_velocity = launch_dir * THROW_FORCE
 	
@@ -926,9 +933,11 @@ func _process(_delta):
 			if "data" in inactive_item and inactive_item.data and "is_tool" in inactive_item.data and inactive_item.data.is_tool:
 				is_tool = true
 			if is_tool:
-				inactive_item.global_transform = hand.global_transform
+				inactive_item.global_position = hand.global_position
+				inactive_item.global_basis = hand.global_basis.orthonormalized().scaled(inactive_item.scale)
 			else:
-				inactive_item.global_transform = head_item_marker.global_transform
+				inactive_item.global_position = head_item_marker.global_position
+				inactive_item.global_basis = head_item_marker.global_basis.orthonormalized().scaled(inactive_item.scale)
 	
 	nearby_treasures = nearby_treasures.filter(func(t): return is_instance_valid(t))
 	
@@ -967,11 +976,13 @@ func update_ghost_preview():
 
 	# If it's a tool, keep it in hand (no ghost placement)
 	if get_held_tool() != null:
-		carried_item.global_transform = hand.global_transform
+		carried_item.global_position = hand.global_position
+		carried_item.global_basis = hand.global_basis.orthonormalized().scaled(carried_item.scale)
 		return
 	
 	# For non-tools, the physical object stays on the head so other players see it there.
-	carried_item.global_transform = head_item_marker.global_transform
+	carried_item.global_position = head_item_marker.global_position
+	carried_item.global_basis = head_item_marker.global_basis.orthonormalized().scaled(carried_item.scale)
 
 	var anchor = carried_item.get_node_or_null("MeshAnchor")
 
@@ -983,7 +994,9 @@ func update_ghost_preview():
 
 		# Reset the anchor just in case it was offset in first person
 		if anchor:
+			var old_scale = anchor.scale
 			anchor.transform = Transform3D.IDENTITY
+			anchor.scale = old_scale
 
 		can_place = true
 		if carried_item.has_method("set_ghost_valid"):
@@ -995,27 +1008,44 @@ func update_ghost_preview():
 	# 2. In First Person, the root physics object is locked to the player so other clients
 	#    see it on the head. But LOCALLY we detach the visual MeshAnchor.
 	#    Reset rotation completely so we evaluate purely from zero state
+	var old_scale = anchor.scale
 	anchor.transform = Transform3D.IDENTITY
+	anchor.scale = old_scale
 	# Apply standard preview rotation from the player
 	anchor.global_rotation.y = self.global_rotation.y + rotation_offset
 
 	var active_ray = placement_ray
 
-	# 3. Use the original MeshAnchor AABB purely to find its lowest point in local Y
-	var aabb = AABB()
-	for child in anchor.get_children():
-		if child is MeshInstance3D:
-			var transformed_aabb = child.transform * child.get_aabb()
-			if aabb.size == Vector3.ZERO:
-				aabb = transformed_aabb
-			else:
-				aabb = aabb.merge(transformed_aabb)
+		# 3. Calculate the Y-offset (distance to 'feet')
+	var min_y = 0.0
+	var found_collision = false
 
-	# The amount of "sink" we need to counteract is just the negative local bottom Y
+	# Helper to process a node's AABB in the item's local space
+	var item_inv_trans = carried_item.global_transform.affine_inverse()
+
+	# Find all CollisionShape3D nodes (recursive) under MeshAnchor
+	var search_nodes = anchor.find_children("*", "CollisionShape3D", true, false)
+
+	for node in search_nodes:
+		if node.shape:
+			var shape_mesh = node.shape.get_debug_mesh()
+			if shape_mesh:
+				var shape_aabb = shape_mesh.get_aabb()
+				# Transform AABB to item's local space
+				var local_trans = item_inv_trans * node.global_transform
+				var final_aabb = local_trans * shape_aabb
+
+				if not found_collision:
+					min_y = final_aabb.position.y
+					found_collision = true
+				else:
+					min_y = min(min_y, final_aabb.position.y)
+
 	var y_offset = 0.0
-	if aabb.size != Vector3.ZERO:
-		y_offset = -aabb.position.y
-	# Apply scale just in case
+	if found_collision:
+		y_offset = -min_y
+
+	# Apply scale just in case the parent is scaled
 	y_offset *= carried_item.scale.y
 
 	# Check if we are looking at a cart basket (via raycast OR interaction target)
@@ -1057,7 +1087,8 @@ func update_ghost_preview():
 		else:
 			can_place = true
 			# Fallback: tie it cleanly to the hands locally
-			anchor.global_transform = hand.global_transform
+			anchor.global_position = hand.global_position
+			anchor.global_basis = hand.global_basis.orthonormalized().scaled(anchor.scale)
 
 	if carried_item.has_method("set_ghost_valid"):
 		carried_item.set_ghost_valid(can_place)
