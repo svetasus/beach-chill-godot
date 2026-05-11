@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 var footstep_timer: float = 0.0
-const FOOTSTEP_INTERVAL: float = 0.5 # time between steps
+const FOOTSTEP_INTERVAL: float = 0.3 # time between steps
 
 
 
