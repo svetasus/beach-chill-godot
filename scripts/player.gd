@@ -16,6 +16,7 @@ const DIG_DIST = 1.5
 
 @onready var shapecast = $Body/Head/Camera3D/InteractionShape
 @onready var hand = $Body/Head/Camera3D/HandMarker
+@onready var head_item_marker = $Body/Head/HeadItemMarker
 @onready var action_label = $PlayerUI/ActionLabel
 @onready var hint_label = $PlayerUI/HintLabel
 @onready var placement_ray = $Body/Head/Camera3D/PlacementRay
@@ -655,30 +656,25 @@ func pick_up(item):
 		if carried_item.has_method("set_ghost_appearance") and get_held_tool() == null:
 			carried_item.set_ghost_appearance(true)
 		
-		# THE FIX: Tell the Synchronizer to stop sending position updates
-		# while we are manually controlling the transform.
-		if item.has_node("MultiplayerSynchronizer"):
-			item.get_node("MultiplayerSynchronizer").set_process(false)
-			item.get_node("MultiplayerSynchronizer").set_physics_process(false)
-			
-		
-		# 1. DISABLE SYNC: Stop the network from fighting your manual movement
+		# 1. ENABLE SYNC: Let the network sync the root transform.
 		var sync = carried_item.get_node_or_null("MultiplayerSynchronizer")
 		if sync:
-			sync.set_process(false)
-			sync.set_physics_process(false)
+			sync.set_process(true)
+			sync.set_physics_process(true)
 		
 		# 3. PHYSICS & TOP LEVEL: 
 		# Setting top_level = true means the item moves in Global Space, 
-		# not "relative" to your hand. This is essential for the Ghost Preview.
+		# not "relative" to your hand.
 		carried_item.freeze = true
 		
-		# 4. INITIAL SNAP: Put it at the hand's position immediately
-		if is_third_person:
-			carried_item.global_position = global_position + (global_transform.basis.z * -1.0) + Vector3(0, 1.0, 0)
-			carried_item.global_rotation = Vector3(0, self.global_rotation.y, 0)
+		# 4. INITIAL SNAP: Put it at the proper marker immediately
+		# is_tool is already declared at line 605
+		if is_tool:
+			carried_item.global_position = hand.global_position
+			carried_item.global_basis = hand.global_basis.orthonormalized().scaled(carried_item.scale)
 		else:
-			carried_item.global_transform = hand.global_transform
+			carried_item.global_position = head_item_marker.global_position
+			carried_item.global_basis = head_item_marker.global_basis.orthonormalized().scaled(carried_item.scale)
 
 	#print("SUCCESS: Picked up ", item.name)
 
@@ -716,6 +712,24 @@ func drop_item():
 	var final_pos = item.global_position
 	var final_rot = item.global_rotation.y
 	
+	var is_tool = false
+	if "data" in item and item.data and "is_tool" in item.data and item.data.is_tool:
+		is_tool = true
+
+	var anchor = item.get_node_or_null("MeshAnchor")
+	if anchor and not is_tool:
+		if is_third_person:
+			# In third person, it's just on the head. Let's drop it slightly in front.
+			final_pos = global_position + (global_transform.basis.z * -1.0) + Vector3(0, 0.5, 0)
+			final_rot = self.global_rotation.y
+		else:
+			# In first person, use the anchor's preview location, then reset the anchor
+			final_pos = anchor.global_position
+			final_rot = anchor.global_rotation.y
+		var old_scale = anchor.scale
+		anchor.transform = Transform3D.IDENTITY
+		anchor.scale = old_scale
+
 	if item is RigidBody3D:
 		item.freeze = false
 		item.linear_velocity = Vector3.ZERO
@@ -751,6 +765,12 @@ func throw_item():
 	inventory_slots_updated.emit(carried_items, current_slot_index)
 	item.scale = Vector3.ONE
 
+	# Reset the anchor offset so it doesn't throw from under the ground!
+	var anchor = item.get_node_or_null("MeshAnchor")
+	if anchor:
+		var old_scale = anchor.scale
+		anchor.transform = Transform3D.IDENTITY
+		anchor.scale = old_scale
 	
 	# 1. CALCULATE DATA
 	var launch_dir = Vector3.ZERO
@@ -761,6 +781,7 @@ func throw_item():
 	else:
 		launch_dir = (-hand.global_transform.basis.z + Vector3(0, 0.3, 0)).normalized()
 		item.global_position = hand.global_position + (launch_dir * 0.5)
+		item.global_rotation = self.global_rotation
 
 	var final_velocity = launch_dir * THROW_FORCE
 	
@@ -907,7 +928,16 @@ func _process(_delta):
 	# Process inactive carried items to keep them out of sight but attached to player position
 	for i in range(carried_items.size()):
 		if i != current_slot_index and is_instance_valid(carried_items[i]):
-			carried_items[i].global_transform = hand.global_transform
+			var is_tool = false
+			var inactive_item = carried_items[i]
+			if "data" in inactive_item and inactive_item.data and "is_tool" in inactive_item.data and inactive_item.data.is_tool:
+				is_tool = true
+			if is_tool:
+				inactive_item.global_position = hand.global_position
+				inactive_item.global_basis = hand.global_basis.orthonormalized().scaled(inactive_item.scale)
+			else:
+				inactive_item.global_position = head_item_marker.global_position
+				inactive_item.global_basis = head_item_marker.global_basis.orthonormalized().scaled(inactive_item.scale)
 	
 	nearby_treasures = nearby_treasures.filter(func(t): return is_instance_valid(t))
 	
@@ -943,99 +973,127 @@ func _process(_delta):
 			
 func update_ghost_preview():
 	if not carried_item: return
-	
+
 	# If it's a tool, keep it in hand (no ghost placement)
 	if get_held_tool() != null:
-		carried_item.global_transform = hand.global_transform
+		carried_item.global_position = hand.global_position
+		carried_item.global_basis = hand.global_basis.orthonormalized().scaled(carried_item.scale)
 		return
 	
-	var active_placement_ray = placement_ray
+	# For non-tools, the physical object stays on the head so other players see it there.
+	carried_item.global_position = head_item_marker.global_position
+	carried_item.global_basis = head_item_marker.global_basis.orthonormalized().scaled(carried_item.scale)
+
+	var anchor = carried_item.get_node_or_null("MeshAnchor")
+
 	if is_third_person:
-		active_placement_ray = tp_placement_ray
+		# We don't do raycast ghost in 3rd person for items, disable visual ghost mode
+		if carried_item.has_method("set_ghost_appearance"):
+			carried_item.set_ghost_appearance(false)
+		carried_item.visible = true
 
-	# Use the RayCast to find the floor or other items
-	if active_placement_ray.is_colliding():
-		var hit_point = active_placement_ray.get_collision_point()
-		
-		# 1. Calculate the Y-offset (distance to 'feet')
-		var y_offset = 0.0
-		var min_y = 0.0
-		var found_collision = false
-		
-		# Helper to process a node's AABB in the item's local space
-		var item_inv_trans = carried_item.global_transform.affine_inverse()
-		
-		# Find all CollisionShape3D nodes (recursive) under MeshAnchor
-		var search_nodes = []
-		var anchor = carried_item.get_node_or_null("MeshAnchor")
+		# Reset the anchor just in case it was offset in first person
 		if anchor:
-			search_nodes = anchor.find_children("*", "CollisionShape3D", true, false)
-			
-		for node in search_nodes:
-			if node.shape:
-				var shape_mesh = node.shape.get_debug_mesh()
-				if shape_mesh:
-					var shape_aabb = shape_mesh.get_aabb()
-					# Transform AABB to item's local space
-					var local_trans = item_inv_trans * node.global_transform
-					var final_aabb = local_trans * shape_aabb
-					
-					if not found_collision:
-						min_y = final_aabb.position.y
-						found_collision = true
-					else:
-						min_y = min(min_y, final_aabb.position.y)
-		
-		if found_collision:
-			y_offset = -min_y
-		
-		# Apply scale just in case the parent is scaled
-		y_offset *= carried_item.scale.y
-		
-		# Check if we are looking at a cart basket (via raycast OR interaction target)
-		var looking_at_cart = false
-		if active_placement_ray.get_collider() and active_placement_ray.get_collider().has_meta("is_cart_basket"):
+			var old_scale = anchor.scale
+			anchor.transform = Transform3D.IDENTITY
+			anchor.scale = old_scale
+
+		can_place = true
+		if carried_item.has_method("set_ghost_valid"):
+			carried_item.set_ghost_valid(can_place)
+		return
+
+	if not anchor: return
+
+	# 2. In First Person, the root physics object is locked to the player so other clients
+	#    see it on the head. But LOCALLY we detach the visual MeshAnchor.
+	#    Reset rotation completely so we evaluate purely from zero state
+	var old_scale = anchor.scale
+	anchor.transform = Transform3D.IDENTITY
+	anchor.scale = old_scale
+	# Apply standard preview rotation from the player
+	anchor.global_rotation.y = self.global_rotation.y + rotation_offset
+
+	var active_ray = placement_ray
+
+		# 3. Calculate the Y-offset (distance to 'feet')
+	var min_y = 0.0
+	var found_collision = false
+
+	# Helper to process a node's AABB in the item's local space
+	var item_inv_trans = carried_item.global_transform.affine_inverse()
+
+	# Find all CollisionShape3D nodes (recursive) under MeshAnchor
+	var search_nodes = anchor.find_children("*", "CollisionShape3D", true, false)
+
+	for node in search_nodes:
+		if node.shape:
+			var shape_mesh = node.shape.get_debug_mesh()
+			if shape_mesh:
+				var shape_aabb = shape_mesh.get_aabb()
+				# Transform AABB to item's local space
+				var local_trans = item_inv_trans * node.global_transform
+				var final_aabb = local_trans * shape_aabb
+
+				if not found_collision:
+					min_y = final_aabb.position.y
+					found_collision = true
+				else:
+					min_y = min(min_y, final_aabb.position.y)
+
+	var y_offset = 0.0
+	if found_collision:
+		y_offset = -min_y
+
+	# Apply scale just in case the parent is scaled
+	y_offset *= carried_item.scale.y
+
+	# Check if we are looking at a cart basket (via raycast OR interaction target)
+	var looking_at_cart = false
+	if active_ray.get_collider() and active_ray.get_collider().has_meta("is_cart_basket"):
+		looking_at_cart = true
+	else:
+		var interact_target = get_interaction_target()
+		if interact_target and interact_target.has_meta("is_cart_basket"):
 			looking_at_cart = true
-		else:
-			var interact_target = get_interaction_target()
-			if interact_target and interact_target.has_meta("is_cart_basket"):
-				looking_at_cart = true
 
-		if looking_at_cart:
-			# Hide ghost and block standard drop placement
-			if carried_item.has_method("set_ghost_appearance"):
-				carried_item.set_ghost_appearance(false)
-			carried_item.visible = false
-			can_place = false
-		else:
-			# Standard placement
-			carried_item.visible = true
-			if carried_item.has_method("set_ghost_appearance"):
-				carried_item.set_ghost_appearance(true)
+	if looking_at_cart:
+		# Hide ghost and block standard drop placement
+		if carried_item.has_method("set_ghost_appearance"):
+			carried_item.set_ghost_appearance(false)
+		carried_item.visible = false
+		can_place = false
+	else:
+		# Standard placement
+		carried_item.visible = true
+		if carried_item.has_method("set_ghost_appearance"):
+			carried_item.set_ghost_appearance(true)
 
-			# 2. GLIDE: Set position at hit point + feet offset
-			carried_item.global_position = hit_point + Vector3(0, y_offset, 0)
+		if active_ray.is_colliding():
+			can_place = true
 
-			# 3. ROTATION: Keep it upright and apply scroll offset
-			carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
+			# Validate surface angle
+			var normal = active_ray.get_collision_normal()
+			var floor_angle = normal.angle_to(Vector3.UP)
+			if floor_angle > deg_to_rad(45.0):
+				can_place = false
+
+			# Move the visual anchor exactly to the floor point, plus the intrinsic bottom offset
+			anchor.global_position = active_ray.get_collision_point() + Vector3(0, y_offset, 0)
 
 			# Validate placement regarding tent state
-			if get_tent_for_position(hit_point) == get_tent_for_position(global_position):
-				can_place = true
-			else:
+			if get_tent_for_position(active_ray.get_collision_point()) != get_tent_for_position(global_position):
 				can_place = false
-	else:
-		# Fallback: If not looking at a surface, keep item in hand
-		if is_third_person:
-			# Fallback for third person, put it slightly in front of player at height 1.0
-			carried_item.global_position = global_position + (global_transform.basis.z * -1.0) + Vector3(0, 1.0, 0)
-			carried_item.global_rotation = Vector3(0, self.global_rotation.y + rotation_offset, 0)
 		else:
-			carried_item.global_transform = hand.global_transform
-		can_place = true
+			can_place = true
+			# Fallback: tie it cleanly to the hands locally
+			anchor.global_position = hand.global_position
+			anchor.global_basis = hand.global_basis.orthonormalized().scaled(anchor.scale)
 
 	if carried_item.has_method("set_ghost_valid"):
 		carried_item.set_ghost_valid(can_place)
+
+
 	
 
 func update_action_ui():
