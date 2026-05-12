@@ -1322,6 +1322,16 @@ func add_to_collection_rpc(data_path: String):
 	if data:
 		add_to_collection(data)
 
+@rpc("any_peer", "call_local")
+func milestone_craft_rpc(data_path: String):
+	if multiplayer.get_remote_sender_id() != 1 and multiplayer.get_remote_sender_id() != 0: return
+	if not is_multiplayer_authority(): return
+	var data = load(data_path)
+	if data and data is ArtifactData:
+		var milestones_ui = $PlayerUI/MilestoneListUI
+		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
+			milestones_ui.handle_milestone_event("craft", null, data)
+
 func add_to_collection(data: ItemData):
 	var n = data.name
 	if collection.has(n):
@@ -1334,11 +1344,7 @@ func add_to_collection(data: ItemData):
 	if is_multiplayer_authority():
 		$PlayerUI/NotificationArea.display_message("Found: " + data.display_name + "!")
 
-		# Also check for artifact milestone completion (crafting)
-		if data is ArtifactData:
-			var milestones_ui = $PlayerUI/MilestoneListUI
-			if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
-				milestones_ui.handle_milestone_event("craft", null, data)
+		pass
 
 
 func toggle_milestones():
