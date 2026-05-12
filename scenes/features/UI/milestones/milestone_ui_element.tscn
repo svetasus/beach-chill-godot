@@ -1,0 +1,71 @@
+[gd_scene load_steps=2 format=3 uid="uid://milestone_ui_element"]
+
+[ext_resource type="Script" uid="uid://milestone_ui_element_script" path="res://scripts/milestones/milestone_ui_element.gd" id="1_milestone_ui"]
+
+[node name="MilestoneUIElement" type="PanelContainer"]
+custom_minimum_size = Vector2(350, 100)
+offset_right = 350.0
+offset_bottom = 100.0
+mouse_default_cursor_shape = 2
+script = ExtResource("1_milestone_ui")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="IconRect" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DescVBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="HeaderHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/DescVBox"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/HBoxContainer/DescVBox/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "Milestone Title"
+autowrap_mode = 2
+
+[node name="PinButton" type="Button" parent="MarginContainer/HBoxContainer/DescVBox/HeaderHBox"]
+layout_mode = 2
+mouse_filter = 1
+text = "Pin"
+
+[node name="DescLabel" type="Label" parent="MarginContainer/HBoxContainer/DescVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+text = "Milestone Description"
+autowrap_mode = 2
+
+[node name="CountLabel" type="Label" parent="MarginContainer/HBoxContainer/DescVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 18
+text = "0 / 1"
+
+[node name="RewardLabel" type="Label" parent="MarginContainer/HBoxContainer/DescVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+theme_override_font_sizes/font_size = 16
+text = "Reward: Something"
