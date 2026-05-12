@@ -2,6 +2,7 @@ extends Resource
 class_name TaskData
 
 @export var description: String = "Task description"
+@export var icon: Texture2D
 @export_enum("gather", "sell") var action: String = "gather"
 @export var any_item: bool = false
 

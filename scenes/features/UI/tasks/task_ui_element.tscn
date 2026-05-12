@@ -17,33 +17,45 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="MainHBox" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="HeaderHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="TaskIcon" type="TextureRect" parent="MarginContainer/MainHBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="HeaderHBox" type="HBoxContainer" parent="MarginContainer/MainHBox/VBoxContainer"]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="DescLabel" type="Label" parent="MarginContainer/VBoxContainer/HeaderHBox"]
+[node name="DescLabel" type="Label" parent="MarginContainer/MainHBox/VBoxContainer/HeaderHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 20
 text = "Task Description"
 autowrap_mode = 2
 
-[node name="PinButton" type="Button" parent="MarginContainer/VBoxContainer/HeaderHBox"]
+[node name="PinButton" type="Button" parent="MarginContainer/MainHBox/VBoxContainer/HeaderHBox"]
 layout_mode = 2
 mouse_filter = 1
 text = "Pin"
 
-[node name="CountLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="CountLabel" type="Label" parent="MarginContainer/MainHBox/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_font_sizes/font_size = 18
 text = "0 / 3"
 
-[node name="RewardLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="RewardLabel" type="Label" parent="MarginContainer/MainHBox/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
 theme_override_font_sizes/font_size = 18
