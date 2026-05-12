@@ -7,10 +7,11 @@ var task_data: TaskData
 var task_state: TaskState
 var is_main_gui: bool = false
 
-@onready var desc_label = $MarginContainer/VBoxContainer/HeaderHBox/DescLabel
-@onready var pin_button = $MarginContainer/VBoxContainer/HeaderHBox/PinButton
-@onready var count_label = $MarginContainer/VBoxContainer/CountLabel
-@onready var reward_label = $MarginContainer/VBoxContainer/RewardLabel
+@onready var task_icon = $MarginContainer/MainHBox/TaskIcon
+@onready var desc_label = $MarginContainer/MainHBox/VBoxContainer/HeaderHBox/DescLabel
+@onready var pin_button = $MarginContainer/MainHBox/VBoxContainer/HeaderHBox/PinButton
+@onready var count_label = $MarginContainer/MainHBox/VBoxContainer/CountLabel
+@onready var reward_label = $MarginContainer/MainHBox/VBoxContainer/RewardLabel
 
 # Standard styling
 var normal_style = StyleBoxFlat.new()
@@ -73,6 +74,12 @@ func setup(data: TaskData, state: TaskState):
 		desc_label.text = action_str + " " + str(task_data.target_count) + " " + item_str
 
 	reward_label.text = "Reward: $" + str(task_data.reward_money)
+
+	if task_data.icon:
+		task_icon.texture = task_data.icon
+		task_icon.show()
+	else:
+		task_icon.hide()
 
 	update_ui()
 
