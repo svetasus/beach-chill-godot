@@ -97,8 +97,8 @@ func update_board_rpc(matched_recipe_paths: Array):
 					local_player = p
 					break # Needs to be the local client player
 			var has_crafted = false
-			if local_player and "collection" in local_player:
-				if local_player.collection.has(recipe.result_item.name):
+			if local_player and "artifacts_crafted" in local_player:
+				if local_player.artifacts_crafted.has(recipe.result_item.name):
 					has_crafted = true
 
 			if has_crafted:

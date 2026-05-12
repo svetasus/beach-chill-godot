@@ -31,18 +31,15 @@ func refresh_ui(data: Dictionary):
 	for child in item_list.get_children():
 		child.queue_free()
 	
-	for name in data.keys():
-		var slot_data = data[name]
+	var active_data = {}
+	if current_tab == "Artifacts" and data.has("artifacts"):
+		active_data = data["artifacts"]
+	elif current_tab == "Items" and data.has("items"):
+		active_data = data["items"]
+
+	for name in active_data.keys():
+		var slot_data = active_data[name]
 		var item_data = slot_data["resource"]
-
-		var is_artifact = false
-		if "item_value_type" in item_data:
-			is_artifact = (item_data.item_value_type == ItemData.ItemValueType.ARTIFACT)
-
-		if current_tab == "Artifacts" and not is_artifact:
-			continue
-		elif current_tab == "Items" and is_artifact:
-			continue
 
 		var new_slot = slot_prefab.instantiate()
 		item_list.add_child(new_slot)
@@ -53,11 +50,16 @@ func refresh_ui(data: Dictionary):
 			icon_rect.texture = slot_data["resource"].item_icon
 		
 		# 2. Set the Count Label
-		new_slot.get_node("Count").text = "x" + str(slot_data["count"])
+		var count_label = new_slot.get_node("Count")
+		count_label.text = "x" + str(slot_data["count"])
+		count_label.hide()
 		
 		# 3. Add a tooltip
 		new_slot.tooltip_text = name
 		
-		var name_label = new_slot.get_node_or_null("display_name")
+		var name_label = new_slot.get_node_or_null("Name")
 		if name_label:
-			name_label.text = name
+			if "display_name" in slot_data["resource"]:
+				name_label.text = slot_data["resource"].display_name
+			else:
+				name_label.text = name

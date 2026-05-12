@@ -103,6 +103,8 @@ var current_water_surface_height: float = 0.0
 
 # Stores item names and their counts: {"Pink Shell": 3, "Old Coin": 1}
 var collection = {}
+var items_held = {}
+var artifacts_crafted = {}
 
 var money: int = 0
 
@@ -384,7 +386,7 @@ func _input(event):
 	# If I click the screen, grab the mouse again
 	if event is InputEventMouseButton and event.pressed:
 		if is_multiplayer_authority():
-			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/InventoryUI != null and $PlayerUI/InventoryUI.visible) or ($PlayerUI/TaskListUI != null and $PlayerUI/TaskListUI.visible)
+			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible) or ($PlayerUI/TaskListUI != null and $PlayerUI/TaskListUI.visible)
 			if not is_ui_open:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -409,7 +411,7 @@ func _input(event):
 			switch_slot(3)
 
 	if event.is_action_pressed("inventory"):
-		toggle_inventory()
+		toggle_collection()
 	
 	if event.is_action_pressed("interact"): # You define "interact" in Input Map (e.g., 'E' key)
 		if not is_multiplayer_authority(): return
@@ -633,6 +635,14 @@ func pick_up(item):
 					placement_ray.add_exception(item)
 					if "data" in item and item.data != null:
 						emit_task_event("gather", item.data)
+						var is_artifact = false
+						if "item_value_type" in item.data:
+							is_artifact = (item.data.item_value_type == ItemData.ItemValueType.ARTIFACT)
+						if not is_artifact:
+							var n = item.data.name
+							if not items_held.has(n):
+								items_held[n] = {"resource": item.data, "count": 1}
+								collection_updated.emit({"items": items_held, "artifacts": artifacts_crafted})
 
 					if "is_autospawned" in item:
 						item.is_autospawned = false
@@ -648,6 +658,16 @@ func pick_up(item):
 		placement_ray.add_exception(item)
 		if "data" in item and item.data != null:
 			emit_task_event("gather", item.data)
+
+			var is_artifact = false
+			if "item_value_type" in item.data:
+				is_artifact = (item.data.item_value_type == ItemData.ItemValueType.ARTIFACT)
+
+			if not is_artifact:
+				var n = item.data.name
+				if not items_held.has(n):
+					items_held[n] = {"resource": item.data, "count": 1}
+					collection_updated.emit({"items": items_held, "artifacts": artifacts_crafted})
 		
 		# If it's a naturally spawned item, mark it as claimed by a player so it gets saved
 		if "is_autospawned" in carried_item:
@@ -1316,6 +1336,19 @@ func add_to_collection_rpc(data_path: String):
 	if data:
 		add_to_collection(data)
 
+@rpc("any_peer", "call_local")
+func add_to_artifacts_crafted_rpc(data_path: String):
+	if multiplayer.get_remote_sender_id() != 1 and multiplayer.get_remote_sender_id() != 0: return
+	if not is_multiplayer_authority(): return
+	var data = load(data_path)
+	if data:
+		var n = data.name
+		if artifacts_crafted.has(n):
+			artifacts_crafted[n]["count"] += 1
+		else:
+			artifacts_crafted[n] = {"resource": data, "count": 1}
+		collection_updated.emit({"items": items_held, "artifacts": artifacts_crafted})
+
 func add_to_collection(data: ItemData):
 	var n = data.name
 	if collection.has(n):
@@ -1338,16 +1371,16 @@ func toggle_tasks():
 	tasks_ui.visible = !tasks_ui.visible
 
 	if tasks_ui.visible:
-		var inv_ui = $PlayerUI/InventoryUI
+		var inv_ui = $PlayerUI/CollectionUI
 		if inv_ui: inv_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-func toggle_inventory():
+func toggle_collection():
 	if not is_multiplayer_authority(): return
 	
-	var inv_ui = $PlayerUI/InventoryUI 
+	var inv_ui = $PlayerUI/CollectionUI
 	inv_ui.visible = !inv_ui.visible
 	
 	if inv_ui.visible:
@@ -1355,7 +1388,7 @@ func toggle_inventory():
 		if tasks_ui: tasks_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		# FORCE A REFRESH SO IT'S NOT EMPTY
-		inv_ui.refresh_ui(collection) 
+		inv_ui.refresh_ui({"items": items_held, "artifacts": artifacts_crafted})
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 

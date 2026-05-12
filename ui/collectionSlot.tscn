@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cbcwb7nuw340m"]
 
-[node name="InventorySlot" type="Panel"]
+[node name="CollectionSlot" type="Panel"]
 custom_minimum_size = Vector2(140, 140)
 
 [node name="Icon" type="TextureRect" parent="."]
