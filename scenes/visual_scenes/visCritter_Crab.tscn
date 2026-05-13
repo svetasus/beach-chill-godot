@@ -1,4 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://viscrittercrab"]
+[gd_scene load_steps=12 format=3 uid="uid://dwgvscujppyb2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_506y3"]
+size = Vector3(0.5, 0.3, 0.4)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_crab"]
 albedo_color = Color(0.8, 0.2, 0.2, 1)
@@ -7,8 +10,89 @@ albedo_color = Color(0.8, 0.2, 0.2, 1)
 material = SubResource("StandardMaterial3D_crab")
 size = Vector3(0.5, 0.3, 0.4)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_506y3"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_3uhua"]
+material = SubResource("StandardMaterial3D_506y3")
+top_radius = 0.03
+bottom_radius = 0.03
+height = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7uu6i"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_roggp"]
+material = SubResource("StandardMaterial3D_7uu6i")
+top_radius = 0.03
+bottom_radius = 0.03
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mk7jc"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_y84ol"]
+material = SubResource("StandardMaterial3D_mk7jc")
+top_radius = 0.03
+bottom_radius = 0.03
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gklx4"]
+albedo_color = Color(1, 0.0313726, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_m4f2s"]
+material = SubResource("StandardMaterial3D_gklx4")
+top_radius = 0.08
+bottom_radius = 0.08
+height = 0.1
+
 [node name="visCritter_Crab" type="Node3D"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Model" type="Node3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.152448, 0)
+shape = SubResource("BoxShape3D_506y3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
 mesh = SubResource("BoxMesh_crab")
+skeleton = NodePath("../..")
+
+[node name="Eye1" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.126625, 0.207313, 0.0662435)
+mesh = SubResource("CylinderMesh_3uhua")
+
+[node name="Eye2" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.127, 0.207, 0.066)
+mesh = SubResource("CylinderMesh_3uhua")
+
+[node name="Arms" type="Node3D" parent="Model"]
+
+[node name="Elbow1" type="MeshInstance3D" parent="Model/Arms"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.319982, 0.137289, 0)
+mesh = SubResource("CylinderMesh_roggp")
+skeleton = NodePath("../..")
+
+[node name="Elbow2" type="MeshInstance3D" parent="Model/Arms"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.32, 0.137, 0)
+mesh = SubResource("CylinderMesh_roggp")
+skeleton = NodePath("../..")
+
+[node name="Arm1" type="MeshInstance3D" parent="Model/Arms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.414644, 0.216994, 0)
+mesh = SubResource("CylinderMesh_y84ol")
+skeleton = NodePath("../..")
+
+[node name="Arm2" type="MeshInstance3D" parent="Model/Arms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.415, 0.217, 0)
+mesh = SubResource("CylinderMesh_y84ol")
+skeleton = NodePath("../..")
+
+[node name="Palm1" type="MeshInstance3D" parent="Model/Arms"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.418133, 0.313012, 0)
+mesh = SubResource("CylinderMesh_m4f2s")
+
+[node name="Palm2" type="MeshInstance3D" parent="Model/Arms"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.418, 0.313, 0)
+mesh = SubResource("CylinderMesh_m4f2s")
