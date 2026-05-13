@@ -47,12 +47,12 @@ func _setup_hints():
 
 		var key_label = Label.new()
 		key_label.text = key_string
-		key_label.add_theme_font_size_override("font_size", 16)
+		key_label.add_theme_font_size_override("font_size", 32)
 		panel.add_child(key_label)
 
 		var desc_label = Label.new()
 		desc_label.text = description
-		desc_label.add_theme_font_size_override("font_size", 16)
+		desc_label.add_theme_font_size_override("font_size", 32)
 		desc_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
 		desc_label.add_theme_constant_override("outline_size", 4)
 
