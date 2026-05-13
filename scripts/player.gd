@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 var footstep_timer: float = 0.0
-const FOOTSTEP_INTERVAL: float = 0.5 # time between steps
+const FOOTSTEP_INTERVAL: float = 0.3 # time between steps
 
 
 
@@ -181,6 +181,9 @@ func _ready():
 		var tasks_ui = $PlayerUI/TaskListUI
 		if tasks_ui and tasks_ui.has_method("load_tasks"):
 			tasks_ui.load_tasks()
+		var milestones_ui = $PlayerUI/MilestoneListUI
+		if milestones_ui and milestones_ui.has_method("load_milestones"):
+			milestones_ui.load_milestones()
 		
 	else:
 		# THIS IS SOMEONE ELSE: Turn off their camera on my screen
@@ -386,7 +389,7 @@ func _input(event):
 	# If I click the screen, grab the mouse again
 	if event is InputEventMouseButton and event.pressed:
 		if is_multiplayer_authority():
-			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible) or ($PlayerUI/TaskListUI != null and $PlayerUI/TaskListUI.visible)
+			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible) or ($PlayerUI/TaskListUI != null and $PlayerUI/TaskListUI.visible) or ($PlayerUI/MilestoneListUI != null and $PlayerUI/MilestoneListUI.visible)
 			if not is_ui_open:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -399,6 +402,9 @@ func _input(event):
 	
 	if event is InputEventKey and event.pressed and event.keycode == KEY_J and not is_typing:
 		toggle_tasks()
+
+	if event is InputEventKey and event.pressed and event.keycode == KEY_U and not is_typing:
+		toggle_milestones()
 
 	if event is InputEventKey and event.pressed and not is_typing:
 		if event.keycode == KEY_1:
@@ -1348,6 +1354,14 @@ func add_to_artifacts_crafted_rpc(data_path: String):
 		else:
 			artifacts_crafted[n] = {"resource": data, "count": 1}
 		collection_updated.emit({"items": items_held, "artifacts": artifacts_crafted})
+func milestone_craft_rpc(data_path: String):
+	if multiplayer.get_remote_sender_id() != 1 and multiplayer.get_remote_sender_id() != 0: return
+	if not is_multiplayer_authority(): return
+	var data = load(data_path)
+	if data and data is ArtifactData:
+		var milestones_ui = $PlayerUI/MilestoneListUI
+		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
+			milestones_ui.handle_milestone_event("craft", null, data)
 
 func add_to_collection(data: ItemData):
 	var n = data.name
@@ -1361,6 +1375,25 @@ func add_to_collection(data: ItemData):
 	if is_multiplayer_authority():
 		$PlayerUI/NotificationArea.display_message("Found: " + data.display_name + "!")
 
+		pass
+
+
+func toggle_milestones():
+	if not is_multiplayer_authority(): return
+
+	var milestones_ui = $PlayerUI/MilestoneListUI
+	if not milestones_ui: return
+
+	milestones_ui.visible = !milestones_ui.visible
+
+	if milestones_ui.visible:
+		var inv_ui = $PlayerUI/InventoryUI
+		if inv_ui: inv_ui.visible = false
+		var tasks_ui = $PlayerUI/TaskListUI
+		if tasks_ui: tasks_ui.visible = false
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	else:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func toggle_tasks():
 	if not is_multiplayer_authority(): return
@@ -1373,6 +1406,8 @@ func toggle_tasks():
 	if tasks_ui.visible:
 		var inv_ui = $PlayerUI/CollectionUI
 		if inv_ui: inv_ui.visible = false
+		var milestones_ui = $PlayerUI/MilestoneListUI
+		if milestones_ui: milestones_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -1386,6 +1421,8 @@ func toggle_collection():
 	if inv_ui.visible:
 		var tasks_ui = $PlayerUI/TaskListUI
 		if tasks_ui: tasks_ui.visible = false
+		var milestones_ui = $PlayerUI/MilestoneListUI
+		if milestones_ui: milestones_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		# FORCE A REFRESH SO IT'S NOT EMPTY
 		inv_ui.refresh_ui({"items": items_held, "artifacts": artifacts_crafted})
@@ -1492,6 +1529,10 @@ func emit_task_event(action: String, item_data_or_path):
 		var tasks_ui = $PlayerUI/TaskListUI
 		if tasks_ui and tasks_ui.has_method("handle_task_event"):
 			tasks_ui.handle_task_event(action, item_data)
+
+		var milestones_ui = $PlayerUI/MilestoneListUI
+		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
+			milestones_ui.handle_milestone_event(action, item_data)
 
 func update_money_ui():
 

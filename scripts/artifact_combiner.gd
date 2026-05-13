@@ -127,3 +127,7 @@ func _combine(recipe: ArtifactData):
 	var player_node = get_tree().root.find_child(str(crafter_id), true, false)
 	if player_node and player_node.has_method("add_to_artifacts_crafted_rpc"):
 		player_node.rpc_id(crafter_id, "add_to_artifacts_crafted_rpc", recipe.result_item.resource_path)
+	if player_node and player_node.has_method("add_to_collection_rpc"):
+		player_node.rpc_id(crafter_id, "add_to_collection_rpc", recipe.result_item.resource_path)
+		if player_node.has_method("milestone_craft_rpc"):
+			player_node.rpc_id(crafter_id, "milestone_craft_rpc", recipe.resource_path)

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MilestoneData" load_steps=4 format=3 uid="uid://ccymgno15rqj8"]
+
+[ext_resource type="Texture2D" uid="uid://ee8c7fo13mh7" path="res://textures/battery_icon.png" id="1_10mtt"]
+[ext_resource type="Script" uid="uid://bgue0sfbadrh6" path="res://scripts/milestones/milestone_data.gd" id="2_it083"]
+[ext_resource type="Resource" uid="uid://cltfy4e7wtlgg" path="res://resources/combiner_recipes/artifact_002_recipe.tres" id="3_v7p14"]
+
+[resource]
+script = ExtResource("2_it083")
+id = "2"
+title = "Milestone Title"
+description = "Milestone Description"
+reward_description = "Reward details"
+icon = ExtResource("1_10mtt")
+action = "craft"
+any_item = false
+item_type = 0
+specific_artifact = ExtResource("3_v7p14")
+target_count = 1
+grid_position = Vector2i(0, 3)
+prerequisites = Array[String](["1"])
+metadata/_custom_type_script = "uid://bgue0sfbadrh6"
