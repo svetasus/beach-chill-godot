@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://milestone_ui_element"]
+[gd_scene load_steps=2 format=3 uid="uid://cwpfrcxhgv2gf"]
 
-[ext_resource type="Script" uid="uid://milestone_ui_element_script" path="res://scripts/milestones/milestone_ui_element.gd" id="1_milestone_ui"]
+[ext_resource type="Script" uid="uid://bp038vy41e80c" path="res://scripts/milestones/milestone_ui_element.gd" id="1_milestone_ui"]
 
 [node name="MilestoneUIElement" type="PanelContainer"]
 custom_minimum_size = Vector2(350, 100)

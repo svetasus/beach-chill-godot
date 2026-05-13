@@ -1,7 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://milestone_list_ui"]
+[gd_scene load_steps=6 format=3 uid="uid://br1tax2c554el"]
 
-[ext_resource type="Script" uid="uid://milestone_list_ui_script" path="res://scripts/milestones/milestone_list_ui.gd" id="1_milestone_list_ui"]
-[ext_resource type="PackedScene" uid="uid://milestone_ui_element" path="res://scenes/features/UI/milestones/milestone_ui_element.tscn" id="2_milestone_ui_element"]
+[ext_resource type="Script" uid="uid://82xh4tj4d4nm" path="res://scripts/milestones/milestone_list_ui.gd" id="1_milestone_list_ui"]
+[ext_resource type="PackedScene" uid="uid://cwpfrcxhgv2gf" path="res://scenes/features/UI/milestones/milestone_ui_element.tscn" id="2_milestone_ui_element"]
+[ext_resource type="Script" uid="uid://bgue0sfbadrh6" path="res://scripts/milestones/milestone_data.gd" id="3_2eten"]
+[ext_resource type="Resource" uid="uid://msbppdrnq6f1" path="res://resources/milestones/milestone_01.tres" id="4_qq6hf"]
+[ext_resource type="Resource" uid="uid://ccymgno15rqj8" path="res://resources/milestones/milestone_02.tres" id="5_qq6hf"]
 
 [node name="MilestoneListUI" type="Control"]
 layout_mode = 3
@@ -13,6 +16,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_milestone_list_ui")
 milestone_prefab = ExtResource("2_milestone_ui_element")
+all_milestones = Array[ExtResource("3_2eten")]([ExtResource("4_qq6hf"), ExtResource("5_qq6hf")])
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
