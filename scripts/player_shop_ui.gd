@@ -4,7 +4,7 @@ extends Control
 var target_shop: Node3D
 var player_node: Node3D
 
-var slot_prefab: PackedScene = preload("res://ui/inventorySlot.tscn")
+var slot_prefab: PackedScene = preload("res://ui/collectionSlot.tscn")
 
 func setup(shop: Node3D, player: Node3D):
 	target_shop = shop
