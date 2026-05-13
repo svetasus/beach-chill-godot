@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CritterData" load_steps=3 format=3 uid="uid://crabdata"]
+
+[ext_resource type="Script" uid="uid://hd3h01ag3a2l" path="res://scripts/critter_data.gd" id="1_crabdata"]
+[ext_resource type="PackedScene" uid="uid://dwgvscujppyb2" path="res://scenes/visual_scenes/visCritter_Crab.tscn" id="2_crabscene"]
+
+[resource]
+script = ExtResource("1_crabdata")
+move_speed = 1.5
+move_time = 2.0
+pause_time = 1.5
+name = "crab"
+display_name = "Crab"
+particle_color = Color(1, 1, 1, 1)
+scene = ExtResource("2_crabscene")
+mass = 1.0
+collision_size = Vector3(0.5, 0.3, 0.4)
+is_tool = false
+is_collectible = true
+is_furniture = false
+item_value_type = 0
