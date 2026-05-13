@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://b4v64l3u3emau"]
+[gd_scene load_steps=33 format=3 uid="uid://b4v64l3u3emau"]
 
 [ext_resource type="Script" uid="uid://bop6eska7b3tl" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/task_data.gd" id="2_task_data"]
@@ -15,6 +15,7 @@
 [ext_resource type="Resource" uid="uid://8j6h17wm1eik" path="res://resources/tasks/task3.tres" id="13_task3"]
 [ext_resource type="PackedScene" uid="uid://chvj7t3x3a3f5" path="res://scenes/features/UI/inventoryHUD.tscn" id="14_invhud"]
 [ext_resource type="AudioStream" uid="uid://1fqev85lufm7" path="res://sounds/interact_sound.ogg" id="17_dpg8g"]
+[ext_resource type="PackedScene" uid="uid://br1tax2c554el" path="res://scenes/features/UI/milestones/milestone_list_ui.tscn" id="18_milestonelist"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
 albedo_color = Color(0.731745, 0.926235, 0.904053, 1)
@@ -294,9 +295,20 @@ offset_bottom = -394.0
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="MainMilestonesContainer" type="HBoxContainer" parent="PlayerUI"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 60.0
+offset_bottom = 160.0
+grow_horizontal = 2
+mouse_filter = 2
+alignment = 1
+
 [node name="TaskListUI" parent="PlayerUI" instance=ExtResource("7_tasklist")]
 task_prefab = ExtResource("8_taskelem")
 default_tasks = Array[ExtResource("2_task_data")]([ExtResource("10_task1"), ExtResource("11_task2"), ExtResource("13_task3"), ExtResource("9_f4yut"), ExtResource("12_vlnj5")])
+
+[node name="MilestoneListUI" parent="PlayerUI" instance=ExtResource("18_milestonelist")]
 
 [node name="ZoneDetector" type="Area3D" parent="."]
 collision_layer = 0
