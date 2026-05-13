@@ -393,17 +393,17 @@ func _input(event):
 			if not is_ui_open:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
-	if event is InputEventKey and event.pressed and event.keycode == KEY_V:
+	if event.is_action_pressed("toggle_camera"):
 		is_third_person = !is_third_person
 		_apply_camera_mode()
 
 	if event.is_action_pressed("jump") and not is_typing:
 		jump_queued = true
 	
-	if event is InputEventKey and event.pressed and event.keycode == KEY_J and not is_typing:
+	if event.is_action_pressed("toggle_tasks") and not is_typing:
 		toggle_tasks()
 
-	if event is InputEventKey and event.pressed and event.keycode == KEY_U and not is_typing:
+	if event.is_action_pressed("toggle_milestones") and not is_typing:
 		toggle_milestones()
 
 	if event is InputEventKey and event.pressed and not is_typing:
