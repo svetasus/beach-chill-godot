@@ -32,6 +32,11 @@ var locked_to_cart: Node3D = null
 var cart_offset: Vector3 = Vector3.ZERO
 var rotation_offset: Basis
 
+# --- CRITTER LOGIC ---
+var _critter_state_timer: float = 0.0
+var _critter_is_moving: bool = true
+var _critter_move_direction: Vector3 = Vector3.RIGHT
+
 # --- 2. AUTHORITY & PHYSICS ---
 var is_ghost_valid: bool = true
 
@@ -124,6 +129,11 @@ func _apply_physics_state(should_freeze: bool, impulse: Vector3, pos: Vector3, r
 
 
 func _ready():
+	# Randomize critter starting state
+	_critter_is_moving = randf() > 0.5
+	if data is CritterData:
+		_critter_state_timer = randf() * (data.move_time if _critter_is_moving else data.pause_time)
+
 	# Ensuring the label starts with the correct text
 	if has_node("NamePivot/Name"):
 		$NamePivot/Name.text = display_name
@@ -284,6 +294,25 @@ var _support_original_positions: Dictionary = {}
 
 func _physics_process(delta):
 	if not is_multiplayer_authority(): return
+
+	if data is CritterData and not freeze and not is_ghost_mode and abs(linear_velocity.y) < 0.1:
+		sleeping = false # Force wake up while on the ground so the timer keeps ticking
+		_critter_state_timer -= delta
+		if _critter_is_moving:
+			if _critter_state_timer <= 0:
+				_critter_is_moving = false
+				_critter_state_timer = data.pause_time
+				_critter_move_direction = -_critter_move_direction
+			else:
+				linear_velocity.x = _critter_move_direction.x * data.move_speed
+				linear_velocity.z = _critter_move_direction.z * data.move_speed
+		else:
+			if _critter_state_timer <= 0:
+				_critter_is_moving = true
+				_critter_state_timer = data.move_time
+			else:
+				linear_velocity.x = move_toward(linear_velocity.x, 0, data.move_speed * delta * 5.0)
+				linear_velocity.z = move_toward(linear_velocity.z, 0, data.move_speed * delta * 5.0)
 
 	# Wake up logic
 	if freeze and _frozen_by_jitter:
