@@ -72,36 +72,36 @@ func update_tab_styles():
 	if artifacts_btn:
 		artifacts_btn.add_theme_font_size_override("font_size", 32)
 		if current_tab == "Artifacts":
-			artifacts_btn.add_theme_stylebox_override("normal", active_style)
-			artifacts_btn.add_theme_stylebox_override("hover", active_style)
-			artifacts_btn.add_theme_stylebox_override("pressed", active_style)
-			artifacts_btn.add_theme_color_override("font_color", text_color)
-			artifacts_btn.add_theme_color_override("font_hover_color", text_color)
-			artifacts_btn.add_theme_color_override("font_pressed_color", text_color)
-		else:
 			artifacts_btn.add_theme_stylebox_override("normal", inactive_style)
 			artifacts_btn.add_theme_stylebox_override("hover", inactive_style)
 			artifacts_btn.add_theme_stylebox_override("pressed", inactive_style)
 			artifacts_btn.add_theme_color_override("font_color", inactive_text_color)
 			artifacts_btn.add_theme_color_override("font_hover_color", inactive_text_color)
 			artifacts_btn.add_theme_color_override("font_pressed_color", inactive_text_color)
+		else:
+			artifacts_btn.add_theme_stylebox_override("normal", active_style)
+			artifacts_btn.add_theme_stylebox_override("hover", active_style)
+			artifacts_btn.add_theme_stylebox_override("pressed", active_style)
+			artifacts_btn.add_theme_color_override("font_color", text_color)
+			artifacts_btn.add_theme_color_override("font_hover_color", text_color)
+			artifacts_btn.add_theme_color_override("font_pressed_color", text_color)
 
 	if items_btn:
 		items_btn.add_theme_font_size_override("font_size", 32)
 		if current_tab == "Items":
-			items_btn.add_theme_stylebox_override("normal", active_style)
-			items_btn.add_theme_stylebox_override("hover", active_style)
-			items_btn.add_theme_stylebox_override("pressed", active_style)
-			items_btn.add_theme_color_override("font_color", text_color)
-			items_btn.add_theme_color_override("font_hover_color", text_color)
-			items_btn.add_theme_color_override("font_pressed_color", text_color)
-		else:
 			items_btn.add_theme_stylebox_override("normal", inactive_style)
 			items_btn.add_theme_stylebox_override("hover", inactive_style)
 			items_btn.add_theme_stylebox_override("pressed", inactive_style)
 			items_btn.add_theme_color_override("font_color", inactive_text_color)
 			items_btn.add_theme_color_override("font_hover_color", inactive_text_color)
 			items_btn.add_theme_color_override("font_pressed_color", inactive_text_color)
+		else:
+			items_btn.add_theme_stylebox_override("normal", active_style)
+			items_btn.add_theme_stylebox_override("hover", active_style)
+			items_btn.add_theme_stylebox_override("pressed", active_style)
+			items_btn.add_theme_color_override("font_color", text_color)
+			items_btn.add_theme_color_override("font_hover_color", text_color)
+			items_btn.add_theme_color_override("font_pressed_color", text_color)
 
 func set_tab(tab_name: String):
 	current_tab = tab_name
