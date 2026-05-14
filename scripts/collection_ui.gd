@@ -124,6 +124,22 @@ func refresh_ui(data: Dictionary):
 	elif current_tab == "Items" and data.has("items"):
 		active_data = data["items"]
 
+	if active_data.is_empty():
+		var empty_label = Label.new()
+		if current_tab == "Artifacts":
+			empty_label.text = "No artifacts. Craft an artifact to add it to the collection."
+		else:
+			empty_label.text = "No items. Pick up an item to add it to the collection."
+
+		empty_label.add_theme_font_size_override("font_size", 24)
+		empty_label.add_theme_color_override("font_color", Color(0.2, 0.2, 0.2, 1.0))
+		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		empty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		empty_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		item_list.add_child(empty_label)
+		return
+
 	for name in active_data.keys():
 		var slot_data = active_data[name]
 		var item_data = slot_data["resource"]
