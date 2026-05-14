@@ -6,8 +6,14 @@ extends Control
 var current_data: Dictionary = {}
 var current_tab: String = "Artifacts" # "Artifacts" or "Items"
 
+var active_style: StyleBoxFlat
+var inactive_style: StyleBoxFlat
+var window_style: StyleBoxFlat
+
 func _ready():
 	self.hide()
+
+	_setup_styles()
 
 	var artifacts_btn = get_node_or_null("PanelContainer/VBoxContainer/TabContainer/ArtifactsTab")
 	var items_btn = get_node_or_null("PanelContainer/VBoxContainer/TabContainer/ItemsTab")
@@ -17,8 +23,89 @@ func _ready():
 	if items_btn:
 		items_btn.pressed.connect(func(): set_tab("Items"))
 
+	update_tab_styles()
+
+func _setup_styles():
+	var light_grey = Color(0.8, 0.8, 0.8, 1.0)
+	var dark_grey = Color(0.5, 0.5, 0.5, 1.0)
+	var text_color = Color(0.1, 0.1, 0.1, 1.0)
+	var inactive_text_color = Color(0.9, 0.9, 0.9, 1.0)
+
+	window_style = StyleBoxFlat.new()
+	window_style.bg_color = light_grey
+	window_style.set_corner_radius_all(8)
+	window_style.content_margin_left = 20
+	window_style.content_margin_right = 20
+	window_style.content_margin_top = 20
+	window_style.content_margin_bottom = 20
+
+	var panel = get_node_or_null("PanelContainer")
+	if panel:
+		panel.add_theme_stylebox_override("panel", window_style)
+
+	active_style = StyleBoxFlat.new()
+	active_style.bg_color = light_grey
+	active_style.set_corner_radius_all(8)
+	# Make it visually connect to the panel container below it
+	active_style.corner_radius_bottom_left = 0
+	active_style.corner_radius_bottom_right = 0
+	active_style.content_margin_left = 30
+	active_style.content_margin_right = 30
+	active_style.content_margin_top = 15
+	active_style.content_margin_bottom = 15
+
+	inactive_style = StyleBoxFlat.new()
+	inactive_style.bg_color = dark_grey
+	inactive_style.set_corner_radius_all(8)
+	inactive_style.content_margin_left = 30
+	inactive_style.content_margin_right = 30
+	inactive_style.content_margin_top = 15
+	inactive_style.content_margin_bottom = 15
+
+func update_tab_styles():
+	var artifacts_btn = get_node_or_null("PanelContainer/VBoxContainer/TabContainer/ArtifactsTab")
+	var items_btn = get_node_or_null("PanelContainer/VBoxContainer/TabContainer/ItemsTab")
+
+	var text_color = Color(0.1, 0.1, 0.1, 1.0)
+	var inactive_text_color = Color(0.9, 0.9, 0.9, 1.0)
+
+	if artifacts_btn:
+		artifacts_btn.add_theme_font_size_override("font_size", 32)
+		if current_tab == "Artifacts":
+			artifacts_btn.add_theme_stylebox_override("normal", inactive_style)
+			artifacts_btn.add_theme_stylebox_override("hover", inactive_style)
+			artifacts_btn.add_theme_stylebox_override("pressed", inactive_style)
+			artifacts_btn.add_theme_color_override("font_color", inactive_text_color)
+			artifacts_btn.add_theme_color_override("font_hover_color", inactive_text_color)
+			artifacts_btn.add_theme_color_override("font_pressed_color", inactive_text_color)
+		else:
+			artifacts_btn.add_theme_stylebox_override("normal", active_style)
+			artifacts_btn.add_theme_stylebox_override("hover", active_style)
+			artifacts_btn.add_theme_stylebox_override("pressed", active_style)
+			artifacts_btn.add_theme_color_override("font_color", text_color)
+			artifacts_btn.add_theme_color_override("font_hover_color", text_color)
+			artifacts_btn.add_theme_color_override("font_pressed_color", text_color)
+
+	if items_btn:
+		items_btn.add_theme_font_size_override("font_size", 32)
+		if current_tab == "Items":
+			items_btn.add_theme_stylebox_override("normal", inactive_style)
+			items_btn.add_theme_stylebox_override("hover", inactive_style)
+			items_btn.add_theme_stylebox_override("pressed", inactive_style)
+			items_btn.add_theme_color_override("font_color", inactive_text_color)
+			items_btn.add_theme_color_override("font_hover_color", inactive_text_color)
+			items_btn.add_theme_color_override("font_pressed_color", inactive_text_color)
+		else:
+			items_btn.add_theme_stylebox_override("normal", active_style)
+			items_btn.add_theme_stylebox_override("hover", active_style)
+			items_btn.add_theme_stylebox_override("pressed", active_style)
+			items_btn.add_theme_color_override("font_color", text_color)
+			items_btn.add_theme_color_override("font_hover_color", text_color)
+			items_btn.add_theme_color_override("font_pressed_color", text_color)
+
 func set_tab(tab_name: String):
 	current_tab = tab_name
+	update_tab_styles()
 	refresh_ui(current_data)
 
 func refresh_ui(data: Dictionary):
@@ -36,6 +123,22 @@ func refresh_ui(data: Dictionary):
 		active_data = data["artifacts"]
 	elif current_tab == "Items" and data.has("items"):
 		active_data = data["items"]
+
+	if active_data.is_empty():
+		var empty_label = Label.new()
+		if current_tab == "Artifacts":
+			empty_label.text = "No artifacts. Craft an artifact to add it to the collection."
+		else:
+			empty_label.text = "No items. Pick up an item to add it to the collection."
+
+		empty_label.add_theme_font_size_override("font_size", 24)
+		empty_label.add_theme_color_override("font_color", Color(0.2, 0.2, 0.2, 1.0))
+		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		empty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		empty_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		item_list.add_child(empty_label)
+		return
 
 	for name in active_data.keys():
 		var slot_data = active_data[name]

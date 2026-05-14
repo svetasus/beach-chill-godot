@@ -383,8 +383,11 @@ func _input(event):
 	
 	
 	# If I press Escape, give me my mouse back!
-	if event.is_action_pressed("ui_cancel") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED: # 'ui_cancel' is usually the Esc key
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	if event.is_action_pressed("ui_cancel"): # 'ui_cancel' is usually the Esc key
+		if $PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible:
+			toggle_collection()
+		elif Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
 	# If I click the screen, grab the mouse again
 	if event is InputEventMouseButton and event.pressed:
