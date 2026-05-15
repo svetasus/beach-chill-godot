@@ -41,6 +41,16 @@ const DIG_DIST = 1.5
 @export var is_sitting: bool = false
 @export var is_running: bool = false
 
+@export var worn_hat_path: String = ""
+@export var worn_top_path: String = ""
+@export var worn_pants_path: String = ""
+@export var worn_glasses_path: String = ""
+
+var _worn_hat_node: Node3D = null
+var _worn_top_node: Node3D = null
+var _worn_pants_node: Node3D = null
+var _worn_glasses_node: Node3D = null
+
 var rotation_offset: float = 0.0
 @export var rotation_speed: float = 0.5 # How fast it rotates with scroll
 
@@ -158,6 +168,7 @@ func _ready():
 	$Nickname.text = name
 	
 	_update_sit_visuals(is_sitting)
+	_update_all_clothing_visuals()
 	
 	# RE-EVALUATE authority after the name change
 	if name.is_valid_int():
@@ -207,6 +218,7 @@ func _ready():
 		await get_tree().create_timer(0.1).timeout
 		apply_eye_color(eye_color)
 		_update_sit_visuals(is_sitting)
+		_update_all_clothing_visuals()
 		
 	# Connect the 'Catch' signal
 	$Body/Head/Camera3D/CatchZone.body_entered.connect(_on_catch_zone_body_entered)
@@ -466,7 +478,10 @@ func _input(event):
 					#	print("Too far to dig, doing nothing (prevents accidental drop)")
 					# ONLY drop if we aren't trying to use a tool on a valid target
 					else:
-						drop_item()
+						if carried_item is Item and carried_item.data and carried_item.data is ClothingData:
+							wear_clothing(carried_item)
+						else:
+							drop_item()
 			else:
 				var tool = get_held_tool()
 
@@ -478,7 +493,10 @@ func _input(event):
 				#	print("Too far to dig, doing nothing (prevents accidental drop)")
 				# ONLY drop if we aren't trying to use a tool on a valid target
 				else:
-					drop_item()
+					if carried_item is Item and carried_item.data and carried_item.data is ClothingData:
+						wear_clothing(carried_item)
+					else:
+						drop_item()
 		
 		
 	if event.is_action_pressed("rotate_item_right"):
@@ -1214,7 +1232,10 @@ func update_action_ui():
 					highlight_target = current_treasure
 				else:
 					if can_place:
-						target_text = "[E] Drop " + carried_item.display_name + "\n[Q] Throw " + carried_item.display_name
+						if carried_item is Item and carried_item.data and carried_item.data is ClothingData:
+							target_text = "[E] Wear " + carried_item.display_name + "\n[Q] Throw " + carried_item.display_name
+						else:
+							target_text = "[E] Drop " + carried_item.display_name + "\n[Q] Throw " + carried_item.display_name
 					else:
 						target_text = "You can't place it here"
 		else:
@@ -1224,7 +1245,10 @@ func update_action_ui():
 				highlight_target = current_treasure
 			else:
 				if can_place:
-					target_text = "[E] Drop " + carried_item.display_name + "\n[Q] Throw " + carried_item.display_name
+					if carried_item is Item and carried_item.data and carried_item.data is ClothingData:
+						target_text = "[E] Wear " + carried_item.display_name + "\n[Q] Throw " + carried_item.display_name
+					else:
+						target_text = "[E] Drop " + carried_item.display_name + "\n[Q] Throw " + carried_item.display_name
 				else:
 					target_text = "You can't place it here"
 
@@ -1296,6 +1320,136 @@ func _update_run_visuals(running: bool):
 		if state_run: state_run.hide()
 		if state_stand and not is_sitting and not (water_areas_count > 0 and not is_on_floor()):
 			state_stand.show()
+
+func _update_all_clothing_visuals():
+	_apply_clothing_visual(ClothingData.ClothingType.HAT, worn_hat_path)
+	_apply_clothing_visual(ClothingData.ClothingType.TOP, worn_top_path)
+	_apply_clothing_visual(ClothingData.ClothingType.PANTS, worn_pants_path)
+	_apply_clothing_visual(ClothingData.ClothingType.GLASSES, worn_glasses_path)
+
+func _apply_clothing_visual(type: int, resource_path: String):
+	var marker = null
+	var old_node = null
+
+	if type == ClothingData.ClothingType.HAT:
+		marker = $Body/Head/HatMarker
+		old_node = _worn_hat_node
+	elif type == ClothingData.ClothingType.TOP:
+		marker = $Body/TopMarker
+		old_node = _worn_top_node
+	elif type == ClothingData.ClothingType.PANTS:
+		marker = $Body/PantsMarker
+		old_node = _worn_pants_node
+	elif type == ClothingData.ClothingType.GLASSES:
+		marker = $Body/Head/GlassesMarker
+		old_node = _worn_glasses_node
+
+	if old_node:
+		old_node.queue_free()
+
+	var new_node = null
+	if resource_path != "":
+		var data = load(resource_path) as ClothingData
+		if data and data.worn_scene:
+			new_node = data.worn_scene.instantiate()
+			marker.add_child(new_node)
+			if type == ClothingData.ClothingType.GLASSES and is_multiplayer_authority():
+				var filter = get_node_or_null("PlayerUI/VisionFilter")
+				if filter:
+					filter.color = data.vision_color
+
+	# If unequipping glasses, reset filter
+	if type == ClothingData.ClothingType.GLASSES and resource_path == "" and is_multiplayer_authority():
+		var filter = get_node_or_null("PlayerUI/VisionFilter")
+		if filter:
+			filter.color = Color(1, 1, 1, 0)
+
+	if type == ClothingData.ClothingType.HAT:
+		_worn_hat_node = new_node
+	elif type == ClothingData.ClothingType.TOP:
+		_worn_top_node = new_node
+	elif type == ClothingData.ClothingType.PANTS:
+		_worn_pants_node = new_node
+	elif type == ClothingData.ClothingType.GLASSES:
+		_worn_glasses_node = new_node
+
+func wear_clothing(item: Item):
+	if not item or not item.data or not (item.data is ClothingData): return
+
+	var c_data = item.data as ClothingData
+	var old_path = ""
+
+	if c_data.clothing_type == ClothingData.ClothingType.HAT:
+		old_path = worn_hat_path
+	elif c_data.clothing_type == ClothingData.ClothingType.TOP:
+		old_path = worn_top_path
+	elif c_data.clothing_type == ClothingData.ClothingType.PANTS:
+		old_path = worn_pants_path
+	elif c_data.clothing_type == ClothingData.ClothingType.GLASSES:
+		old_path = worn_glasses_path
+
+	var target_resource_path = c_data.resource_path
+
+	# If there was old clothing, spawn it
+	if old_path != "":
+		_rpc_spawn_clothing.rpc_id(1, old_path, global_position)
+
+	# Consume the item
+	# Locally clear hand
+	var current_item = carried_item
+
+	if is_instance_valid(carried_item):
+		if carried_item.has_method("set_ghost_appearance"):
+			carried_item.set_ghost_appearance(false)
+
+	carried_item = null
+	carried_items[current_slot_index] = null
+	inventory_slots_updated.emit(carried_items, current_slot_index)
+
+	# Delete the item we were holding from the world
+	if current_item:
+		current_item.sync_authority.rpc(1, false, Vector3.ZERO, Vector3.ZERO, 0)
+		_rpc_destroy_item.rpc_id(1, current_item.get_path())
+
+	rpc_sync_clothing.rpc(c_data.clothing_type, target_resource_path)
+
+@rpc("any_peer", "call_local", "reliable")
+func _rpc_spawn_clothing(resource_path: String, pos: Vector3):
+	if multiplayer.get_unique_id() != 1: return
+	var data = load(resource_path) as ItemData
+	if data and data.scene:
+		var item_instance = data.scene.instantiate()
+		item_instance.name = "DroppedClothing_" + str(Time.get_ticks_usec())
+
+		var container = get_node_or_null(Global.ITEMS_CONTAINER_PATH)
+		if not container:
+			container = get_tree().root.get_node_or_null(Global.ITEMS_CONTAINER_PATH)
+		if container:
+			container.add_child(item_instance, true)
+		else:
+			get_tree().root.add_child(item_instance, true)
+
+		item_instance.global_position = pos + Vector3(0, 1, 0)
+
+@rpc("any_peer", "call_local", "reliable")
+func _rpc_destroy_item(item_path: NodePath):
+	if multiplayer.get_unique_id() != 1: return
+	var node = get_node_or_null(item_path)
+	if node:
+		node.queue_free()
+
+@rpc("call_local", "reliable")
+func rpc_sync_clothing(type: int, resource_path: String):
+	if type == ClothingData.ClothingType.HAT:
+		worn_hat_path = resource_path
+	elif type == ClothingData.ClothingType.TOP:
+		worn_top_path = resource_path
+	elif type == ClothingData.ClothingType.PANTS:
+		worn_pants_path = resource_path
+	elif type == ClothingData.ClothingType.GLASSES:
+		worn_glasses_path = resource_path
+
+	_apply_clothing_visual(type, resource_path)
 
 @rpc("call_local", "reliable")
 func _update_sit_visuals(is_sitting: bool):
