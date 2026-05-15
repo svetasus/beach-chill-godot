@@ -201,4 +201,3 @@ func load_tasks():
 					task_states[id] = state
 			file.close()
 	init_tasks()
-

@@ -45,7 +45,7 @@ func _setup_styles():
 		panel.add_theme_stylebox_override("panel", window_style)
 
 	active_style = StyleBoxFlat.new()
-	active_style.bg_color = light_grey
+	active_style.bg_color = dark_grey
 	active_style.set_corner_radius_all(8)
 	active_style.corner_radius_bottom_left = 0
 	active_style.corner_radius_bottom_right = 0
@@ -55,7 +55,7 @@ func _setup_styles():
 	active_style.content_margin_bottom = 15
 
 	inactive_style = StyleBoxFlat.new()
-	inactive_style.bg_color = dark_grey
+	inactive_style.bg_color = light_grey
 	inactive_style.set_corner_radius_all(8)
 	inactive_style.content_margin_left = 30
 	inactive_style.content_margin_right = 30
@@ -71,7 +71,7 @@ func update_tab_styles():
 
 	if tasks_btn:
 		tasks_btn.add_theme_font_size_override("font_size", 32)
-		if current_tab != "Tasks":
+		if current_tab == "Tasks":
 			tasks_btn.add_theme_stylebox_override("normal", active_style)
 			tasks_btn.add_theme_stylebox_override("hover", active_style)
 			tasks_btn.add_theme_stylebox_override("pressed", active_style)
@@ -88,7 +88,7 @@ func update_tab_styles():
 
 	if milestones_btn:
 		milestones_btn.add_theme_font_size_override("font_size", 32)
-		if current_tab != "Milestones":
+		if current_tab == "Milestones":
 			milestones_btn.add_theme_stylebox_override("normal", active_style)
 			milestones_btn.add_theme_stylebox_override("hover", active_style)
 			milestones_btn.add_theme_stylebox_override("pressed", active_style)
@@ -112,9 +112,9 @@ func refresh_ui():
 	if not tasks_ui: tasks_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/TaskListUI")
 	if not milestones_ui: milestones_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI")
 
-	if current_tab != "Tasks":
+	if current_tab == "Tasks":
 		if tasks_ui: tasks_ui.show()
 		if milestones_ui: milestones_ui.hide()
-	elif current_tab != "Milestones":
+	elif current_tab == "Milestones":
 		if tasks_ui: tasks_ui.hide()
 		if milestones_ui: milestones_ui.show()

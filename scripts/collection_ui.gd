@@ -44,7 +44,7 @@ func _setup_styles():
 		panel.add_theme_stylebox_override("panel", window_style)
 
 	active_style = StyleBoxFlat.new()
-	active_style.bg_color = light_grey
+	active_style.bg_color = dark_grey
 	active_style.set_corner_radius_all(8)
 	# Make it visually connect to the panel container below it
 	active_style.corner_radius_bottom_left = 0
@@ -55,7 +55,7 @@ func _setup_styles():
 	active_style.content_margin_bottom = 15
 
 	inactive_style = StyleBoxFlat.new()
-	inactive_style.bg_color = dark_grey
+	inactive_style.bg_color = light_grey
 	inactive_style.set_corner_radius_all(8)
 	inactive_style.content_margin_left = 30
 	inactive_style.content_margin_right = 30
@@ -71,7 +71,7 @@ func update_tab_styles():
 
 	if artifacts_btn:
 		artifacts_btn.add_theme_font_size_override("font_size", 32)
-		if current_tab != "Artifacts":
+		if current_tab == "Artifacts":
 			artifacts_btn.add_theme_stylebox_override("normal", inactive_style)
 			artifacts_btn.add_theme_stylebox_override("hover", inactive_style)
 			artifacts_btn.add_theme_stylebox_override("pressed", inactive_style)
@@ -88,7 +88,7 @@ func update_tab_styles():
 
 	if items_btn:
 		items_btn.add_theme_font_size_override("font_size", 32)
-		if current_tab != "Items":
+		if current_tab == "Items":
 			items_btn.add_theme_stylebox_override("normal", inactive_style)
 			items_btn.add_theme_stylebox_override("hover", inactive_style)
 			items_btn.add_theme_stylebox_override("pressed", inactive_style)
