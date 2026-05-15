@@ -265,7 +265,8 @@ text = "Items"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ItemList" type="HBoxContainer" parent="PlayerUI/CollectionUI/PanelContainer/VBoxContainer/ScrollContainer"]
+[node name="ItemList" type="HFlowContainer" parent="PlayerUI/CollectionUI/PanelContainer/VBoxContainer/ScrollContainer"]
+size_flags_horizontal = 3
 layout_mode = 2
 
 [node name="MoneyLabel" type="Label" parent="PlayerUI"]
