@@ -1214,7 +1214,7 @@ func update_action_ui():
 					highlight_target = current_treasure
 				else:
 					if can_place:
-						target_text = "[E] Drop " + carried_item.display_name
+						target_text = "[E] Drop " + carried_item.display_name + "\n[Q] Throw " + carried_item.display_name
 					else:
 						target_text = "You can't place it here"
 		else:
@@ -1224,7 +1224,7 @@ func update_action_ui():
 				highlight_target = current_treasure
 			else:
 				if can_place:
-					target_text = "[E] Drop " + carried_item.display_name
+					target_text = "[E] Drop " + carried_item.display_name + "\n[Q] Throw " + carried_item.display_name
 				else:
 					target_text = "You can't place it here"
 
