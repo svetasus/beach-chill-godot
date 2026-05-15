@@ -6,13 +6,15 @@ var active_style: StyleBoxFlat
 var inactive_style: StyleBoxFlat
 var window_style: StyleBoxFlat
 
-@onready var tasks_ui = $PanelContainer/VBoxContainer/ContentContainer/TaskListUI
-@onready var milestones_ui = $PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI
+var tasks_ui
+var milestones_ui
 
 func _ready():
 	self.hide()
-	tasks_ui.hide()
-	milestones_ui.hide()
+	tasks_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/TaskListUI")
+	milestones_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI")
+	if tasks_ui: tasks_ui.hide()
+	if milestones_ui: milestones_ui.hide()
 
 	_setup_styles()
 
@@ -107,6 +109,9 @@ func set_tab(tab_name: String):
 	refresh_ui()
 
 func refresh_ui():
+	if not tasks_ui: tasks_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/TaskListUI")
+	if not milestones_ui: milestones_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI")
+
 	if current_tab == "Tasks":
 		if tasks_ui: tasks_ui.show()
 		if milestones_ui: milestones_ui.hide()
