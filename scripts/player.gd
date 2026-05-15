@@ -217,6 +217,7 @@ func enter_water(surface_height: float):
 	current_water_surface_height = max(current_water_surface_height, surface_height)
 	if state_swim: state_swim.show()
 	if state_stand: state_stand.hide()
+	if state_run: state_run.hide()
 
 func exit_water():
 	water_areas_count -= 1
@@ -1285,18 +1286,18 @@ func leave_furniture():
 
 @rpc("call_local", "reliable")
 func _update_run_visuals(running: bool):
-	if is_sitting or is_swimming:
-		return
-
 	if running:
 		if state_run: state_run.show()
 		if state_stand: state_stand.hide()
 	else:
 		if state_run: state_run.hide()
-		if state_stand: state_stand.show()
+		if state_stand and not is_sitting and not (water_areas_count > 0 and not is_on_floor()):
+			state_stand.show()
+
 @rpc("call_local", "reliable")
 func _update_sit_visuals(is_sitting: bool):
 	if is_sitting:
+		if state_run: state_run.hide()
 		if state_sit: state_sit.show()
 		if state_stand: state_stand.hide()
 		if state_swim: state_swim.hide()
