@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SpawnProfile" load_steps=9 format=3 uid="uid://b6fkh3ijbv1h3"]
+[gd_resource type="Resource" script_class="SpawnProfile" load_steps=10 format=3 uid="uid://b6fkh3ijbv1h3"]
 
 [ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/data/item_data.gd" id="1_h5ge1"]
 [ext_resource type="Script" uid="uid://dfbpk62v1a2m3" path="res://scripts/data/spawn_profile.gd" id="2_pnpe1"]
@@ -8,8 +8,9 @@
 [ext_resource type="Resource" uid="uid://gmupw1edgnua" path="res://resources/items/shell_004_data.tres" id="5_puftn"]
 [ext_resource type="Resource" uid="uid://crabdata" path="res://resources/items/critters/crab_data.tres" id="6_7rvup"]
 [ext_resource type="Resource" uid="uid://bcd1b" path="res://resources/combiner_recipes/scrolls/recipe_scroll_artifact_002.tres" id="7_k5jvp"]
+[ext_resource type="Resource" uid="uid://cyul0ltebyn3n" path="res://resources/items/hat_01_data.tres" id="8_4vkm8"]
 
 [resource]
 script = ExtResource("2_pnpe1")
-items = Array[ExtResource("1_h5ge1")]([ExtResource("2_vivbw"), ExtResource("3_3wviy"), ExtResource("4_8f75y"), ExtResource("5_puftn"), ExtResource("6_7rvup"), ExtResource("7_k5jvp")])
+items = Array[ExtResource("1_h5ge1")]([ExtResource("2_vivbw"), ExtResource("3_3wviy"), ExtResource("4_8f75y"), ExtResource("5_puftn"), ExtResource("6_7rvup"), ExtResource("7_k5jvp"), ExtResource("8_4vkm8")])
 metadata/_custom_type_script = "uid://dfbpk62v1a2m3"
