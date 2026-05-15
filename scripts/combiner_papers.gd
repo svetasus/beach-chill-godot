@@ -96,41 +96,56 @@ func update_board_rpc(matched_recipe_paths: Array):
 				if p.is_multiplayer_authority():
 					local_player = p
 					break # Needs to be the local client player
+
+			var is_unlocked = false
+			if local_player and "recipes_unlocked" in local_player:
+				is_unlocked = local_player.recipes_unlocked.has(recipe.resource_path)
+
 			var has_crafted = false
 			if local_player and "artifacts_crafted" in local_player:
 				if local_player.artifacts_crafted.has(recipe.result_item.name):
 					has_crafted = true
 
-			if has_crafted:
-				sprite_final.visible = true
-				sprite_final_notes.visible = true
-				sprite_outline.visible = false
-			else:
+			# If the recipe is not unlocked, show just the silhouette
+			if not is_unlocked:
 				sprite_final.visible = false
 				sprite_final_notes.visible = false
 				sprite_outline.visible = true
+				sprite_outline.modulate = Color(0, 0, 0, 0.77) # completely dark outline
+				if layout_2: layout_2.visible = false
+				if layout_3: layout_3.visible = false
+			else:
+				# It is unlocked, check if it was crafted or not
+				if has_crafted:
+					sprite_final.visible = true
+					sprite_final_notes.visible = true
+					sprite_outline.visible = false
+				else:
+					sprite_final.visible = false
+					sprite_final_notes.visible = false
+					sprite_outline.visible = true
 
-			# Determine which layout to show based on parts size
-			var active_layout = null
-			if recipe.required_parts.size() == 2 and layout_2:
-				layout_2.visible = true
-				active_layout = layout_2
-			elif recipe.required_parts.size() >= 3 and layout_3:
-				layout_3.visible = true
-				active_layout = layout_3
-			elif layout_3:
-				# fallback to 3 parts if missing layout_2
-				layout_3.visible = true
-				active_layout = layout_3
+				# Determine which layout to show based on parts size
+				var active_layout = null
+				if recipe.required_parts.size() == 2 and layout_2:
+					layout_2.visible = true
+					active_layout = layout_2
+				elif recipe.required_parts.size() >= 3 and layout_3:
+					layout_3.visible = true
+					active_layout = layout_3
+				elif layout_3:
+					# fallback to 3 parts if missing layout_2
+					layout_3.visible = true
+					active_layout = layout_3
 
-			if active_layout:
-				var sprite_frag1 = active_layout.get_node_or_null("Fragments/SpriteFragment1")
-				var sprite_frag2 = active_layout.get_node_or_null("Fragments/SpriteFragment2")
-				var sprite_frag3 = active_layout.get_node_or_null("Fragments/SpriteFragment3")
+				if active_layout:
+					var sprite_frag1 = active_layout.get_node_or_null("Fragments/SpriteFragment1")
+					var sprite_frag2 = active_layout.get_node_or_null("Fragments/SpriteFragment2")
+					var sprite_frag3 = active_layout.get_node_or_null("Fragments/SpriteFragment3")
 
-				if sprite_frag1 and recipe.required_parts.size() > 0 and recipe.required_parts[0] and recipe.required_parts[0].item_icon:
-					sprite_frag1.texture = recipe.required_parts[0].item_icon
-				if sprite_frag2 and recipe.required_parts.size() > 1 and recipe.required_parts[1] and recipe.required_parts[1].item_icon:
-					sprite_frag2.texture = recipe.required_parts[1].item_icon
-				if sprite_frag3 and recipe.required_parts.size() > 2 and recipe.required_parts[2] and recipe.required_parts[2].item_icon:
-					sprite_frag3.texture = recipe.required_parts[2].item_icon
+					if sprite_frag1 and recipe.required_parts.size() > 0 and recipe.required_parts[0] and recipe.required_parts[0].item_icon:
+						sprite_frag1.texture = recipe.required_parts[0].item_icon
+					if sprite_frag2 and recipe.required_parts.size() > 1 and recipe.required_parts[1] and recipe.required_parts[1].item_icon:
+						sprite_frag2.texture = recipe.required_parts[1].item_icon
+					if sprite_frag3 and recipe.required_parts.size() > 2 and recipe.required_parts[2] and recipe.required_parts[2].item_icon:
+						sprite_frag3.texture = recipe.required_parts[2].item_icon
