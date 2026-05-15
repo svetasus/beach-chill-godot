@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1yoi30tu8dy4"
-path="res://.godot/imported/blueshell.png-8b0f6d291d0c1f19a6bbf23c24a689d9.ctex"
+uid="uid://b8a0sdpf6ok0"
+path="res://.godot/imported/shovel_icon.png-498e7915b5a4578c8f9ff0a0d682d7af.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/blueshell.png"
-dest_files=["res://.godot/imported/blueshell.png-8b0f6d291d0c1f19a6bbf23c24a689d9.ctex"]
+source_file="res://textures/icons/shovel_icon.png"
+dest_files=["res://.godot/imported/shovel_icon.png-498e7915b5a4578c8f9ff0a0d682d7af.ctex"]
 
 [params]
 

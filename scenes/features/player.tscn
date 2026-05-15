@@ -1,9 +1,9 @@
 [gd_scene load_steps=26 format=3 uid="uid://b4v64l3u3emau"]
 
 [ext_resource type="Script" uid="uid://bop6eska7b3tl" path="res://scripts/player.gd" id="1_3vyb7"]
-[ext_resource type="Script" uid="uid://dj5bfal8jddbw" path="res://scripts/collection_ui.gd" id="3_g2els"]
+[ext_resource type="Script" uid="uid://dj5bfal8jddbw" path="res://scripts/ui/collection_ui.gd" id="3_g2els"]
 [ext_resource type="PackedScene" uid="uid://cbcwb7nuw340m" path="res://ui/collectionSlot.tscn" id="4_qhqgy"]
-[ext_resource type="Script" uid="uid://ck2hp6el2v8jf" path="res://scripts/notification_area.gd" id="5_qlg0r"]
+[ext_resource type="Script" uid="uid://ck2hp6el2v8jf" path="res://scripts/ui/notification_area.gd" id="5_qlg0r"]
 [ext_resource type="PackedScene" uid="uid://c1yiyhtvd41gy" path="res://scenes/features/UI/userNotifPop.tscn" id="6_tuyoq"]
 [ext_resource type="PackedScene" uid="uid://chvj7t3x3a3f5" path="res://scenes/features/UI/inventoryHUD.tscn" id="14_invhud"]
 [ext_resource type="AudioStream" uid="uid://1fqev85lufm7" path="res://sounds/interact_sound.ogg" id="17_dpg8g"]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cy84sh4vgxkjx"
-path="res://.godot/imported/turqshell.png-3c4b5dd18df09cc9a52443fbea926171.ctex"
+uid="uid://ee8c7fo13mh7"
+path="res://.godot/imported/battery_icon.png-35dcd152b46b0d6b7b3c11e89b4a3a5b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/turqshell.png"
-dest_files=["res://.godot/imported/turqshell.png-3c4b5dd18df09cc9a52443fbea926171.ctex"]
+source_file="res://textures/icons/battery_icon.png"
+dest_files=["res://.godot/imported/battery_icon.png-35dcd152b46b0d6b7b3c11e89b4a3a5b.ctex"]
 
 [params]
 

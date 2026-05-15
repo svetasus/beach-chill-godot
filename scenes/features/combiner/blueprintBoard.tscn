@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://bro3hk4j4ervr"]
 
 [ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="1_pwd80"]
-[ext_resource type="Script" uid="uid://bmd8k18htly2o" path="res://scripts/combiner_papers.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bmd8k18htly2o" path="res://scripts/features/combiner_papers.gd" id="1_script"]
 [ext_resource type="Resource" uid="uid://20mxdo55gyoo" path="res://resources/combiner_recipes/artifact_recipes_list.tres" id="2_ooa0y"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0xxm"]

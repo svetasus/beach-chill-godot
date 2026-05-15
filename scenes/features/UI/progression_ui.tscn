@@ -1,15 +1,14 @@
 [gd_scene load_steps=2 format=3 uid="uid://cxab321300000"]
 
-[ext_resource type="Script" path="res://scripts/progression_ui.gd" id="1_progression_ui"]
-
+[ext_resource type="Script" uid="uid://c14rysvf0vpb2" path="res://scripts/ui/progression_ui.gd" id="1_progression_ui"]
 [ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="7_tasklist"]
-[ext_resource type="PackedScene" uid="uid://c6b8v5lq5w0q8" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="8_taskelem"]
-[ext_resource type="Script" uid="uid://b6k1d1e6i1i1i" path="res://scripts/task_data.gd" id="2_task_data"]
-[ext_resource type="Resource" uid="uid://bw7f6a6s4d7e" path="res://resources/tasks/task1.tres" id="10_task1"]
-[ext_resource type="Resource" uid="uid://cm3m4f5g6h7i" path="res://resources/tasks/task2.tres" id="11_task2"]
+[ext_resource type="PackedScene" uid="uid://d25l6qnea1x1n" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="8_taskelem"]
+[ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/data/task_data.gd" id="2_task_data"]
+[ext_resource type="Resource" uid="uid://d3x1234568aaa" path="res://resources/tasks/task1.tres" id="10_task1"]
+[ext_resource type="Resource" uid="uid://c3x1234568aab" path="res://resources/tasks/task2.tres" id="11_task2"]
 [ext_resource type="Resource" uid="uid://8j6h17wm1eik" path="res://resources/tasks/task3.tres" id="13_task3"]
-[ext_resource type="Resource" uid="uid://b3k2a1b0c0d1" path="res://resources/tasks/task4.tres" id="9_f4yut"]
-[ext_resource type="Resource" uid="uid://d4m5n6o7p8q9" path="res://resources/tasks/task5.tres" id="12_vlnj5"]
+[ext_resource type="Resource" uid="uid://bn8hv33260ge0" path="res://resources/tasks/task4.tres" id="9_f4yut"]
+[ext_resource type="Resource" uid="uid://dsefjue6qb4lq" path="res://resources/tasks/task5.tres" id="12_vlnj5"]
 [ext_resource type="PackedScene" uid="uid://br1tax2c554el" path="res://scenes/features/UI/milestones/milestone_list_ui.tscn" id="18_milestonelist"]
 
 [node name="ProgressionUI" type="Control"]

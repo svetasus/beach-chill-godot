@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7f6mq0plwe5p"
-path.s3tc="res://.godot/imported/artefact_001.png-db20d6d1d9025c4928e8eeb4bca0dfb2.s3tc.ctex"
+uid="uid://dnduuuq27ib4c"
+path.s3tc="res://.godot/imported/ravno.png-3045c05aab20dca3f06b117a1c3b9ec3.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://textures/artefact_001.png"
-dest_files=["res://.godot/imported/artefact_001.png-db20d6d1d9025c4928e8eeb4bca0dfb2.s3tc.ctex"]
+source_file="res://textures/icons/ravno.png"
+dest_files=["res://.godot/imported/ravno.png-3045c05aab20dca3f06b117a1c3b9ec3.s3tc.ctex"]
 
 [params]
 

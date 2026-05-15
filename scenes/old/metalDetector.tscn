@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://ci431bm08wlwn"]
 
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="1_2h02r"]
-[ext_resource type="Script" uid="uid://dhq8wtbmg3guu" path="res://scripts/metal_detector.gd" id="2_3cebe"]
+[ext_resource type="Script" uid="uid://dhq8wtbmg3guu" path="res://scripts/item/items_functionality/metal_detector.gd" id="2_3cebe"]
 [ext_resource type="AudioStream" uid="uid://qqu78l1knekr" path="res://sounds/beep.ogg" id="3_noaui"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6sh1g"]

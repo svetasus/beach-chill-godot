@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="TaskData" load_steps=3 format=3 uid="uid://dsefjue6qb4lq"]
 
-[ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/task_data.gd" id="1_dx0ck"]
+[ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/data/task_data.gd" id="1_dx0ck"]
 [ext_resource type="Resource" uid="uid://k81noy3tielt" path="res://resources/items/shell_001_data.tres" id="2_jpx8h"]
 
 [resource]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://lc6d4uu2q7q"
-path="res://.godot/imported/detector_icon.png-ac174ee007431e34c45c33ac15becbfb.ctex"
+uid="uid://c1yoi30tu8dy4"
+path="res://.godot/imported/blueshell.png-e157c855aeaec2fd1e9e9864fa587da5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/detector_icon.png"
-dest_files=["res://.godot/imported/detector_icon.png-ac174ee007431e34c45c33ac15becbfb.ctex"]
+source_file="res://textures/icons/blueshell.png"
+dest_files=["res://.godot/imported/blueshell.png-e157c855aeaec2fd1e9e9864fa587da5.ctex"]
 
 [params]
 

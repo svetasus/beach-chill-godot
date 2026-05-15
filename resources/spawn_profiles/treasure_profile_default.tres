@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TreasureProfile" load_steps=8 format=3 uid="uid://d22djgxra57mn"]
 
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="1_t3d6j"]
-[ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/item_data.gd" id="2_ufpv0"]
+[ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/data/item_data.gd" id="2_ufpv0"]
 [ext_resource type="PackedScene" uid="uid://c1hkykbro3s6u" path="res://scenes/vfx/vfxSandShovelBurst.tscn" id="3_iqw0t"]
 [ext_resource type="Resource" uid="uid://cyl06wi3q4t82" path="res://resources/items/artifact_001_1_data.tres" id="3_xx73n"]
 [ext_resource type="Resource" uid="uid://cmku0tmbr3t7v" path="res://resources/items/artifact_001_2_data.tres" id="4_q0cei"]
-[ext_resource type="Script" uid="uid://c24oob03n5h4j" path="res://scripts/treasure_profile.gd" id="4_xx73n"]
+[ext_resource type="Script" uid="uid://c24oob03n5h4j" path="res://scripts/data/treasure_profile.gd" id="4_xx73n"]
 [ext_resource type="PackedScene" uid="uid://b4vfdesnosjey" path="res://scenes/features/treasurePoint.tscn" id="5_q0cei"]
 
 [resource]

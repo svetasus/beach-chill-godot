@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://d25l6qnea1x1n"]
 
-[ext_resource type="Script" uid="uid://dgmnlld221gll" path="res://scripts/task_ui_element.gd" id="1_task_ui_element"]
+[ext_resource type="Script" uid="uid://dgmnlld221gll" path="res://scripts/ui/task_ui_element.gd" id="1_task_ui_element"]
 
 [node name="TaskUIElement" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 100)

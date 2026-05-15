@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dbnnw1khh2lvp"
-path="res://.godot/imported/armchair_icon.png-c8e0ef9b79b466f5096982db2d78508c.ctex"
+uid="uid://lc6d4uu2q7q"
+path="res://.godot/imported/detector_icon.png-b1ecc39dae96085373e567b0e3cb4424.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/armchair_icon.png"
-dest_files=["res://.godot/imported/armchair_icon.png-c8e0ef9b79b466f5096982db2d78508c.ctex"]
+source_file="res://textures/icons/detector_icon.png"
+dest_files=["res://.godot/imported/detector_icon.png-b1ecc39dae96085373e567b0e3cb4424.ctex"]
 
 [params]
 

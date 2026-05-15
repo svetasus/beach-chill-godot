@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://be3nkjullevsi"
-path.s3tc="res://.godot/imported/done.png-fcfbdb025bcc14b2ba1c2dcdaa720d8d.s3tc.ctex"
+uid="uid://dbkn2fcnui8a4"
+path.s3tc="res://.godot/imported/artefact_001_2.png-63d5329c0b8c7840d1ebc921d6d2ff3f.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://textures/done.png"
-dest_files=["res://.godot/imported/done.png-fcfbdb025bcc14b2ba1c2dcdaa720d8d.s3tc.ctex"]
+source_file="res://textures/icons/artefact_001_2.png"
+dest_files=["res://.godot/imported/artefact_001_2.png-63d5329c0b8c7840d1ebc921d6d2ff3f.s3tc.ctex"]
 
 [params]
 

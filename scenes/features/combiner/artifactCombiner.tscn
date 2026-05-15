@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://bio5ygciicsu6"]
 
-[ext_resource type="Script" uid="uid://dkfnbyms2yfqe" path="res://scripts/artifact_combiner.gd" id="1_f0cbo"]
+[ext_resource type="Script" uid="uid://dkfnbyms2yfqe" path="res://scripts/features/artifact_combiner.gd" id="1_f0cbo"]
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="2_3jmie"]
 [ext_resource type="Resource" uid="uid://20mxdo55gyoo" path="res://resources/combiner_recipes/artifact_recipes_list.tres" id="2_pta84"]
 [ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="4_scym8"]

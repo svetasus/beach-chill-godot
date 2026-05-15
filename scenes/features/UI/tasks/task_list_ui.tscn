@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://df6o8m2p5q3w7"]
 
-[ext_resource type="Script" uid="uid://bnu10lfnqrhsu" path="res://scripts/task_list_ui.gd" id="1_task_list_ui"]
+[ext_resource type="Script" uid="uid://bnu10lfnqrhsu" path="res://scripts/ui/task_list_ui.gd" id="1_task_list_ui"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p0"]
 

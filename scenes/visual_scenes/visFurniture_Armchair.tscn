@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://d0vkvbjt3e0uy"]
 
 [ext_resource type="Texture2D" uid="uid://blqtjpnp63h6u" path="res://textures/cloth.jpg" id="1_fhis6"]
-[ext_resource type="Script" uid="uid://tbfqu8d1clyc" path="res://scripts/furniture_armchair.gd" id="2_script"]
+[ext_resource type="Script" uid="uid://tbfqu8d1clyc" path="res://scripts/item/items_functionality/furniture_armchair.gd" id="2_script"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5yhxa"]
 size = Vector3(0.57, 0.65, 0.68)
