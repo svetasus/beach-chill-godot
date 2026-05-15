@@ -181,10 +181,10 @@ func _ready():
 		load_money()
 		update_money_ui()
 		inventory_slots_updated.emit(carried_items, current_slot_index)
-		var tasks_ui = $PlayerUI/TaskListUI
+		var tasks_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI
 		if tasks_ui and tasks_ui.has_method("load_tasks"):
 			tasks_ui.load_tasks()
-		var milestones_ui = $PlayerUI/MilestoneListUI
+		var milestones_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI
 		if milestones_ui and milestones_ui.has_method("load_milestones"):
 			milestones_ui.load_milestones()
 		
@@ -394,13 +394,18 @@ func _input(event):
 	if event.is_action_pressed("ui_cancel"): # 'ui_cancel' is usually the Esc key
 		if $PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible:
 			toggle_collection()
+		elif $PlayerUI/ProgressionUI != null and $PlayerUI/ProgressionUI.visible:
+			if $PlayerUI/ProgressionUI.current_tab == "Tasks":
+				toggle_tasks()
+			else:
+				toggle_milestones()
 		elif Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
 	# If I click the screen, grab the mouse again
 	if event is InputEventMouseButton and event.pressed:
 		if is_multiplayer_authority():
-			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible) or ($PlayerUI/TaskListUI != null and $PlayerUI/TaskListUI.visible) or ($PlayerUI/MilestoneListUI != null and $PlayerUI/MilestoneListUI.visible)
+			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible) or ($PlayerUI/ProgressionUI != null and $PlayerUI/ProgressionUI.visible)
 			if not is_ui_open:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -1382,7 +1387,7 @@ func milestone_craft_rpc(data_path: String):
 	if not is_multiplayer_authority(): return
 	var data = load(data_path)
 	if data and data is ArtifactData:
-		var milestones_ui = $PlayerUI/MilestoneListUI
+		var milestones_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI
 		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
 			milestones_ui.handle_milestone_event("craft", null, data)
 
@@ -1404,36 +1409,34 @@ func add_to_collection(data: ItemData):
 func toggle_milestones():
 	if not is_multiplayer_authority(): return
 
-	var milestones_ui = $PlayerUI/MilestoneListUI
-	if not milestones_ui: return
+	var progression_ui = $PlayerUI/ProgressionUI
+	if not progression_ui: return
 
-	milestones_ui.visible = !milestones_ui.visible
-
-	if milestones_ui.visible:
-		var inv_ui = $PlayerUI/InventoryUI
-		if inv_ui: inv_ui.visible = false
-		var tasks_ui = $PlayerUI/TaskListUI
-		if tasks_ui: tasks_ui.visible = false
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	else:
+	if progression_ui.visible and progression_ui.current_tab == "Milestones":
+		progression_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		progression_ui.visible = true
+		progression_ui.set_tab("Milestones")
+		var inv_ui = $PlayerUI/CollectionUI
+		if inv_ui: inv_ui.visible = false
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func toggle_tasks():
 	if not is_multiplayer_authority(): return
 
-	var tasks_ui = $PlayerUI/TaskListUI
-	if not tasks_ui: return
+	var progression_ui = $PlayerUI/ProgressionUI
+	if not progression_ui: return
 
-	tasks_ui.visible = !tasks_ui.visible
-
-	if tasks_ui.visible:
+	if progression_ui.visible and progression_ui.current_tab == "Tasks":
+		progression_ui.visible = false
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		progression_ui.visible = true
+		progression_ui.set_tab("Tasks")
 		var inv_ui = $PlayerUI/CollectionUI
 		if inv_ui: inv_ui.visible = false
-		var milestones_ui = $PlayerUI/MilestoneListUI
-		if milestones_ui: milestones_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	else:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func toggle_collection():
 	if not is_multiplayer_authority(): return
@@ -1442,10 +1445,8 @@ func toggle_collection():
 	inv_ui.visible = !inv_ui.visible
 	
 	if inv_ui.visible:
-		var tasks_ui = $PlayerUI/TaskListUI
-		if tasks_ui: tasks_ui.visible = false
-		var milestones_ui = $PlayerUI/MilestoneListUI
-		if milestones_ui: milestones_ui.visible = false
+		var prog_ui = $PlayerUI/ProgressionUI
+		if prog_ui: prog_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		# FORCE A REFRESH SO IT'S NOT EMPTY
 		inv_ui.refresh_ui({"items": items_held, "artifacts": artifacts_crafted})
@@ -1549,11 +1550,11 @@ func emit_task_event(action: String, item_data_or_path):
 		item_data = item_data_or_path
 
 	if item_data != null:
-		var tasks_ui = $PlayerUI/TaskListUI
+		var tasks_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI
 		if tasks_ui and tasks_ui.has_method("handle_task_event"):
 			tasks_ui.handle_task_event(action, item_data)
 
-		var milestones_ui = $PlayerUI/MilestoneListUI
+		var milestones_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI
 		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
 			milestones_ui.handle_milestone_event(action, item_data)
 

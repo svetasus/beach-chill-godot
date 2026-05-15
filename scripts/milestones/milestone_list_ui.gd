@@ -225,8 +225,3 @@ func load_milestones():
 			file.close()
 	init_milestones()
 
-func _unhandled_input(event: InputEvent) -> void:
-	if visible and event.is_action_pressed("ui_cancel"):
-		get_viewport().set_input_as_handled()
-		if owner and owner.has_method("toggle_milestones"):
-			owner.toggle_milestones()
