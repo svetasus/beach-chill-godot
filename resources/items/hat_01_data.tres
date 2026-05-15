@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ClothingData" load_steps=3 format=3 uid="uid://cyul0ltebyn3n"]
+
+[ext_resource type="PackedScene" uid="uid://dsq37lkv6lel2" path="res://scenes/visual_scenes/visHat_01.tscn" id="1_16ll1"]
+[ext_resource type="Script" uid="uid://cysoaq258rw2w" path="res://scripts/clothing_data.gd" id="1_h7l4c"]
+
+[resource]
+script = ExtResource("1_h7l4c")
+clothing_type = 0
+worn_scene = ExtResource("1_16ll1")
+vision_color = Color(1, 1, 1, 1)
+name = "Item"
+display_name = "Item"
+particle_color = Color(1, 1, 1, 1)
+scene = ExtResource("1_16ll1")
+mass = 1.0
+collision_size = Vector3(0.2, 0.2, 0.2)
+is_tool = false
+is_collectible = true
+is_furniture = false
+item_value_type = 0
+metadata/_custom_type_script = "uid://cysoaq258rw2w"
