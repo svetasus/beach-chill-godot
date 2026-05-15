@@ -6,6 +6,7 @@ const FOOTSTEP_INTERVAL: float = 0.3 # time between steps
 
 
 const SPEED = 5.0
+@export var RUN_SPEED: float = 8.0
 const JUMP_VELOCITY = 4.5
 const THROW_FORCE = 16.0
 const DIG_DIST = 1.5
@@ -20,6 +21,7 @@ const DIG_DIST = 1.5
 @onready var action_label = $PlayerUI/ActionLabel
 @onready var hint_label = $PlayerUI/HintLabel
 @onready var placement_ray = $Body/Head/Camera3D/PlacementRay
+@onready var state_run = $State_Run
 @onready var state_sit = $State_Sit
 @onready var state_stand = $State_Stand
 @onready var state_swim = $State_Swim
@@ -37,6 +39,7 @@ const DIG_DIST = 1.5
 
 # Sync this variable in MultiplayerSynchronizer so late joiners know the state!
 @export var is_sitting: bool = false
+@export var is_running: bool = false
 
 var rotation_offset: float = 0.0
 @export var rotation_speed: float = 0.5 # How fast it rotates with scroll
@@ -214,6 +217,7 @@ func enter_water(surface_height: float):
 	current_water_surface_height = max(current_water_surface_height, surface_height)
 	if state_swim: state_swim.show()
 	if state_stand: state_stand.hide()
+	if state_run: state_run.hide()
 
 func exit_water():
 	water_areas_count -= 1
@@ -222,8 +226,8 @@ func exit_water():
 		current_water_surface_height = 0.0
 		
 	
-	if state_stand: state_stand.show()
 	if state_swim: state_swim.hide()
+	_update_run_visuals.rpc(is_running)
 
 func _apply_camera_mode():
 	# Update camera
@@ -308,7 +312,11 @@ func _physics_process(delta: float) -> void:
 	else:
 		direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
-	var current_speed = SWIM_SPEED if is_swimming else SPEED
+	var was_running = is_running
+	is_running = not is_swimming and is_on_floor() and direction != Vector3.ZERO and Input.is_action_pressed("run")
+	if is_running != was_running:
+		_update_run_visuals.rpc(is_running)
+	var current_speed = SWIM_SPEED if is_swimming else (RUN_SPEED if is_running else SPEED)
 
 	if direction:
 		velocity.x = direction.x * current_speed
@@ -1278,9 +1286,21 @@ func leave_furniture():
 		# Hop them up slightly so they don't clip
 		global_position.y += 0.5
 
+
+@rpc("call_local", "reliable")
+func _update_run_visuals(running: bool):
+	if running:
+		if state_run: state_run.show()
+		if state_stand: state_stand.hide()
+	else:
+		if state_run: state_run.hide()
+		if state_stand and not is_sitting and not (water_areas_count > 0 and not is_on_floor()):
+			state_stand.show()
+
 @rpc("call_local", "reliable")
 func _update_sit_visuals(is_sitting: bool):
 	if is_sitting:
+		if state_run: state_run.hide()
 		if state_sit: state_sit.show()
 		if state_stand: state_stand.hide()
 		if state_swim: state_swim.hide()
