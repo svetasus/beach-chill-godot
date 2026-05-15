@@ -71,7 +71,7 @@ func update_tab_styles():
 
 	if artifacts_btn:
 		artifacts_btn.add_theme_font_size_override("font_size", 32)
-		if current_tab == "Artifacts":
+		if current_tab != "Artifacts":
 			artifacts_btn.add_theme_stylebox_override("normal", inactive_style)
 			artifacts_btn.add_theme_stylebox_override("hover", inactive_style)
 			artifacts_btn.add_theme_stylebox_override("pressed", inactive_style)
@@ -88,7 +88,7 @@ func update_tab_styles():
 
 	if items_btn:
 		items_btn.add_theme_font_size_override("font_size", 32)
-		if current_tab == "Items":
+		if current_tab != "Items":
 			items_btn.add_theme_stylebox_override("normal", inactive_style)
 			items_btn.add_theme_stylebox_override("hover", inactive_style)
 			items_btn.add_theme_stylebox_override("pressed", inactive_style)
@@ -155,8 +155,8 @@ func refresh_ui(data: Dictionary):
 
 	if all_files.is_empty():
 		var empty_label = Label.new()
-		if current_tab == "Artifacts":
-			empty_label.text = "No artifacts available."
+		if current_tab != "Artifacts":
+			empty_label.text = "No artifacts. Craft an artifact to add it to the collection."
 		else:
 			empty_label.text = "No items available."
 

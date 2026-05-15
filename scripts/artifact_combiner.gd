@@ -75,7 +75,6 @@ func _matches_recipe(recipe: ArtifactData, current_parts: Array) -> bool:
 
 func _combine(recipe: ArtifactData):
 	if not multiplayer.is_server(): return
-	print("SERVER: Crafting ", recipe.recipe_name)
 	
 	# Identify the specific nodes to remove
 	var used_nodes = []
@@ -87,6 +86,19 @@ func _combine(recipe: ArtifactData):
 			used_nodes.append(item)
 			crafter_id = item.get_multiplayer_authority()
 			temp_required.erase(item.data)
+
+	# Validation: check if crafter has unlocked the recipe
+	var crafter_player = get_tree().root.find_child(str(crafter_id), true, false)
+	if crafter_player and "recipes_unlocked" in crafter_player:
+		if not crafter_player.recipes_unlocked.has(recipe.resource_path):
+			print("SERVER: Crafter ", crafter_id, " does not have recipe ", recipe.recipe_name, " unlocked! Crafting failed.")
+			# Throw items out of the zone so player realizes it failed
+			for item in used_nodes:
+				if is_instance_valid(item):
+					item.apply_central_impulse(Vector3(randf_range(-1, 1), 2.0, randf_range(-1, 1)))
+			return
+
+	print("SERVER: Crafting ", recipe.recipe_name)
 	
 	# Delete ingredients
 	for node in used_nodes:

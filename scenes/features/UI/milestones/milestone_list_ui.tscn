@@ -6,6 +6,8 @@
 [ext_resource type="Resource" uid="uid://msbppdrnq6f1" path="res://resources/milestones/milestone_01.tres" id="4_qq6hf"]
 [ext_resource type="Resource" uid="uid://ccymgno15rqj8" path="res://resources/milestones/milestone_02.tres" id="5_qq6hf"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p1"]
+
 [node name="MilestoneListUI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -20,19 +22,15 @@ all_milestones = Array[ExtResource("3_2eten")]([ExtResource("4_qq6hf"), ExtResou
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -500.0
-offset_top = -400.0
-offset_right = 500.0
-offset_bottom = 400.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_p1")
 
 [node name="TitleLabel" type="Label" parent="PanelContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 35

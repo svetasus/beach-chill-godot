@@ -1,0 +1,62 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxab321300000"]
+
+[ext_resource type="Script" path="res://scripts/progression_ui.gd" id="1_progression_ui"]
+
+[ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="7_tasklist"]
+[ext_resource type="PackedScene" uid="uid://c6b8v5lq5w0q8" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="8_taskelem"]
+[ext_resource type="Script" uid="uid://b6k1d1e6i1i1i" path="res://scripts/task_data.gd" id="2_task_data"]
+[ext_resource type="Resource" uid="uid://bw7f6a6s4d7e" path="res://resources/tasks/task1.tres" id="10_task1"]
+[ext_resource type="Resource" uid="uid://cm3m4f5g6h7i" path="res://resources/tasks/task2.tres" id="11_task2"]
+[ext_resource type="Resource" uid="uid://8j6h17wm1eik" path="res://resources/tasks/task3.tres" id="13_task3"]
+[ext_resource type="Resource" uid="uid://b3k2a1b0c0d1" path="res://resources/tasks/task4.tres" id="9_f4yut"]
+[ext_resource type="Resource" uid="uid://d4m5n6o7p8q9" path="res://resources/tasks/task5.tres" id="12_vlnj5"]
+[ext_resource type="PackedScene" uid="uid://br1tax2c554el" path="res://scenes/features/UI/milestones/milestone_list_ui.tscn" id="18_milestonelist"]
+
+[node name="ProgressionUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 350.0
+offset_top = 150.0
+offset_right = -370.0
+offset_bottom = -208.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_progression_ui")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="TabContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="TasksTab" type="Button" parent="PanelContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+text = "Tasks"
+
+[node name="MilestonesTab" type="Button" parent="PanelContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+text = "Milestones"
+
+[node name="ContentContainer" type="Control" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+
+[node name="TaskListUI" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("7_tasklist")]
+layout_mode = 1
+task_prefab = ExtResource("8_taskelem")
+default_tasks = Array[ExtResource("2_task_data")]([ExtResource("10_task1"), ExtResource("11_task2"), ExtResource("13_task3"), ExtResource("9_f4yut"), ExtResource("12_vlnj5")])
+
+[node name="MilestoneListUI" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("18_milestonelist")]
+layout_mode = 1
