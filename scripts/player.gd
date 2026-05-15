@@ -108,6 +108,7 @@ var current_water_surface_height: float = 0.0
 var collection = {}
 var items_held = {}
 var artifacts_crafted = {}
+var recipes_unlocked = []
 
 var money: int = 0
 
@@ -119,6 +120,12 @@ func get_save_path() -> String:
 		return "user://player_money_" + Global.sanitize_filename(Global.account_id) + ".save"
 	else:
 		return "user://player_money_" + Global.sanitize_filename(str(name)) + ".save"
+
+func get_recipes_save_path() -> String:
+	if is_multiplayer_authority():
+		return "user://player_recipes_" + Global.sanitize_filename(Global.account_id) + ".json"
+	else:
+		return "user://player_recipes_" + Global.sanitize_filename(str(name)) + ".json"
 
 func save_money():
 	var file = FileAccess.open(get_save_path(), FileAccess.WRITE)
@@ -134,6 +141,28 @@ func load_money():
 			var content = file.get_as_text()
 			money = content.to_int()
 			file.close()
+
+func save_recipes():
+	var file = FileAccess.open(get_recipes_save_path(), FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify(recipes_unlocked))
+		file.close()
+
+func load_recipes():
+	var path = get_recipes_save_path()
+	if FileAccess.file_exists(path):
+		var file = FileAccess.open(path, FileAccess.READ)
+		if file:
+			var content = file.get_as_text()
+			var parsed = JSON.parse_string(content)
+			if typeof(parsed) == TYPE_ARRAY:
+				recipes_unlocked = parsed
+			file.close()
+
+@rpc("any_peer", "call_remote")
+func sync_recipes_to_server(recipes: Array):
+	if multiplayer.is_server():
+		recipes_unlocked = recipes
 
 func _enter_tree() -> void:
 	pass
@@ -179,6 +208,9 @@ func _ready():
 		apply_eye_color(eye_color)
 		
 		load_money()
+		load_recipes()
+		if not multiplayer.is_server():
+			rpc_id(1, "sync_recipes_to_server", recipes_unlocked)
 		update_money_ui()
 		inventory_slots_updated.emit(carried_items, current_slot_index)
 		var tasks_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI
@@ -494,7 +526,7 @@ func _input(event):
 		# Rotate by 15 degrees counter-clockwise
 		rotation_offset -= deg_to_rad(15)
 			
-	if event.is_action_pressed("alt_interact"):
+	if event.is_action_pressed("alt_interact") and not is_typing:
 		if not is_multiplayer_authority(): return
 
 		if current_furniture != null:
@@ -503,9 +535,16 @@ func _input(event):
 			var target = get_interaction_target()
 			if target and target is Item and target.has_method("alt_interact"):
 				target.alt_interact(self)
+		elif carried_item != null:
+			if carried_item.has_method("alt_interact"):
+				carried_item.alt_interact(self)
+
+				var net_id = carried_item.name.to_int()
+				if net_id > 0:
+					_rpc_trigger_alt_interact.rpc_id(1, carried_item.get_path())
 
 	# NEW: Press Left Click (or a new 'throw' action) to yeet!
-	if event.is_action_pressed("throw") : 
+	if event.is_action_pressed("throw") and not is_typing:
 		if not is_multiplayer_authority(): return
 		if carried_item != null:
 			throw_item()
@@ -1184,6 +1223,11 @@ func update_action_ui():
 				target_text = "[E] Open Storage"
 			elif potential_item.has_method("interact"):
 				target_text = "[E] Interact"
+
+				# For scroll reading when on ground
+				if potential_item is Item and potential_item.data and potential_item.data is RecipeData:
+					target_text = "[E] Take / [R] Read recipe"
+
 			elif potential_item.has_meta("is_cart_handle"):
 				var cart_node = potential_item.get_meta("cart_node")
 				if cart_node.driver_id == 0:
@@ -1741,3 +1785,45 @@ func _play_footstep_sound():
 			$WalkAudioPlayer.volume_db = Global.walk_sound_2_volume
 		$WalkAudioPlayer.play()
 		footstep_iterator += 1
+
+@rpc("any_peer", "call_local")
+func _rpc_trigger_alt_interact(item_path: NodePath):
+	if multiplayer.get_remote_sender_id() != 1 and multiplayer.get_remote_sender_id() != 0: return
+	var node = get_node_or_null(item_path)
+	if node and node.has_method("alt_interact"):
+		var sender_id = multiplayer.get_remote_sender_id()
+		var p = get_tree().root.find_child(str(sender_id), true, false)
+		if p == null: p = self
+		node.alt_interact(p)
+
+@rpc("any_peer", "call_local")
+func learn_recipe_rpc(recipe_path: String):
+	# If called on server by client, sync it to them explicitly and let server know
+	# If called on client, the client updates their own data.
+	# We don't block sender IDs because clients need to tell the server they learned it.
+	if multiplayer.is_server():
+		var sender_id = multiplayer.get_remote_sender_id()
+		if sender_id != 1 and sender_id != 0:
+			# It's a client telling us they learned it. Update their server-side state.
+			var p = get_tree().root.find_child(str(sender_id), true, false)
+			if p and "recipes_unlocked" in p:
+				if not p.recipes_unlocked.has(recipe_path):
+					p.recipes_unlocked.append(recipe_path)
+			return
+
+	if not recipes_unlocked.has(recipe_path):
+		recipes_unlocked.append(recipe_path)
+
+		if is_multiplayer_authority():
+			save_recipes()
+			var recipe = load(recipe_path)
+			if recipe and has_node("PlayerUI/NotificationArea"):
+				$PlayerUI/NotificationArea.display_message("Recipe Learned: " + recipe.recipe_name + "!")
+
+func learn_recipe(recipe: ArtifactData):
+	if recipe:
+		# Learn it locally
+		learn_recipe_rpc(recipe.resource_path)
+		# Tell server we learned it
+		if not multiplayer.is_server():
+			rpc_id(1, "learn_recipe_rpc", recipe.resource_path)
