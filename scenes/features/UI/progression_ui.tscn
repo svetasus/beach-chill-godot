@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxab321300000"]
+
+[ext_resource type="Script" path="res://scripts/progression_ui.gd" id="1_progression_ui"]
+
+[node name="ProgressionUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 350.0
+offset_top = 150.0
+offset_right = -370.0
+offset_bottom = -208.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_progression_ui")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="TabContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="TasksTab" type="Button" parent="PanelContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+text = "Tasks"
+
+[node name="MilestonesTab" type="Button" parent="PanelContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+text = "Milestones"
+
+[node name="ContentContainer" type="Control" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3

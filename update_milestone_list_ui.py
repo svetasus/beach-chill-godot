@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://br1tax2c554el"]
+content = """[gd_scene load_steps=6 format=3 uid="uid://br1tax2c554el"]
 
 [ext_resource type="Script" uid="uid://82xh4tj4d4nm" path="res://scripts/milestones/milestone_list_ui.gd" id="1_milestone_list_ui"]
 [ext_resource type="PackedScene" uid="uid://cwpfrcxhgv2gf" path="res://scenes/features/UI/milestones/milestone_ui_element.tscn" id="2_milestone_ui_element"]
@@ -47,3 +47,6 @@ vertical_scroll_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+"""
+with open('scenes/features/UI/milestones/milestone_list_ui.tscn', 'w') as f:
+    f.write(content)
