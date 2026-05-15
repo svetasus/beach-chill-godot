@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://cxwxxb12347"]
 
-[ext_resource type="Script" uid="uid://c68qfk0ryapm1" path="res://scripts/house_entrance.gd" id="1_ww1k4"]
+[ext_resource type="Script" uid="uid://c68qfk0ryapm1" path="res://scripts/house/house_entrance.gd" id="1_ww1k4"]
 [ext_resource type="Texture2D" uid="uid://bhhu17vs3cgpp" path="res://textures/Texturelabs_Wood_145S.jpg" id="2_wiycs"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_entrance"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=33 format=3 uid="uid://thk0f506mm6d"]
 
-[ext_resource type="Script" uid="uid://bjswhkr15tk70" path="res://scripts/player_house_exit.gd" id="1_exit"]
-[ext_resource type="Script" uid="uid://drs8dimdmsc0h" path="res://scripts/player_house.gd" id="1_o5bym"]
+[ext_resource type="Script" uid="uid://bjswhkr15tk70" path="res://scripts/house/player_house_exit.gd" id="1_exit"]
+[ext_resource type="Script" uid="uid://drs8dimdmsc0h" path="res://scripts/house/player_house.gd" id="1_o5bym"]
 [ext_resource type="Texture2D" uid="uid://b5wh2hnnlikoy" path="res://textures/wood.jpg" id="2_e02fs"]
 [ext_resource type="Texture2D" uid="uid://coyfrgifhbye0" path="res://textures/Texturelabs_Fabric_131S.jpg" id="2_rrrxi"]
 [ext_resource type="ArrayMesh" uid="uid://ssgt2i8hbuol" path="res://resources/models/alarm_temp/Alarm_Clock.obj" id="3_xhb8a"]

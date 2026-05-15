@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://5wettsthnpih"]
 
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="1_lw6f2"]
-[ext_resource type="Script" uid="uid://c0skxh85o5plm" path="res://scripts/tool_logic.gd" id="2_sllbt"]
+[ext_resource type="Script" uid="uid://c0skxh85o5plm" path="res://scripts/item/items_functionality/tool_logic.gd" id="2_sllbt"]
 
 [node name="Tool" instance=ExtResource("1_lw6f2")]
 script = ExtResource("2_sllbt")

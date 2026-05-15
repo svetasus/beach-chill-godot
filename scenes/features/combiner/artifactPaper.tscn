@@ -1,13 +1,13 @@
 [gd_scene load_steps=9 format=3 uid="uid://co6i0ku26i8aq"]
 
 [ext_resource type="Texture2D" uid="uid://f4b5kounudnn" path="res://textures/sand.png" id="1_gj4of"]
-[ext_resource type="Texture2D" uid="uid://c7wkfs2j16n1j" path="res://textures/bear_statue.png" id="2_brjiv"]
-[ext_resource type="Texture2D" uid="uid://b7f6mq0plwe5p" path="res://textures/artefact_001.png" id="3_km1y7"]
-[ext_resource type="Texture2D" uid="uid://dbkn2fcnui8a4" path="res://textures/artefact_001_2.png" id="4_pj0pq"]
-[ext_resource type="Texture2D" uid="uid://bsldxclny3fyk" path="res://textures/pinkshell.png" id="5_v7ws0"]
-[ext_resource type="Texture2D" uid="uid://cnoe80sil1hsb" path="res://textures/plus.png" id="6_mon45"]
-[ext_resource type="Texture2D" uid="uid://dnduuuq27ib4c" path="res://textures/ravno.png" id="7_1w01i"]
-[ext_resource type="Texture2D" uid="uid://be3nkjullevsi" path="res://textures/done.png" id="8_f1r12"]
+[ext_resource type="Texture2D" uid="uid://c7wkfs2j16n1j" path="res://textures/icons/bear_statue.png" id="2_brjiv"]
+[ext_resource type="Texture2D" uid="uid://b7f6mq0plwe5p" path="res://textures/icons/artefact_001.png" id="3_km1y7"]
+[ext_resource type="Texture2D" uid="uid://dbkn2fcnui8a4" path="res://textures/icons/artefact_001_2.png" id="4_pj0pq"]
+[ext_resource type="Texture2D" uid="uid://bsldxclny3fyk" path="res://textures/icons/pinkshell.png" id="5_v7ws0"]
+[ext_resource type="Texture2D" uid="uid://cnoe80sil1hsb" path="res://textures/icons/plus.png" id="6_mon45"]
+[ext_resource type="Texture2D" uid="uid://dnduuuq27ib4c" path="res://textures/icons/ravno.png" id="7_1w01i"]
+[ext_resource type="Texture2D" uid="uid://be3nkjullevsi" path="res://textures/icons/done.png" id="8_f1r12"]
 
 [node name="artifactPaper" type="Node3D"]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 0, 0, 0)

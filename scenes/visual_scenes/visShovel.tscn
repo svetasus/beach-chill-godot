@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://6l0do4mcgn2j"]
 
-[ext_resource type="Script" uid="uid://bsfw1a7qetkmg" path="res://scripts/shovel.gd" id="1_ujxg5"]
+[ext_resource type="Script" uid="uid://bsfw1a7qetkmg" path="res://scripts/item/items_functionality/shovel.gd" id="1_ujxg5"]
 [ext_resource type="PackedScene" uid="uid://eqq2ny4extpg" path="res://resources/models/shovel/shovel.glb" id="2_w3cqs"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fjo7a"]

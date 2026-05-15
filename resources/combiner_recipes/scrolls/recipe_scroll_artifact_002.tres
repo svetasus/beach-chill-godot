@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=4 format=3 uid="uid://bcd1b"]
+
+[ext_resource type="Script" uid="uid://cm4cwroxhsq8j" path="res://scripts/data/recipe_data.gd" id="1_xyz12"]
+[ext_resource type="PackedScene" uid="uid://dfab1" path="res://scenes/visual_scenes/visRecipe_scroll.tscn" id="2_wxy34"]
+[ext_resource type="Resource" uid="uid://cltfy4e7wtlgg" path="res://resources/combiner_recipes/recipes/artifact_002_recipe.tres" id="3_yza57"]
+
+[resource]
+script = ExtResource("1_xyz12")
+target_recipe = ExtResource("3_yza57")
+name = "recipe_scroll_artifact_002"
+display_name = "Recipe Scroll: Magic Pot"
+scene = ExtResource("2_wxy34")
+mass = 1.0
+collision_size = Vector3(0.2, 0.2, 0.2)
+is_tool = false
+is_collectible = true
+is_furniture = false
+item_value_type = 1

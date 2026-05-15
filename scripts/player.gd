@@ -118,6 +118,7 @@ var current_water_surface_height: float = 0.0
 var collection = {}
 var items_held = {}
 var artifacts_crafted = {}
+var recipes_unlocked = []
 
 var money: int = 0
 
@@ -129,6 +130,12 @@ func get_save_path() -> String:
 		return "user://player_money_" + Global.sanitize_filename(Global.account_id) + ".save"
 	else:
 		return "user://player_money_" + Global.sanitize_filename(str(name)) + ".save"
+
+func get_recipes_save_path() -> String:
+	if is_multiplayer_authority():
+		return "user://player_recipes_" + Global.sanitize_filename(Global.account_id) + ".json"
+	else:
+		return "user://player_recipes_" + Global.sanitize_filename(str(name)) + ".json"
 
 func save_money():
 	var file = FileAccess.open(get_save_path(), FileAccess.WRITE)
@@ -144,6 +151,28 @@ func load_money():
 			var content = file.get_as_text()
 			money = content.to_int()
 			file.close()
+
+func save_recipes():
+	var file = FileAccess.open(get_recipes_save_path(), FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify(recipes_unlocked))
+		file.close()
+
+func load_recipes():
+	var path = get_recipes_save_path()
+	if FileAccess.file_exists(path):
+		var file = FileAccess.open(path, FileAccess.READ)
+		if file:
+			var content = file.get_as_text()
+			var parsed = JSON.parse_string(content)
+			if typeof(parsed) == TYPE_ARRAY:
+				recipes_unlocked = parsed
+			file.close()
+
+@rpc("any_peer", "call_remote")
+func sync_recipes_to_server(recipes: Array):
+	if multiplayer.is_server():
+		recipes_unlocked = recipes
 
 func _enter_tree() -> void:
 	pass
@@ -190,12 +219,15 @@ func _ready():
 		apply_eye_color(eye_color)
 		
 		load_money()
+		load_recipes()
+		if not multiplayer.is_server():
+			rpc_id(1, "sync_recipes_to_server", recipes_unlocked)
 		update_money_ui()
 		inventory_slots_updated.emit(carried_items, current_slot_index)
-		var tasks_ui = $PlayerUI/TaskListUI
+		var tasks_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI
 		if tasks_ui and tasks_ui.has_method("load_tasks"):
 			tasks_ui.load_tasks()
-		var milestones_ui = $PlayerUI/MilestoneListUI
+		var milestones_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI
 		if milestones_ui and milestones_ui.has_method("load_milestones"):
 			milestones_ui.load_milestones()
 		
@@ -406,13 +438,18 @@ func _input(event):
 	if event.is_action_pressed("ui_cancel"): # 'ui_cancel' is usually the Esc key
 		if $PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible:
 			toggle_collection()
+		elif $PlayerUI/ProgressionUI != null and $PlayerUI/ProgressionUI.visible:
+			if $PlayerUI/ProgressionUI.current_tab == "Tasks":
+				toggle_tasks()
+			else:
+				toggle_milestones()
 		elif Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
 	# If I click the screen, grab the mouse again
 	if event is InputEventMouseButton and event.pressed:
 		if is_multiplayer_authority():
-			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible) or ($PlayerUI/TaskListUI != null and $PlayerUI/TaskListUI.visible) or ($PlayerUI/MilestoneListUI != null and $PlayerUI/MilestoneListUI.visible)
+			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible) or ($PlayerUI/ProgressionUI != null and $PlayerUI/ProgressionUI.visible)
 			if not is_ui_open:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -507,7 +544,7 @@ func _input(event):
 		# Rotate by 15 degrees counter-clockwise
 		rotation_offset -= deg_to_rad(15)
 			
-	if event.is_action_pressed("alt_interact"):
+	if event.is_action_pressed("alt_interact") and not is_typing:
 		if not is_multiplayer_authority(): return
 
 		if current_furniture != null:
@@ -516,9 +553,16 @@ func _input(event):
 			var target = get_interaction_target()
 			if target and target is Item and target.has_method("alt_interact"):
 				target.alt_interact(self)
+		elif carried_item != null:
+			if carried_item.has_method("alt_interact"):
+				carried_item.alt_interact(self)
+
+				var net_id = carried_item.name.to_int()
+				if net_id > 0:
+					_rpc_trigger_alt_interact.rpc_id(1, carried_item.get_path())
 
 	# NEW: Press Left Click (or a new 'throw' action) to yeet!
-	if event.is_action_pressed("throw") : 
+	if event.is_action_pressed("throw") and not is_typing:
 		if not is_multiplayer_authority(): return
 		if carried_item != null:
 			throw_item()
@@ -1197,6 +1241,11 @@ func update_action_ui():
 				target_text = "[E] Open Storage"
 			elif potential_item.has_method("interact"):
 				target_text = "[E] Interact"
+
+				# For scroll reading when on ground
+				if potential_item is Item and potential_item.data and potential_item.data is RecipeData:
+					target_text = "[E] Take / [R] Read recipe"
+
 			elif potential_item.has_meta("is_cart_handle"):
 				var cart_node = potential_item.get_meta("cart_node")
 				if cart_node.driver_id == 0:
@@ -1536,7 +1585,7 @@ func milestone_craft_rpc(data_path: String):
 	if not is_multiplayer_authority(): return
 	var data = load(data_path)
 	if data and data is ArtifactData:
-		var milestones_ui = $PlayerUI/MilestoneListUI
+		var milestones_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI
 		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
 			milestones_ui.handle_milestone_event("craft", null, data)
 
@@ -1558,36 +1607,34 @@ func add_to_collection(data: ItemData):
 func toggle_milestones():
 	if not is_multiplayer_authority(): return
 
-	var milestones_ui = $PlayerUI/MilestoneListUI
-	if not milestones_ui: return
+	var progression_ui = $PlayerUI/ProgressionUI
+	if not progression_ui: return
 
-	milestones_ui.visible = !milestones_ui.visible
-
-	if milestones_ui.visible:
-		var inv_ui = $PlayerUI/InventoryUI
-		if inv_ui: inv_ui.visible = false
-		var tasks_ui = $PlayerUI/TaskListUI
-		if tasks_ui: tasks_ui.visible = false
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	else:
+	if progression_ui.visible and progression_ui.current_tab == "Milestones":
+		progression_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		progression_ui.visible = true
+		progression_ui.set_tab("Milestones")
+		var inv_ui = $PlayerUI/CollectionUI
+		if inv_ui: inv_ui.visible = false
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func toggle_tasks():
 	if not is_multiplayer_authority(): return
 
-	var tasks_ui = $PlayerUI/TaskListUI
-	if not tasks_ui: return
+	var progression_ui = $PlayerUI/ProgressionUI
+	if not progression_ui: return
 
-	tasks_ui.visible = !tasks_ui.visible
-
-	if tasks_ui.visible:
+	if progression_ui.visible and progression_ui.current_tab == "Tasks":
+		progression_ui.visible = false
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		progression_ui.visible = true
+		progression_ui.set_tab("Tasks")
 		var inv_ui = $PlayerUI/CollectionUI
 		if inv_ui: inv_ui.visible = false
-		var milestones_ui = $PlayerUI/MilestoneListUI
-		if milestones_ui: milestones_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	else:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func toggle_collection():
 	if not is_multiplayer_authority(): return
@@ -1596,10 +1643,8 @@ func toggle_collection():
 	inv_ui.visible = !inv_ui.visible
 	
 	if inv_ui.visible:
-		var tasks_ui = $PlayerUI/TaskListUI
-		if tasks_ui: tasks_ui.visible = false
-		var milestones_ui = $PlayerUI/MilestoneListUI
-		if milestones_ui: milestones_ui.visible = false
+		var prog_ui = $PlayerUI/ProgressionUI
+		if prog_ui: prog_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		# FORCE A REFRESH SO IT'S NOT EMPTY
 		inv_ui.refresh_ui({"items": items_held, "artifacts": artifacts_crafted})
@@ -1703,11 +1748,11 @@ func emit_task_event(action: String, item_data_or_path):
 		item_data = item_data_or_path
 
 	if item_data != null:
-		var tasks_ui = $PlayerUI/TaskListUI
+		var tasks_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI
 		if tasks_ui and tasks_ui.has_method("handle_task_event"):
 			tasks_ui.handle_task_event(action, item_data)
 
-		var milestones_ui = $PlayerUI/MilestoneListUI
+		var milestones_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI
 		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
 			milestones_ui.handle_milestone_event(action, item_data)
 
@@ -1894,3 +1939,45 @@ func _play_footstep_sound():
 			$WalkAudioPlayer.volume_db = Global.walk_sound_2_volume
 		$WalkAudioPlayer.play()
 		footstep_iterator += 1
+
+@rpc("any_peer", "call_local")
+func _rpc_trigger_alt_interact(item_path: NodePath):
+	if multiplayer.get_remote_sender_id() != 1 and multiplayer.get_remote_sender_id() != 0: return
+	var node = get_node_or_null(item_path)
+	if node and node.has_method("alt_interact"):
+		var sender_id = multiplayer.get_remote_sender_id()
+		var p = get_tree().root.find_child(str(sender_id), true, false)
+		if p == null: p = self
+		node.alt_interact(p)
+
+@rpc("any_peer", "call_local")
+func learn_recipe_rpc(recipe_path: String):
+	# If called on server by client, sync it to them explicitly and let server know
+	# If called on client, the client updates their own data.
+	# We don't block sender IDs because clients need to tell the server they learned it.
+	if multiplayer.is_server():
+		var sender_id = multiplayer.get_remote_sender_id()
+		if sender_id != 1 and sender_id != 0:
+			# It's a client telling us they learned it. Update their server-side state.
+			var p = get_tree().root.find_child(str(sender_id), true, false)
+			if p and "recipes_unlocked" in p:
+				if not p.recipes_unlocked.has(recipe_path):
+					p.recipes_unlocked.append(recipe_path)
+			return
+
+	if not recipes_unlocked.has(recipe_path):
+		recipes_unlocked.append(recipe_path)
+
+		if is_multiplayer_authority():
+			save_recipes()
+			var recipe = load(recipe_path)
+			if recipe and has_node("PlayerUI/NotificationArea"):
+				$PlayerUI/NotificationArea.display_message("Recipe Learned: " + recipe.recipe_name + "!")
+
+func learn_recipe(recipe: ArtifactData):
+	if recipe:
+		# Learn it locally
+		learn_recipe_rpc(recipe.resource_path)
+		# Tell server we learned it
+		if not multiplayer.is_server():
+			rpc_id(1, "learn_recipe_rpc", recipe.resource_path)

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="MilestoneData" load_steps=4 format=3 uid="uid://msbppdrnq6f1"]
 
-[ext_resource type="Texture2D" uid="uid://dbnnw1khh2lvp" path="res://textures/armchair_icon.png" id="1_h1suj"]
+[ext_resource type="Texture2D" uid="uid://dbnnw1khh2lvp" path="res://textures/icons/armchair_icon.png" id="1_h1suj"]
 [ext_resource type="Script" uid="uid://bgue0sfbadrh6" path="res://scripts/milestones/milestone_data.gd" id="1_ycet4"]
 [ext_resource type="Resource" uid="uid://dtl3pr4ht8fma" path="res://resources/items/furniture_armchair.tres" id="3_3p4u2"]
 
