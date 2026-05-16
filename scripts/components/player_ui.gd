@@ -12,7 +12,7 @@ func _ready():
 func update_money_ui():
 	var money_label = get_node_or_null("MoneyLabel")
 	if money_label:
-		money_label.text = "Money: $" + str(player.money)
+		money_label.text = "Money: $" + str(player.get("money"))
 
 func show_floating_money(amount: int):
 	if not player.is_multiplayer_authority(): return
@@ -75,6 +75,6 @@ func toggle_collection():
 		var prog_ui = get_node_or_null("ProgressionUI")
 		if prog_ui: prog_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		inv_ui.refresh_ui({"items": player.items_held, "artifacts": player.artifacts_crafted})
+		inv_ui.refresh_ui({"items": player.get("items_held"), "artifacts": player.get("artifacts_crafted")})
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED

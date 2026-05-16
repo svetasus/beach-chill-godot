@@ -49,46 +49,6 @@ var current_ui: Control = null
 var footstep_iterator : int = 0
 
 var is_typing = false
-var carried_items: Array[Node] = [null, null, null, null]
-var current_slot_index: int = 0
-var carried_item:
-	get:
-		return carried_items[current_slot_index]
-	set(value):
-		carried_items[current_slot_index] = value
-
-signal inventory_slots_updated(slots, active_index)
-
-func switch_slot(index: int):
-	if index < 0 or index >= carried_items.size(): return
-	if current_slot_index == index: return
-
-	var old_item = carried_item
-	if is_instance_valid(old_item):
-		# Put away the old item
-		old_item.visible = false
-		if old_item.has_method("set_ghost_appearance"):
-			old_item.set_ghost_appearance(false)
-
-		# If it's a tool, stop its logic
-		var anchor = old_item.get_node_or_null("MeshAnchor")
-		if anchor and anchor.get_child_count() > 0:
-			var potential_tool = anchor.get_child(0)
-			if potential_tool.has_method("update_proximity"):
-				potential_tool.update_proximity(null)
-
-	current_slot_index = index
-	var new_item = carried_item
-
-	if is_instance_valid(new_item):
-		# Equip the new item
-		new_item.visible = true
-		if new_item.has_method("set_ghost_appearance") and get_held_tool() == null:
-			new_item.set_ghost_appearance(true)
-
-		# It's already frozen from pick_up, so it's ready to snap in _process
-
-	inventory_slots_updated.emit(carried_items, current_slot_index)
 
 var catch_cooldown = false
 var last_hovered_item = null
@@ -99,7 +59,6 @@ var can_dig = false
 var jump_queued = false
 var can_place = true
 var current_furniture = null
-var _highlighted_node = null
 
 var water_areas_count: int = 0
 var current_water_surface_height: float = 0.0
@@ -168,7 +127,7 @@ func _enter_tree() -> void:
 	pass
 
 func _ready():
-	_ready_highlight_system()
+	$PlayerInteraction._ready_highlight_system()
 	placement_ray.set_collision_mask_value(4, true) # Layer 8 for tent collision bounds
 	tp_placement_ray.set_collision_mask_value(4, true)
 
@@ -212,7 +171,7 @@ func _ready():
 		if not multiplayer.is_server():
 			rpc_id(1, "sync_recipes_to_server", recipes_unlocked)
 		if has_node("PlayerUI"): $PlayerUI.update_money_ui()
-		inventory_slots_updated.emit(carried_items, current_slot_index)
+		$PlayerInventory.inventory_slots_updated.emit($PlayerInventory.carried_items, $PlayerInventory.current_slot_index)
 		var tasks_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI
 		if tasks_ui and tasks_ui.has_method("load_tasks"):
 			tasks_ui.load_tasks()
@@ -456,13 +415,13 @@ func _input(event):
 
 	if event is InputEventKey and event.pressed and not is_typing:
 		if event.keycode == KEY_1:
-			switch_slot(0)
+			$PlayerInventory.switch_slot(0)
 		elif event.keycode == KEY_2:
-			switch_slot(1)
+			$PlayerInventory.switch_slot(1)
 		elif event.keycode == KEY_3:
-			switch_slot(2)
+			$PlayerInventory.switch_slot(2)
 		elif event.keycode == KEY_T:
-			switch_slot(3)
+			$PlayerInventory.switch_slot(3)
 
 	if event.is_action_pressed("inventory"):
 		if has_node("PlayerUI"): $PlayerUI.toggle_collection()
@@ -478,22 +437,22 @@ func _input(event):
 				_rpc_toggle_cart_grab.rpc_id(1, c.get_path())
 				return
 
-		if carried_item == null:
-			check_interaction()
+		if $PlayerInventory.get_carried_item() == null:
+			$PlayerInteraction.check_interaction()
 		else:
 			# If we hold an item, but look at a storage chest, try to deposit it
-			var potential_target = get_interaction_target()
+			var potential_target = $PlayerInteraction.get_interaction_target()
 			if potential_target:
 				if potential_target.has_method("deposit_item"):
-					check_interaction()
+					$PlayerInteraction.check_interaction()
 				elif potential_target.has_meta("is_cart_basket"):
-					check_interaction()
-				elif potential_target is Item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_battery" and potential_target.data and potential_target.data.name == "detector_01":
-					check_interaction()
-				elif potential_target is Item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_01" and potential_target.data and potential_target.data.name == "detector_battery":
-					check_interaction()
+					$PlayerInteraction.check_interaction()
+				elif potential_target is Item and $PlayerInventory.get_carried_item() is Item and $PlayerInventory.get_carried_item().data and $PlayerInventory.get_carried_item().data.name == "detector_battery" and potential_target.data and potential_target.data.name == "detector_01":
+					$PlayerInteraction.check_interaction()
+				elif potential_target is Item and $PlayerInventory.get_carried_item() is Item and $PlayerInventory.get_carried_item().data and $PlayerInventory.get_carried_item().data.name == "detector_01" and potential_target.data and potential_target.data.name == "detector_battery":
+					$PlayerInteraction.check_interaction()
 				else:
-					var tool = get_held_tool()
+					var tool = $PlayerInventory.get_held_tool()
 
 					# If we have a shovel/tool and are near a treasure...
 					if tool and tool.can_interact_with(current_treasure):
@@ -505,7 +464,7 @@ func _input(event):
 					else:
 						drop_item()
 			else:
-				var tool = get_held_tool()
+				var tool = $PlayerInventory.get_held_tool()
 
 				# If we have a shovel/tool and are near a treasure...
 				if tool and tool.can_interact_with(current_treasure):
@@ -531,84 +490,25 @@ func _input(event):
 
 		if current_furniture != null:
 			leave_furniture()
-		elif carried_item == null:
-			var target = get_interaction_target()
+		elif $PlayerInventory.get_carried_item() == null:
+			var target = $PlayerInteraction.get_interaction_target()
 			if target and target is Item and target.has_method("alt_interact"):
 				target.alt_interact(self)
-		elif carried_item != null:
-			if carried_item.has_method("alt_interact"):
-				carried_item.alt_interact(self)
+		elif $PlayerInventory.get_carried_item() != null:
+			if $PlayerInventory.get_carried_item().has_method("alt_interact"):
+				$PlayerInventory.get_carried_item().alt_interact(self)
 
-				var net_id = carried_item.name.to_int()
+				var net_id = $PlayerInventory.get_carried_item().name.to_int()
 				if net_id > 0:
-					_rpc_trigger_alt_interact.rpc_id(1, carried_item.get_path())
+					_rpc_trigger_alt_interact.rpc_id(1, $PlayerInventory.get_carried_item().get_path())
 
 	# NEW: Press Left Click (or a new 'throw' action) to yeet!
 	if event.is_action_pressed("throw") and not is_typing:
 		if not is_multiplayer_authority(): return
-		if carried_item != null:
+		if $PlayerInventory.get_carried_item() != null:
 			throw_item()
 			
 			
-
-
-func check_interaction():
-	if not can_interact_here(): return
-	if not is_multiplayer_authority(): return
-	
-	var target = get_interaction_target()
-	if target:
-		if target.has_method("deposit_item"):
-		# Scenario A: We are holding an item -> STORE IT
-			if carried_item != null:
-				# Tell the Server to do the storage math
-				_rpc_request_deposit.rpc_id(1, target.get_path(), carried_item.get_path())
-				# Drop it locally so our hand is empty
-				carried_item = null
-				carried_items[current_slot_index] = null
-				inventory_slots_updated.emit(carried_items, current_slot_index)
-				#_remove_ghost()
-			
-			# Scenario B: Our hands are empty -> OPEN UI
-			else:
-				if target.has_method("interact"):
-					target.interact(self)
-
-		elif target.has_method("interact"):
-			target.interact(self)
-		
-		# Specific logic for carts
-		elif target.has_meta("is_cart_handle"):
-			if carried_item == null:
-				var cart_node = target.get_meta("cart_node")
-				_rpc_toggle_cart_grab.rpc_id(1, cart_node.get_path())
-		elif target.has_meta("is_cart_basket"):
-			if carried_item != null:
-				var cart_node = target.get_meta("cart_node")
-
-				# We allow "drop" even if can_place is false because we're interacting
-				# Temporarily force can_place true to bypass standard drop block
-				can_place = true
-				_rpc_request_cart_deposit.rpc_id(1, cart_node.get_path(), carried_item.get_path())
-				drop_item()
-				
-		# NEW GUARD: If someone else is already the boss of this item and it's 'frozen' (held), ignore it!
-		elif target is Item and target.freeze == true:
-			print("Someone is already holding this!")
-			return
-
-		elif target is Item and carried_item != null and carried_item is Item:
-			if target.has_method("apply_item") and target.apply_item(carried_item):
-				carried_item.destroy_item.rpc()
-				carried_item = null
-				carried_items[current_slot_index] = null
-				inventory_slots_updated.emit(carried_items, current_slot_index)
-			elif carried_item.has_method("apply_item") and carried_item.apply_item(target):
-				target.destroy_item.rpc()
-
-		# ... rest of your existing logic (Crates, etc.)
-		elif target.is_in_group("interactables"):
-			pick_up(target)
 
 
 func pick_up(item):
@@ -670,17 +570,17 @@ func pick_up(item):
 			is_tool = true
 
 		if is_tool:
-			if is_instance_valid(carried_items[3]):
+			if is_instance_valid($PlayerInventory.carried_items[3]):
 				$PlayerUI/NotificationArea.display_message("You can't pick up another tool")
 
 				# Give up authority, restore state
 				item.sync_authority.rpc(1, false, Vector3.ZERO, item.global_position, item.global_rotation.y)
 				return
 			else:
-				if carried_item == null:
-					switch_slot(3)
+				if $PlayerInventory.get_carried_item() == null:
+					$PlayerInventory.switch_slot(3)
 				else:
-					carried_items[3] = item
+					$PlayerInventory.carried_items[3] = item
 					var item_node = item
 					item_node.visible = false
 					if item_node.has_method("set_ghost_appearance"):
@@ -692,7 +592,7 @@ func pick_up(item):
 						if potential_tool.has_method("update_proximity"):
 							potential_tool.update_proximity(null)
 
-					inventory_slots_updated.emit(carried_items, current_slot_index)
+					$PlayerInventory.inventory_slots_updated.emit($PlayerInventory.carried_items, $PlayerInventory.current_slot_index)
 					placement_ray.add_exception(item)
 					if "data" in item and item.data != null:
 						emit_task_event("gather", item.data)
@@ -709,13 +609,13 @@ func pick_up(item):
 						item.is_autospawned = false
 					return
 		else:
-			if current_slot_index == 3:
+			if $PlayerInventory.current_slot_index == 3:
 				$PlayerUI/NotificationArea.display_message("You can't pick up a non-tool into the tool slot")
 				item.sync_authority.rpc(1, false, Vector3.ZERO, item.global_position, item.global_rotation.y)
 				return
 
-		carried_item = item
-		inventory_slots_updated.emit(carried_items, current_slot_index)
+		$PlayerInventory.set_carried_item(item)
+		$PlayerInventory.inventory_slots_updated.emit($PlayerInventory.carried_items, $PlayerInventory.current_slot_index)
 		placement_ray.add_exception(item)
 		if "data" in item and item.data != null:
 			emit_task_event("gather", item.data)
@@ -731,14 +631,14 @@ func pick_up(item):
 					collection_updated.emit({"items": items_held, "artifacts": artifacts_crafted})
 		
 		# If it's a naturally spawned item, mark it as claimed by a player so it gets saved
-		if "is_autospawned" in carried_item:
-			carried_item.is_autospawned = false
+		if "is_autospawned" in $PlayerInventory.get_carried_item():
+			$PlayerInventory.get_carried_item().is_autospawned = false
 
-		if carried_item.has_method("set_ghost_appearance") and get_held_tool() == null:
-			carried_item.set_ghost_appearance(true)
+		if $PlayerInventory.get_carried_item().has_method("set_ghost_appearance") and $PlayerInventory.get_held_tool() == null:
+			$PlayerInventory.get_carried_item().set_ghost_appearance(true)
 		
 		# 1. ENABLE SYNC: Let the network sync the root transform.
-		var sync = carried_item.get_node_or_null("MultiplayerSynchronizer")
+		var sync = $PlayerInventory.get_carried_item().get_node_or_null("MultiplayerSynchronizer")
 		if sync:
 			sync.set_process(true)
 			sync.set_physics_process(true)
@@ -746,16 +646,16 @@ func pick_up(item):
 		# 3. PHYSICS & TOP LEVEL: 
 		# Setting top_level = true means the item moves in Global Space, 
 		# not "relative" to your hand.
-		carried_item.freeze = true
+		$PlayerInventory.get_carried_item().freeze = true
 		
 		# 4. INITIAL SNAP: Put it at the proper marker immediately
 		# is_tool is already declared at line 605
 		if is_tool:
-			carried_item.global_position = hand.global_position
-			carried_item.global_basis = hand.global_basis.orthonormalized().scaled(carried_item.scale)
+			$PlayerInventory.get_carried_item().global_position = hand.global_position
+			$PlayerInventory.get_carried_item().global_basis = hand.global_basis.orthonormalized().scaled($PlayerInventory.get_carried_item().scale)
 		else:
-			carried_item.global_position = head_item_marker.global_position
-			carried_item.global_basis = head_item_marker.global_basis.orthonormalized().scaled(carried_item.scale)
+			$PlayerInventory.get_carried_item().global_position = head_item_marker.global_position
+			$PlayerInventory.get_carried_item().global_basis = head_item_marker.global_basis.orthonormalized().scaled($PlayerInventory.get_carried_item().scale)
 
 	#print("SUCCESS: Picked up ", item.name)
 
@@ -768,26 +668,26 @@ func drop_item():
 	if not is_multiplayer_authority(): return
 	if not can_place: return
 	
-	carried_item.visible = true
-	placement_ray.remove_exception(carried_item)
-	tp_placement_ray.remove_exception(carried_item)
+	$PlayerInventory.get_carried_item().visible = true
+	placement_ray.remove_exception($PlayerInventory.get_carried_item())
+	tp_placement_ray.remove_exception($PlayerInventory.get_carried_item())
 	
 	# Stop tool logic
-	var tool = get_held_tool()
+	var tool = $PlayerInventory.get_held_tool()
 	if tool: 
 		tool.update_proximity(null)
 	
 	
-	var item = carried_item
+	var item = $PlayerInventory.get_carried_item()
 	
-	if is_instance_valid(carried_item):
-		if carried_item.has_method("set_ghost_appearance"):
-			carried_item.set_ghost_appearance(false)
+	if is_instance_valid($PlayerInventory.get_carried_item()):
+		if $PlayerInventory.get_carried_item().has_method("set_ghost_appearance"):
+			$PlayerInventory.get_carried_item().set_ghost_appearance(false)
 		
 			
-	carried_item = null
-	carried_items[current_slot_index] = null
-	inventory_slots_updated.emit(carried_items, current_slot_index)
+	$PlayerInventory.set_carried_item(null)
+	$PlayerInventory.set_carried_item(null)
+	$PlayerInventory.inventory_slots_updated.emit($PlayerInventory.carried_items, $PlayerInventory.current_slot_index)
 	rotation_offset = 0.0
 	
 	var final_pos = item.global_position
@@ -827,23 +727,23 @@ func drop_item():
 
 
 func throw_item():
-	if not is_multiplayer_authority() or carried_item == null: return 
+	if not is_multiplayer_authority() or $PlayerInventory.get_carried_item() == null: return
 	if not can_place: return
 	
-	if is_instance_valid(carried_item):
-		if carried_item.has_method("set_ghost_appearance"):
-			carried_item.set_ghost_appearance(false)
+	if is_instance_valid($PlayerInventory.get_carried_item()):
+		if $PlayerInventory.get_carried_item().has_method("set_ghost_appearance"):
+			$PlayerInventory.get_carried_item().set_ghost_appearance(false)
 	
-	var tool = get_held_tool()
+	var tool = $PlayerInventory.get_held_tool()
 	if tool:
 		tool.update_proximity(null)
 		
 
 	
-	var item = carried_item
-	carried_item = null # This stops the _process snap-to-hand IMMEDIATELY
-	carried_items[current_slot_index] = null
-	inventory_slots_updated.emit(carried_items, current_slot_index)
+	var item = $PlayerInventory.get_carried_item()
+	$PlayerInventory.set_carried_item(null) # This stops the _process snap-to-hand IMMEDIATELY
+	$PlayerInventory.set_carried_item(null)
+	$PlayerInventory.inventory_slots_updated.emit($PlayerInventory.carried_items, $PlayerInventory.current_slot_index)
 	item.scale = Vector3.ONE
 
 	# Reset the anchor offset so it doesn't throw from under the ground!
@@ -927,7 +827,7 @@ func _on_catch_zone_body_entered(body):
 	
 	
 	# If I'm already holding something, I can't catch another thing
-	if carried_item != null or catch_cooldown: return
+	if $PlayerInventory.get_carried_item() != null or catch_cooldown: return
 	
 	# Only catch if it's a throwable object and NOT currently held by anyone
 	if body.is_in_group("interactables") and body is RigidBody3D:
@@ -940,30 +840,7 @@ func _on_catch_zone_body_entered(body):
 				
 				
 				
-func get_held_tool() -> Tool:
-	if carried_item:
-		# Search MeshAnchor for any script
-		var anchor = carried_item.get_node_or_null("MeshAnchor")
-		if anchor and anchor.get_child_count() > 0:
-			var potential_tool = anchor.get_child(0)
-			# Only return it if it actually has tool-like functions
-			if potential_tool.has_method("update_proximity"):
-				return potential_tool
-	
-	# If it's just a shell, return null so the player knows 
-	# there's nothing to "beep" with.
-	return null
-	
 # Helper function to get ALL children (add this to player script or use a loop)
-func _find_tool_recursive(node) -> Tool:
-	if node is Tool:
-		return node
-	for child in node.get_children():
-		var found = _find_tool_recursive(child)
-		if found: return found
-	return null
-	
-	
 func set_near_treasure(treasure, is_near: bool):
 	# 1. Update the player's knowledge
 	if is_near:
@@ -973,11 +850,11 @@ func set_near_treasure(treasure, is_near: bool):
 		nearby_treasures.erase(treasure)
 	
 	# 2. Update the tool's knowledge
-	var tool = get_held_tool()
+	var tool = $PlayerInventory.get_held_tool()
 	if tool:
 		print("PLAYER: Found tool: ", tool.name)
 	#else:
-		#print("PLAYER: No tool found in carried_item!")
+		#print("PLAYER: No tool found in $PlayerInventory.get_carried_item()!")
 		
 	if tool:
 		tool.update_proximity(current_treasure)
@@ -997,20 +874,20 @@ func _rpc_teleport(target_pos: Vector3, target_rot: Vector3):
 
 
 func _process(_delta):
-	_sync_highlight_camera()
+	$PlayerInteraction._sync_highlight_camera()
 	if not is_multiplayer_authority(): return
 	
 	
 	update_action_ui()
 	
-	if carried_item:
+	if $PlayerInventory.get_carried_item():
 		update_ghost_preview()
 		
 	# Process inactive carried items to keep them out of sight but attached to player position
-	for i in range(carried_items.size()):
-		if i != current_slot_index and is_instance_valid(carried_items[i]):
+	for i in range($PlayerInventory.carried_items.size()):
+		if i != $PlayerInventory.current_slot_index and is_instance_valid($PlayerInventory.carried_items[i]):
 			var is_tool = false
-			var inactive_item = carried_items[i]
+			var inactive_item = $PlayerInventory.carried_items[i]
 			if "data" in inactive_item and inactive_item.data and "is_tool" in inactive_item.data and inactive_item.data.is_tool:
 				is_tool = true
 			if is_tool:
@@ -1044,7 +921,7 @@ func _process(_delta):
 		else:
 			can_dig = false
 		
-		var tool = get_held_tool()
+		var tool = $PlayerInventory.get_held_tool()
 		if tool:
 			tool.update_proximity(current_treasure)
 			
@@ -1053,25 +930,25 @@ func _process(_delta):
 			
 			
 func update_ghost_preview():
-	if not carried_item: return
+	if not $PlayerInventory.get_carried_item(): return
 
 	# If it's a tool, keep it in hand (no ghost placement)
-	if get_held_tool() != null:
-		carried_item.global_position = hand.global_position
-		carried_item.global_basis = hand.global_basis.orthonormalized().scaled(carried_item.scale)
+	if $PlayerInventory.get_held_tool() != null:
+		$PlayerInventory.get_carried_item().global_position = hand.global_position
+		$PlayerInventory.get_carried_item().global_basis = hand.global_basis.orthonormalized().scaled($PlayerInventory.get_carried_item().scale)
 		return
 	
 	# For non-tools, the physical object stays on the head so other players see it there.
-	carried_item.global_position = head_item_marker.global_position
-	carried_item.global_basis = head_item_marker.global_basis.orthonormalized().scaled(carried_item.scale)
+	$PlayerInventory.get_carried_item().global_position = head_item_marker.global_position
+	$PlayerInventory.get_carried_item().global_basis = head_item_marker.global_basis.orthonormalized().scaled($PlayerInventory.get_carried_item().scale)
 
-	var anchor = carried_item.get_node_or_null("MeshAnchor")
+	var anchor = $PlayerInventory.get_carried_item().get_node_or_null("MeshAnchor")
 
 	if is_third_person:
 		# We don't do raycast ghost in 3rd person for items, disable visual ghost mode
-		if carried_item.has_method("set_ghost_appearance"):
-			carried_item.set_ghost_appearance(false)
-		carried_item.visible = true
+		if $PlayerInventory.get_carried_item().has_method("set_ghost_appearance"):
+			$PlayerInventory.get_carried_item().set_ghost_appearance(false)
+		$PlayerInventory.get_carried_item().visible = true
 
 		# Reset the anchor just in case it was offset in first person
 		if anchor:
@@ -1080,8 +957,8 @@ func update_ghost_preview():
 			anchor.scale = old_scale
 
 		can_place = true
-		if carried_item.has_method("set_ghost_valid"):
-			carried_item.set_ghost_valid(can_place)
+		if $PlayerInventory.get_carried_item().has_method("set_ghost_valid"):
+			$PlayerInventory.get_carried_item().set_ghost_valid(can_place)
 		return
 
 	if not anchor: return
@@ -1102,7 +979,7 @@ func update_ghost_preview():
 	var found_collision = false
 
 	# Helper to process a node's AABB in the item's local space
-	var item_inv_trans = carried_item.global_transform.affine_inverse()
+	var item_inv_trans = $PlayerInventory.get_carried_item().global_transform.affine_inverse()
 
 	# Find all CollisionShape3D nodes (recursive) under MeshAnchor
 	var search_nodes = anchor.find_children("*", "CollisionShape3D", true, false)
@@ -1127,28 +1004,28 @@ func update_ghost_preview():
 		y_offset = -min_y
 
 	# Apply scale just in case the parent is scaled
-	y_offset *= carried_item.scale.y
+	y_offset *= $PlayerInventory.get_carried_item().scale.y
 
 	# Check if we are looking at a cart basket (via raycast OR interaction target)
 	var looking_at_cart = false
 	if active_ray.get_collider() and active_ray.get_collider().has_meta("is_cart_basket"):
 		looking_at_cart = true
 	else:
-		var interact_target = get_interaction_target()
+		var interact_target = $PlayerInteraction.get_interaction_target()
 		if interact_target and interact_target.has_meta("is_cart_basket"):
 			looking_at_cart = true
 
 	if looking_at_cart:
 		# Hide ghost and block standard drop placement
-		if carried_item.has_method("set_ghost_appearance"):
-			carried_item.set_ghost_appearance(false)
-		carried_item.visible = false
+		if $PlayerInventory.get_carried_item().has_method("set_ghost_appearance"):
+			$PlayerInventory.get_carried_item().set_ghost_appearance(false)
+		$PlayerInventory.get_carried_item().visible = false
 		can_place = false
 	else:
 		# Standard placement
-		carried_item.visible = true
-		if carried_item.has_method("set_ghost_appearance"):
-			carried_item.set_ghost_appearance(true)
+		$PlayerInventory.get_carried_item().visible = true
+		if $PlayerInventory.get_carried_item().has_method("set_ghost_appearance"):
+			$PlayerInventory.get_carried_item().set_ghost_appearance(true)
 
 		if active_ray.is_colliding():
 			can_place = true
@@ -1171,8 +1048,8 @@ func update_ghost_preview():
 			anchor.global_position = hand.global_position
 			anchor.global_basis = hand.global_basis.orthonormalized().scaled(anchor.scale)
 
-	if carried_item.has_method("set_ghost_valid"):
-		carried_item.set_ghost_valid(can_place)
+	if $PlayerInventory.get_carried_item().has_method("set_ghost_valid"):
+		$PlayerInventory.get_carried_item().set_ghost_valid(can_place)
 
 
 	
@@ -1205,9 +1082,9 @@ func update_action_ui():
 	elif current_furniture != null and is_instance_valid(current_furniture):
 		target_text = "[R] Get up"
 		highlight_target = current_furniture
-	elif carried_item == null:
+	elif $PlayerInventory.get_carried_item() == null:
 		# Use your existing interaction check (Raycast or Shapecast)
-		var potential_item = get_interaction_target() 
+		var potential_item = $PlayerInteraction.get_interaction_target()
 		
 		if potential_item:
 			highlight_target = potential_item
@@ -1234,58 +1111,58 @@ func update_action_ui():
 					target_text = "[E] Take Cart"
 					highlight_target = cart_node
 	else:
-		var potential_target = get_interaction_target()
+		var potential_target = $PlayerInteraction.get_interaction_target()
 		if potential_target:
 			if potential_target.has_method("deposit_item"):
-				target_text = "[E] Store " + carried_item.display_name
+				target_text = "[E] Store " + $PlayerInventory.get_carried_item().display_name
 				highlight_target = potential_target
 			elif potential_target.has_meta("is_cart_basket"):
 				target_text = "[E] Deposit in cart"
 				highlight_target = potential_target.get_meta("cart_node")
-			elif potential_target is Item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_battery" and potential_target.data and potential_target.data.name == "detector_01":
+			elif potential_target is Item and $PlayerInventory.get_carried_item() is Item and $PlayerInventory.get_carried_item().data and $PlayerInventory.get_carried_item().data.name == "detector_battery" and potential_target.data and potential_target.data.name == "detector_01":
 				var detector_skin = potential_target.get_node_or_null("MeshAnchor").get_child(0) if potential_target.has_node("MeshAnchor") and potential_target.get_node("MeshAnchor").get_child_count() > 0 else null
 				if detector_skin and "charges" in detector_skin:
 					target_text = "[E] charge detector +1 (" + str(detector_skin.charges) + "/" + str(detector_skin.max_charges) + " now)"
 				else:
 					target_text = "[E] charge detector"
 				highlight_target = potential_target
-			elif potential_target is Item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_01" and potential_target.data and potential_target.data.name == "detector_battery":
-				var detector_skin = carried_item.get_node_or_null("MeshAnchor").get_child(0) if carried_item.has_node("MeshAnchor") and carried_item.get_node("MeshAnchor").get_child_count() > 0 else null
+			elif potential_target is Item and $PlayerInventory.get_carried_item() is Item and $PlayerInventory.get_carried_item().data and $PlayerInventory.get_carried_item().data.name == "detector_01" and potential_target.data and potential_target.data.name == "detector_battery":
+				var detector_skin = $PlayerInventory.get_carried_item().get_node_or_null("MeshAnchor").get_child(0) if $PlayerInventory.get_carried_item().has_node("MeshAnchor") and $PlayerInventory.get_carried_item().get_node("MeshAnchor").get_child_count() > 0 else null
 				if detector_skin and "charges" in detector_skin:
 					target_text = "[E] charge detector +1 (" + str(detector_skin.charges) + "/" + str(detector_skin.max_charges) + " now)"
 				else:
 					target_text = "[E] charge detector"
 				highlight_target = potential_target
 			else:
-				var tool = get_held_tool()
+				var tool = $PlayerInventory.get_held_tool()
 				if tool and tool.can_interact_with(current_treasure):
 					target_text = "[E] " + tool.get_action_name()
 					highlight_target = current_treasure
 				else:
 					if can_place:
-						target_text = "[E] Drop " + carried_item.display_name + "\n[Q] Throw " + carried_item.display_name
+						target_text = "[E] Drop " + $PlayerInventory.get_carried_item().display_name + "\n[Q] Throw " + $PlayerInventory.get_carried_item().display_name
 					else:
 						target_text = "You can't place it here"
 		else:
-			var tool = get_held_tool()
+			var tool = $PlayerInventory.get_held_tool()
 			if tool and tool.can_interact_with(current_treasure):
 				target_text = "[E] " + tool.get_action_name()
 				highlight_target = current_treasure
 			else:
 				if can_place:
-					target_text = "[E] Drop " + carried_item.display_name + "\n[Q] Throw " + carried_item.display_name
+					target_text = "[E] Drop " + $PlayerInventory.get_carried_item().display_name + "\n[Q] Throw " + $PlayerInventory.get_carried_item().display_name
 				else:
 					target_text = "You can't place it here"
 
-	if carried_item and carried_item is Item and carried_item.data and carried_item.data.name == "detector_01":
-		var detector_skin = carried_item.get_node_or_null("MeshAnchor").get_child(0) if carried_item.has_node("MeshAnchor") and carried_item.get_node("MeshAnchor").get_child_count() > 0 else null
+	if $PlayerInventory.get_carried_item() and $PlayerInventory.get_carried_item() is Item and $PlayerInventory.get_carried_item().data and $PlayerInventory.get_carried_item().data.name == "detector_01":
+		var detector_skin = $PlayerInventory.get_carried_item().get_node_or_null("MeshAnchor").get_child(0) if $PlayerInventory.get_carried_item().has_node("MeshAnchor") and $PlayerInventory.get_carried_item().get_node("MeshAnchor").get_child_count() > 0 else null
 		if detector_skin and "charges" in detector_skin and detector_skin.charges <= 0:
 			hint_text = "Needs batteries, buy them in shop"
 
 	if target_text == "" or target_text == "You can't place it here":
-		_update_highlight(null)
+		$PlayerInteraction._update_highlight(null)
 	else:
-		_update_highlight(highlight_target)
+		$PlayerInteraction._update_highlight(highlight_target)
 
 	if hint_label:
 		if hint_text != "":
@@ -1310,7 +1187,7 @@ func update_action_ui():
 
 func use_furniture(furniture_node: Node3D):
 	if not is_multiplayer_authority(): return
-	if carried_item != null:
+	if $PlayerInventory.get_carried_item() != null:
 		drop_item()
 	current_furniture = furniture_node
 	if current_furniture is RigidBody3D:
@@ -1357,54 +1234,6 @@ func _update_sit_visuals(is_sitting: bool):
 		if state_sit: state_sit.hide()
 		if state_stand: state_stand.show()
 		if state_swim: state_swim.hide()
-
-func get_interaction_target():
-	var active_shapecast = $Body/Head/Camera3D/InteractionShape
-	if is_third_person:
-		active_shapecast = tp_shapecast
-
-	if active_shapecast.is_colliding():
-		var collision_count = active_shapecast.get_collision_count()
-
-		var my_tent = get_tent_for_position(global_position)
-
-		if carried_item == null:
-			# If NOT carrying an item, prioritize picking up items so large zones don't block them
-			for i in range(collision_count):
-				var collider = active_shapecast.get_collider(i)
-				if collider is Item:
-					if get_tent_for_position(collider.global_position) == my_tent:
-						return collider
-
-			for i in range(collision_count):
-				var collider = active_shapecast.get_collider(i)
-				if get_tent_for_position(collider.global_position) != my_tent: continue
-
-				if collider.has_method("deposit_item") or collider.has_method("get_interaction_text") or collider.has_method("interact"):
-					return collider
-				if collider.has_meta("is_cart_handle") or collider.has_meta("is_cart_basket"):
-					return collider
-		else:
-			# If CARRYING an item, prioritize containers (chest, pot, cart basket)
-			# so we can easily deposit even if the container is full of other items
-			for i in range(collision_count):
-				var collider = active_shapecast.get_collider(i)
-				if get_tent_for_position(collider.global_position) != my_tent: continue
-
-				if collider.has_method("deposit_item") or collider.has_meta("is_cart_basket"):
-					return collider
-
-			for i in range(collision_count):
-				var collider = active_shapecast.get_collider(i)
-				if get_tent_for_position(collider.global_position) != my_tent: continue
-
-				# Fallback to general interaction (maybe a tool interact like digging, or alt interact)
-				if collider is Item or collider.has_method("interact") or collider.has_meta("is_cart_handle"):
-					return collider
-
-	return null
-
-
 
 @rpc("any_peer", "call_local")
 func add_to_collection_rpc(data_path: String):
@@ -1566,133 +1395,8 @@ func _rpc_request_cart_deposit(cart_path: NodePath, item_path: NodePath):
 			cart.deposit_item_cart(item)
 
 # --- HIGHLIGHT LOGIC ---
-const OUTLINE_MATERIAL = preload(Global.HIGHLIGHT_OBJECT_MAT_PATH)
 
 # Visual Layer 20 is reserved for highlighted objects (bitwise: 1 << 19)
-const HIGHLIGHT_LAYER = 1 << 19
-
-var _highlight_viewport: SubViewport
-var _highlight_camera: Camera3D
-var _highlight_container: SubViewportContainer
-var _highlight_tween: Tween = null
-var _highlight_meshes: Array[MeshInstance3D] = []
-
-func _ready_highlight_system():
-	# Build the Post-Processing Rig and attach it to the screen UI
-	_highlight_container = SubViewportContainer.new()
-	_highlight_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_highlight_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_highlight_container.stretch = true # Ensure viewport perfectly matches screen
-
-	# Duplicate material so alpha_multiplier fading doesn't affect other players globally
-	_highlight_container.material = OUTLINE_MATERIAL.duplicate()
-
-	_highlight_viewport = SubViewport.new()
-	_highlight_viewport.transparent_bg = true
-	_highlight_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-
-	_highlight_camera = Camera3D.new()
-	# ONLY see layer 20
-	_highlight_camera.cull_mask = HIGHLIGHT_LAYER
-	_highlight_camera.environment = Environment.new()
-	_highlight_camera.environment.background_mode = Environment.BG_COLOR
-	_highlight_camera.environment.background_color = Color(0, 0, 0, 0)
-
-	_highlight_viewport.add_child(_highlight_camera)
-	_highlight_container.add_child(_highlight_viewport)
-
-	# Add it underneath other UI elements if possible, or straight to PlayerUI
-	if has_node("PlayerUI"):
-		$PlayerUI.add_child(_highlight_container)
-		$PlayerUI.move_child(_highlight_container, 0) # Render behind crosshair/text
-
-func _sync_highlight_camera():
-	if not _highlight_camera: return
-
-	var main_cam = $Body/Head/Camera3D
-	if is_third_person:
-		main_cam = tp_camera
-
-	if main_cam and main_cam.current:
-		_highlight_camera.global_transform = main_cam.global_transform
-		_highlight_camera.fov = main_cam.fov
-		_highlight_camera.size = main_cam.size
-
-func _get_meshes_recursive(node: Node, meshes: Array[MeshInstance3D]) -> void:
-	if node is MeshInstance3D:
-		meshes.append(node)
-	for child in node.get_children():
-		_get_meshes_recursive(child, meshes)
-
-func _update_highlight(target_node: Node) -> void:
-	if _highlighted_node == target_node:
-		return
-
-	if _highlighted_node != null and is_instance_valid(_highlighted_node):
-		_fade_highlight(false)
-		# We NO LONGER immediately strip the layer bit here!
-		# It must happen at the end of the fade_out tween to remain visible while fading.
-
-	_highlighted_node = target_node
-
-	if _highlighted_node != null and is_instance_valid(_highlighted_node):
-		# Immediately clear old highlight meshes if targeting a new object
-		# while a previous fadeout was incomplete to prevent multiple highlights.
-		if _highlight_meshes.size() > 0:
-			for m in _highlight_meshes:
-				if is_instance_valid(m):
-					m.layers &= ~HIGHLIGHT_LAYER
-		_highlight_meshes.clear()
-
-		# Performance Optimization: Cache meshes on the target node to avoid O(N) recursive crawls
-		if _highlighted_node.has_meta("_cached_meshes"):
-			var cached = _highlighted_node.get_meta("_cached_meshes")
-			var valid_cache = true
-			# Validate cached meshes (in case any were freed or the tree changed)
-			for m in cached:
-				if is_instance_valid(m):
-					_highlight_meshes.append(m)
-				else:
-					# If any are invalid, the cache is stale; clear and re-crawl
-					valid_cache = false
-					break
-
-			if not valid_cache:
-				_highlight_meshes.clear()
-				_get_meshes_recursive(_highlighted_node, _highlight_meshes)
-				_highlighted_node.set_meta("_cached_meshes", _highlight_meshes.duplicate())
-		else:
-			_get_meshes_recursive(_highlighted_node, _highlight_meshes)
-			_highlighted_node.set_meta("_cached_meshes", _highlight_meshes.duplicate())
-
-		# Add the highlight layer bit to new meshes
-		for m in _highlight_meshes:
-			if is_instance_valid(m):
-				m.layers |= HIGHLIGHT_LAYER
-
-		_fade_highlight(true)
-
-func _fade_highlight(fade_in: bool) -> void:
-	if _highlight_tween and _highlight_tween.is_valid():
-		_highlight_tween.kill()
-
-	_highlight_tween = create_tween()
-	var mat = _highlight_container.material # Target the local instance material
-
-	if fade_in:
-		_highlight_tween.tween_property(mat, "shader_parameter/alpha_multiplier", 1.0, 0.2)
-	else:
-		_highlight_tween.tween_property(mat, "shader_parameter/alpha_multiplier", 0.0, 0.2)
-
-		# Now that we're completely faded out, strip the highlight bit so
-		# the secondary camera stops rendering them unnecessarily.
-		_highlight_tween.tween_callback(_on_highlight_fade_out_complete)
-
-func _on_highlight_fade_out_complete() -> void:
-	for m in _highlight_meshes:
-		if is_instance_valid(m):
-			m.layers &= ~HIGHLIGHT_LAYER
-	_highlight_meshes.clear()
 
 
 func _play_footstep_sound():
