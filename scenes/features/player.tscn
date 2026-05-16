@@ -9,6 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://1fqev85lufm7" path="res://sounds/interact_sound.ogg" id="17_dpg8g"]
 [ext_resource type="Script" uid="uid://8q8iefh84k0c" path="res://scripts/hotkey_hints.gd" id="hotkey_hints_script"]
 [ext_resource type="PackedScene" uid="uid://cxab321300000" path="res://scenes/features/UI/progression_ui.tscn" id="ProgressionUI_ext"]
+[ext_resource type="Script" uid="uid://e198014544904b2c9d3e24630d9411bf" path="res://scripts/components/player_ui.gd" id="player_ui_s"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
 albedo_color = Color(0.731745, 0.926235, 0.904053, 1)
@@ -183,6 +184,7 @@ billboard = 1
 text = "PLAYER"
 
 [node name="PlayerUI" type="CanvasLayer" parent="."]
+script = ExtResource("player_ui_s")
 
 [node name="InventoryHUD" parent="PlayerUI" instance=ExtResource("14_invhud")]
 

@@ -211,7 +211,7 @@ func _ready():
 		load_recipes()
 		if not multiplayer.is_server():
 			rpc_id(1, "sync_recipes_to_server", recipes_unlocked)
-		update_money_ui()
+		if has_node("PlayerUI"): $PlayerUI.update_money_ui()
 		inventory_slots_updated.emit(carried_items, current_slot_index)
 		var tasks_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI
 		if tasks_ui and tasks_ui.has_method("load_tasks"):
@@ -425,12 +425,12 @@ func _input(event):
 	# If I press Escape, give me my mouse back!
 	if event.is_action_pressed("ui_cancel"): # 'ui_cancel' is usually the Esc key
 		if $PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible:
-			toggle_collection()
+			if has_node("PlayerUI"): $PlayerUI.toggle_collection()
 		elif $PlayerUI/ProgressionUI != null and $PlayerUI/ProgressionUI.visible:
 			if $PlayerUI/ProgressionUI.current_tab == "Tasks":
-				toggle_tasks()
+				if has_node("PlayerUI"): $PlayerUI.toggle_tasks()
 			else:
-				toggle_milestones()
+				if has_node("PlayerUI"): $PlayerUI.toggle_milestones()
 		elif Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
@@ -449,10 +449,10 @@ func _input(event):
 		jump_queued = true
 	
 	if event.is_action_pressed("toggle_tasks") and not is_typing:
-		toggle_tasks()
+		if has_node("PlayerUI"): $PlayerUI.toggle_tasks()
 
 	if event.is_action_pressed("toggle_milestones") and not is_typing:
-		toggle_milestones()
+		if has_node("PlayerUI"): $PlayerUI.toggle_milestones()
 
 	if event is InputEventKey and event.pressed and not is_typing:
 		if event.keycode == KEY_1:
@@ -465,7 +465,7 @@ func _input(event):
 			switch_slot(3)
 
 	if event.is_action_pressed("inventory"):
-		toggle_collection()
+		if has_node("PlayerUI"): $PlayerUI.toggle_collection()
 	
 	if event.is_action_pressed("interact"): # You define "interact" in Input Map (e.g., 'E' key)
 		if not is_multiplayer_authority(): return
@@ -1450,55 +1450,6 @@ func add_to_collection(data: ItemData):
 		pass
 
 
-func toggle_milestones():
-	if not is_multiplayer_authority(): return
-
-	var progression_ui = $PlayerUI/ProgressionUI
-	if not progression_ui: return
-
-	if progression_ui.visible and progression_ui.current_tab == "Milestones":
-		progression_ui.visible = false
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	else:
-		progression_ui.visible = true
-		progression_ui.set_tab("Milestones")
-		var inv_ui = $PlayerUI/CollectionUI
-		if inv_ui: inv_ui.visible = false
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-
-func toggle_tasks():
-	if not is_multiplayer_authority(): return
-
-	var progression_ui = $PlayerUI/ProgressionUI
-	if not progression_ui: return
-
-	if progression_ui.visible and progression_ui.current_tab == "Tasks":
-		progression_ui.visible = false
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	else:
-		progression_ui.visible = true
-		progression_ui.set_tab("Tasks")
-		var inv_ui = $PlayerUI/CollectionUI
-		if inv_ui: inv_ui.visible = false
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-
-func toggle_collection():
-	if not is_multiplayer_authority(): return
-	
-	var inv_ui = $PlayerUI/CollectionUI
-	inv_ui.visible = !inv_ui.visible
-	
-	if inv_ui.visible:
-		var prog_ui = $PlayerUI/ProgressionUI
-		if prog_ui: prog_ui.visible = false
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		# FORCE A REFRESH SO IT'S NOT EMPTY
-		inv_ui.refresh_ui({"items": items_held, "artifacts": artifacts_crafted})
-	else:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
-
-
 func get_tent_for_position(pos: Vector3) -> Node:
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsPointQueryParameters3D.new()
@@ -1580,8 +1531,8 @@ func receive_money(amount: int):
 		return
 	money += amount
 	save_money()
-	update_money_ui()
-	show_floating_money(amount)
+	if has_node("PlayerUI"): $PlayerUI.update_money_ui()
+	if has_node("PlayerUI"): $PlayerUI.show_floating_money(amount)
 
 
 @rpc("any_peer", "call_local")
@@ -1602,35 +1553,6 @@ func emit_task_event(action: String, item_data_or_path):
 		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
 			milestones_ui.handle_milestone_event(action, item_data)
 
-func update_money_ui():
-
-	var money_label = $PlayerUI/MoneyLabel
-	if money_label:
-		money_label.text = "Money: $" + str(money)
-
-func show_floating_money(amount: int):
-	var floating_label = Label.new()
-	floating_label.text = "+$" + str(amount)
-	floating_label.add_theme_color_override("font_color", Color(0.2, 1.0, 0.2)) # Green color
-	floating_label.add_theme_font_size_override("font_size", 24)
-
-	$PlayerUI.add_child(floating_label)
-
-	# Position it somewhat near the main money label
-	var start_pos = Vector2(20, 60)
-	if $PlayerUI/MoneyLabel:
-		start_pos = $PlayerUI/MoneyLabel.position + Vector2(0, 30)
-
-	floating_label.position = start_pos
-
-	var tween = create_tween()
-	# Float upwards and fade out
-	tween.tween_property(floating_label, "position", start_pos + Vector2(0, -50), 1.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_property(floating_label, "modulate:a", 0.0, 1.5)
-
-	tween.tween_callback(floating_label.queue_free)
-
-			
 @rpc("any_peer", "call_local")
 func _rpc_request_cart_deposit(cart_path: NodePath, item_path: NodePath):
 	# Security check: Only the Server manages the math
