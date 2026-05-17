@@ -74,7 +74,7 @@ func _on_buy_clicked(index: int, price: int):
 		if player_node.money >= price:
 			player_node.money -= price
 			player_node.save_money()
-			player_node.update_money_ui()
+			if player_node.has_node("PlayerUI"): player_node.get_node("PlayerUI").update_money_ui()
 
 			target_shop.request_buy.rpc_id(1, index)
 

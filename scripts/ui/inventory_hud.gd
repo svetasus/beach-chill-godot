@@ -12,8 +12,8 @@ var inactive_slot_color = Color(0.2, 0.2, 0.2, 0.5)
 
 func _ready():
 	var player = get_parent().get_parent()
-	if player.has_signal("inventory_slots_updated"):
-		player.inventory_slots_updated.connect(_on_inventory_slots_updated)
+	if player.has_node("PlayerInventory"):
+		player.get_node("PlayerInventory").inventory_slots_updated.connect(_on_inventory_slots_updated)
 
 	# Initial clear
 	for i in range(4):
