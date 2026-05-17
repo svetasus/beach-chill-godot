@@ -441,6 +441,8 @@ func _input(event):
 		elif $PlayerUI/ProgressionUI != null and $PlayerUI/ProgressionUI.visible:
 			if $PlayerUI/ProgressionUI.current_tab == "Tasks":
 				toggle_tasks()
+			elif $PlayerUI/ProgressionUI.current_tab == "Recipes":
+				toggle_recipes()
 			else:
 				toggle_milestones()
 		elif Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -1580,6 +1582,10 @@ func add_to_artifacts_crafted_rpc(data_path: String):
 		else:
 			artifacts_crafted[n] = {"resource": data, "count": 1}
 		collection_updated.emit({"items": items_held, "artifacts": artifacts_crafted})
+		var recipes_ui = get_node_or_null("PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/RecipeListUI")
+		if recipes_ui and recipes_ui.has_method("refresh_ui"):
+			recipes_ui.refresh_ui()
+
 func milestone_craft_rpc(data_path: String):
 	if multiplayer.get_remote_sender_id() != 1 and multiplayer.get_remote_sender_id() != 0: return
 	if not is_multiplayer_authority(): return
@@ -1616,6 +1622,22 @@ func toggle_milestones():
 	else:
 		progression_ui.visible = true
 		progression_ui.set_tab("Milestones")
+		var inv_ui = $PlayerUI/CollectionUI
+		if inv_ui: inv_ui.visible = false
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+func toggle_recipes():
+	if not is_multiplayer_authority(): return
+
+	var progression_ui = $PlayerUI/ProgressionUI
+	if not progression_ui: return
+
+	if progression_ui.visible and progression_ui.current_tab == "Recipes":
+		progression_ui.visible = false
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		progression_ui.visible = true
+		progression_ui.set_tab("Recipes")
 		var inv_ui = $PlayerUI/CollectionUI
 		if inv_ui: inv_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -1973,6 +1995,9 @@ func learn_recipe_rpc(recipe_path: String):
 			var recipe = load(recipe_path)
 			if recipe and has_node("PlayerUI/NotificationArea"):
 				$PlayerUI/NotificationArea.display_message("Recipe Learned: " + recipe.recipe_name + "!")
+			var recipes_ui = get_node_or_null("PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/RecipeListUI")
+			if recipes_ui and recipes_ui.has_method("refresh_ui"):
+				recipes_ui.refresh_ui()
 
 func learn_recipe(recipe: ArtifactData):
 	if recipe:

@@ -8,23 +8,29 @@ var window_style: StyleBoxFlat
 
 var tasks_ui
 var milestones_ui
+var recipes_ui
 
 func _ready():
 	self.hide()
 	tasks_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/TaskListUI")
 	milestones_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI")
+	recipes_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/RecipeListUI")
 	if tasks_ui: tasks_ui.hide()
 	if milestones_ui: milestones_ui.hide()
+	if recipes_ui: recipes_ui.hide()
 
 	_setup_styles()
 
 	var tasks_btn = get_node_or_null("PanelContainer/VBoxContainer/TabContainer/TasksTab")
 	var milestones_btn = get_node_or_null("PanelContainer/VBoxContainer/TabContainer/MilestonesTab")
+	var recipes_btn = get_node_or_null("PanelContainer/VBoxContainer/TabContainer/RecipesTab")
 
 	if tasks_btn:
 		tasks_btn.pressed.connect(func(): set_tab("Tasks"))
 	if milestones_btn:
 		milestones_btn.pressed.connect(func(): set_tab("Milestones"))
+	if recipes_btn:
+		recipes_btn.pressed.connect(func(): set_tab("Recipes"))
 
 	update_tab_styles()
 
@@ -65,6 +71,7 @@ func _setup_styles():
 func update_tab_styles():
 	var tasks_btn = get_node_or_null("PanelContainer/VBoxContainer/TabContainer/TasksTab")
 	var milestones_btn = get_node_or_null("PanelContainer/VBoxContainer/TabContainer/MilestonesTab")
+	var recipes_btn = get_node_or_null("PanelContainer/VBoxContainer/TabContainer/RecipesTab")
 
 	var text_color = Color(0.1, 0.1, 0.1, 1.0)
 	var inactive_text_color = Color(0.9, 0.9, 0.9, 1.0)
@@ -103,6 +110,23 @@ func update_tab_styles():
 			milestones_btn.add_theme_color_override("font_hover_color", inactive_text_color)
 			milestones_btn.add_theme_color_override("font_pressed_color", inactive_text_color)
 
+	if recipes_btn:
+		recipes_btn.add_theme_font_size_override("font_size", 32)
+		if current_tab == "Recipes":
+			recipes_btn.add_theme_stylebox_override("normal", active_style)
+			recipes_btn.add_theme_stylebox_override("hover", active_style)
+			recipes_btn.add_theme_stylebox_override("pressed", active_style)
+			recipes_btn.add_theme_color_override("font_color", text_color)
+			recipes_btn.add_theme_color_override("font_hover_color", text_color)
+			recipes_btn.add_theme_color_override("font_pressed_color", text_color)
+		else:
+			recipes_btn.add_theme_stylebox_override("normal", inactive_style)
+			recipes_btn.add_theme_stylebox_override("hover", inactive_style)
+			recipes_btn.add_theme_stylebox_override("pressed", inactive_style)
+			recipes_btn.add_theme_color_override("font_color", inactive_text_color)
+			recipes_btn.add_theme_color_override("font_hover_color", inactive_text_color)
+			recipes_btn.add_theme_color_override("font_pressed_color", inactive_text_color)
+
 func set_tab(tab_name: String):
 	current_tab = tab_name
 	update_tab_styles()
@@ -111,10 +135,20 @@ func set_tab(tab_name: String):
 func refresh_ui():
 	if not tasks_ui: tasks_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/TaskListUI")
 	if not milestones_ui: milestones_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI")
+	if not recipes_ui: recipes_ui = get_node_or_null("PanelContainer/VBoxContainer/ContentContainer/RecipeListUI")
 
 	if current_tab == "Tasks":
 		if tasks_ui: tasks_ui.show()
 		if milestones_ui: milestones_ui.hide()
+		if recipes_ui: recipes_ui.hide()
 	elif current_tab == "Milestones":
 		if tasks_ui: tasks_ui.hide()
 		if milestones_ui: milestones_ui.show()
+		if recipes_ui: recipes_ui.hide()
+	elif current_tab == "Recipes":
+		if tasks_ui: tasks_ui.hide()
+		if milestones_ui: milestones_ui.hide()
+		if recipes_ui:
+			recipes_ui.show()
+			if recipes_ui.has_method("refresh_ui"):
+				recipes_ui.refresh_ui()

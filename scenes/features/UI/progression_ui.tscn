@@ -10,6 +10,8 @@
 [ext_resource type="Resource" uid="uid://bn8hv33260ge0" path="res://resources/tasks/task4.tres" id="9_f4yut"]
 [ext_resource type="Resource" uid="uid://dsefjue6qb4lq" path="res://resources/tasks/task5.tres" id="12_vlnj5"]
 [ext_resource type="PackedScene" uid="uid://br1tax2c554el" path="res://scenes/features/UI/milestones/milestone_list_ui.tscn" id="18_milestonelist"]
+[ext_resource type="PackedScene" uid="uid://df6o8m2p5q3xx" path="res://scenes/features/UI/recipes/recipe_list_ui.tscn" id="19_recipelist"]
+[ext_resource type="PackedScene" uid="uid://df6o8m2p5q3zz" path="res://scenes/features/UI/recipes/recipe_ui_element.tscn" id="20_recipe_ui_elem"]
 
 [node name="ProgressionUI" type="Control"]
 layout_mode = 3
@@ -47,6 +49,10 @@ text = "Tasks"
 layout_mode = 2
 text = "Milestones"
 
+[node name="RecipesTab" type="Button" parent="PanelContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+text = "Recipes"
+
 [node name="ContentContainer" type="Control" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -59,3 +65,7 @@ default_tasks = Array[ExtResource("2_task_data")]([ExtResource("10_task1"), ExtR
 
 [node name="MilestoneListUI" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("18_milestonelist")]
 layout_mode = 1
+
+[node name="RecipeListUI" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("19_recipelist")]
+layout_mode = 1
+recipe_prefab = ExtResource("20_recipe_ui_elem")
