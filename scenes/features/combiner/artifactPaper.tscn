@@ -92,4 +92,9 @@ transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.038, 0.005)
 [node name="SpriteNote1" type="Sprite3D" parent="Layout2Parts/Notes"]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, -0.572549, 0.03)
 sorting_offset = 0.5
+texture = ExtResource("6_mon45")
+
+[node name="SpriteNote4" type="Sprite3D" parent="Layout2Parts/Notes"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.00847524, -0.336751, 0.03)
+sorting_offset = 0.5
 texture = ExtResource("7_1w01i")

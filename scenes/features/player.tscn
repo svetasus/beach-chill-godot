@@ -9,6 +9,9 @@
 [ext_resource type="AudioStream" uid="uid://1fqev85lufm7" path="res://sounds/interact_sound.ogg" id="17_dpg8g"]
 [ext_resource type="Script" uid="uid://8q8iefh84k0c" path="res://scripts/hotkey_hints.gd" id="hotkey_hints_script"]
 [ext_resource type="PackedScene" uid="uid://cxab321300000" path="res://scenes/features/UI/progression_ui.tscn" id="ProgressionUI_ext"]
+[ext_resource type="Script" uid="uid://e198014544904b2c9d3e24630d9411bf" path="res://scripts/components/player_ui.gd" id="player_ui_s"]
+[ext_resource type="Script" uid="uid://c7f536f1c18744b8a80100e1ad3b10a1" path="res://scripts/components/player_interaction.gd" id="player_interaction_s"]
+[ext_resource type="Script" uid="uid://ba1cc14e1d1a46a3bd87e3228c9334bc" path="res://scripts/components/player_inventory.gd" id="player_inventory_s"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
 albedo_color = Color(0.731745, 0.926235, 0.904053, 1)
@@ -182,7 +185,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.11225, 0)
 billboard = 1
 text = "PLAYER"
 
+[node name="PlayerInteraction" type="Node" parent="."]
+script = ExtResource("player_interaction_s")
+
+[node name="PlayerInventory" type="Node" parent="."]
+script = ExtResource("player_inventory_s")
+
 [node name="PlayerUI" type="CanvasLayer" parent="."]
+script = ExtResource("player_ui_s")
 
 [node name="InventoryHUD" parent="PlayerUI" instance=ExtResource("14_invhud")]
 
