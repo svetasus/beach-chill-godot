@@ -46,6 +46,10 @@ func refresh_ui():
 		if recipe.result_item and crafted_artifacts.has(recipe.result_item.name):
 			is_crafted = true
 
+		var items_held = player.get("items_held")
+		if typeof(items_held) != TYPE_DICTIONARY:
+			items_held = {}
+
 		var ui_elem = recipe_prefab.instantiate()
 		recipes_container.add_child(ui_elem)
-		ui_elem.setup(recipe, is_unlocked, is_crafted)
+		ui_elem.setup(recipe, is_unlocked, is_crafted, items_held)

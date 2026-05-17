@@ -1,7 +1,8 @@
 extends PanelContainer
 
-@onready var main_hbox = $MarginContainer/MainHBox
-@onready var locked_panel = $MarginContainer/LockedPanel
+@onready var name_label = $MarginContainer/VBoxContainer/NameLabel
+@onready var main_hbox = $MarginContainer/VBoxContainer/MainHBox
+@onready var locked_panel = $MarginContainer/VBoxContainer/LockedPanel
 
 var plus_texture = preload("res://textures/icons/plus.png")
 var equals_texture = preload("res://textures/icons/ravno.png")
@@ -15,24 +16,36 @@ func _ready():
 	normal_style.set_corner_radius_all(8)
 	add_theme_stylebox_override("panel", normal_style)
 
-func setup(recipe: ArtifactData, is_unlocked: bool, is_crafted: bool):
+func setup(recipe: ArtifactData, is_unlocked: bool, is_crafted: bool, items_held: Dictionary):
 	if not is_unlocked:
 		main_hbox.hide()
 		locked_panel.show()
+		name_label.text = "???"
 		tooltip_text = "Locked Recipe"
 		return
 
 	main_hbox.show()
 	locked_panel.hide()
 
-	if recipe.recipe_name:
-		tooltip_text = recipe.recipe_name
+	var r_name = recipe.recipe_name
+	if not r_name or r_name == "":
+		if recipe.result_item:
+			r_name = recipe.result_item.display_name
+
+	if not is_crafted:
+		name_label.text = "???"
+	else:
+		name_label.text = r_name
+
+	if r_name:
+		tooltip_text = r_name
 
 	# Create icons for ingredients
 	for i in range(recipe.required_parts.size()):
 		var part = recipe.required_parts[i]
 		if part and part.item_icon:
-			_add_icon(part.item_icon, false, part.display_name)
+			var is_discovered = items_held.has(part.name)
+			_add_icon(part.item_icon, not is_discovered, part.display_name if is_discovered else "???")
 		else:
 			_add_icon(null, false, "Unknown Part")
 

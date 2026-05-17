@@ -17,12 +17,24 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="MainHBox" type="HBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 18
+text = "Recipe Name"
+horizontal_alignment = 1
+
+[node name="MainHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
 mouse_filter = 2
 alignment = 1
 
-[node name="LockedPanel" type="Control" parent="MarginContainer"]
+[node name="LockedPanel" type="Control" parent="MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 

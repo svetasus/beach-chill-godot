@@ -143,9 +143,25 @@ func update_board_rpc(matched_recipe_paths: Array):
 					var sprite_frag2 = active_layout.get_node_or_null("Fragments/SpriteFragment2")
 					var sprite_frag3 = active_layout.get_node_or_null("Fragments/SpriteFragment3")
 
+					var items_held = {}
+					if local_player and "items_held" in local_player:
+						items_held = local_player.items_held
+
 					if sprite_frag1 and recipe.required_parts.size() > 0 and recipe.required_parts[0] and recipe.required_parts[0].item_icon:
 						sprite_frag1.texture = recipe.required_parts[0].item_icon
+						if not items_held.has(recipe.required_parts[0].name):
+							sprite_frag1.modulate = Color(0, 0, 0, 0.776)
+						else:
+							sprite_frag1.modulate = Color(1, 1, 1, 1)
 					if sprite_frag2 and recipe.required_parts.size() > 1 and recipe.required_parts[1] and recipe.required_parts[1].item_icon:
 						sprite_frag2.texture = recipe.required_parts[1].item_icon
+						if not items_held.has(recipe.required_parts[1].name):
+							sprite_frag2.modulate = Color(0, 0, 0, 0.776)
+						else:
+							sprite_frag2.modulate = Color(1, 1, 1, 1)
 					if sprite_frag3 and recipe.required_parts.size() > 2 and recipe.required_parts[2] and recipe.required_parts[2].item_icon:
 						sprite_frag3.texture = recipe.required_parts[2].item_icon
+						if not items_held.has(recipe.required_parts[2].name):
+							sprite_frag3.modulate = Color(0, 0, 0, 0.776)
+						else:
+							sprite_frag3.modulate = Color(1, 1, 1, 1)
