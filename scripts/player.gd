@@ -224,10 +224,10 @@ func _ready():
 			rpc_id(1, "sync_recipes_to_server", recipes_unlocked)
 		update_money_ui()
 		inventory_slots_updated.emit(carried_items, current_slot_index)
-		var tasks_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI
+		var tasks_ui = get_node_or_null("PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI")
 		if tasks_ui and tasks_ui.has_method("load_tasks"):
 			tasks_ui.load_tasks()
-		var milestones_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI
+		var milestones_ui = get_node_or_null("PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI")
 		if milestones_ui and milestones_ui.has_method("load_milestones"):
 			milestones_ui.load_milestones()
 		
@@ -1613,7 +1613,7 @@ func add_to_collection(data: ItemData):
 func toggle_milestones():
 	if not is_multiplayer_authority(): return
 
-	var progression_ui = $PlayerUI/ProgressionUI
+	var progression_ui = get_node_or_null("PlayerUI/ProgressionUI")
 	if not progression_ui: return
 
 	if progression_ui.visible and progression_ui.current_tab == "Milestones":
@@ -1622,14 +1622,14 @@ func toggle_milestones():
 	else:
 		progression_ui.visible = true
 		progression_ui.set_tab("Milestones")
-		var inv_ui = $PlayerUI/CollectionUI
+		var inv_ui = get_node_or_null("PlayerUI/CollectionUI")
 		if inv_ui: inv_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func toggle_recipes():
 	if not is_multiplayer_authority(): return
 
-	var progression_ui = $PlayerUI/ProgressionUI
+	var progression_ui = get_node_or_null("PlayerUI/ProgressionUI")
 	if not progression_ui: return
 
 	if progression_ui.visible and progression_ui.current_tab == "Recipes":
@@ -1638,14 +1638,14 @@ func toggle_recipes():
 	else:
 		progression_ui.visible = true
 		progression_ui.set_tab("Recipes")
-		var inv_ui = $PlayerUI/CollectionUI
+		var inv_ui = get_node_or_null("PlayerUI/CollectionUI")
 		if inv_ui: inv_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func toggle_tasks():
 	if not is_multiplayer_authority(): return
 
-	var progression_ui = $PlayerUI/ProgressionUI
+	var progression_ui = get_node_or_null("PlayerUI/ProgressionUI")
 	if not progression_ui: return
 
 	if progression_ui.visible and progression_ui.current_tab == "Tasks":
@@ -1654,18 +1654,19 @@ func toggle_tasks():
 	else:
 		progression_ui.visible = true
 		progression_ui.set_tab("Tasks")
-		var inv_ui = $PlayerUI/CollectionUI
+		var inv_ui = get_node_or_null("PlayerUI/CollectionUI")
 		if inv_ui: inv_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func toggle_collection():
 	if not is_multiplayer_authority(): return
 	
-	var inv_ui = $PlayerUI/CollectionUI
+	var inv_ui = get_node_or_null("PlayerUI/CollectionUI")
+	if not inv_ui: return
 	inv_ui.visible = !inv_ui.visible
 	
 	if inv_ui.visible:
-		var prog_ui = $PlayerUI/ProgressionUI
+		var prog_ui = get_node_or_null("PlayerUI/ProgressionUI")
 		if prog_ui: prog_ui.visible = false
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		# FORCE A REFRESH SO IT'S NOT EMPTY
@@ -1770,11 +1771,11 @@ func emit_task_event(action: String, item_data_or_path):
 		item_data = item_data_or_path
 
 	if item_data != null:
-		var tasks_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI
+		var tasks_ui = get_node_or_null("PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI")
 		if tasks_ui and tasks_ui.has_method("handle_task_event"):
 			tasks_ui.handle_task_event(action, item_data)
 
-		var milestones_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI
+		var milestones_ui = get_node_or_null("PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI")
 		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
 			milestones_ui.handle_milestone_event(action, item_data)
 

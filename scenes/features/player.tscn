@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://chvj7t3x3a3f5" path="res://scenes/features/UI/inventoryHUD.tscn" id="14_invhud"]
 [ext_resource type="AudioStream" uid="uid://1fqev85lufm7" path="res://sounds/interact_sound.ogg" id="17_dpg8g"]
 [ext_resource type="PackedScene" uid="uid://br1tax2c554el" path="res://scenes/features/UI/milestones/milestone_list_ui.tscn" id="18_milestonelist"]
+[ext_resource type="PackedScene" uid="uid://cxab321300000" path="res://scenes/features/UI/progression_ui.tscn" id="19_progression_ui"]
 [ext_resource type="Script" uid="uid://8q8iefh84k0c" path="res://scripts/hotkey_hints.gd" id="hotkey_hints_script"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
@@ -329,10 +330,8 @@ grow_horizontal = 2
 mouse_filter = 2
 alignment = 1
 
-[node name="TaskListUI" parent="PlayerUI" instance=ExtResource("7_tasklist")]
-task_prefab = ExtResource("8_taskelem")
-
-[node name="MilestoneListUI" parent="PlayerUI" instance=ExtResource("18_milestonelist")]
+[node name="ProgressionUI" parent="PlayerUI" instance=ExtResource("19_progression_ui")]
+visible = false
 
 [node name="HotkeyHints" type="VBoxContainer" parent="PlayerUI"]
 anchors_preset = 2
