@@ -209,29 +209,14 @@ func _set_data(new_data):
 		else:
 			print("--- [ITEM] ERROR: No scene found in data! ---")
 
-func interact(player: Node3D):
-	if $MeshAnchor.get_child_count() > 0:
-		var skin = $MeshAnchor.get_child(0)
-		if skin.has_method("interact"):
-			skin.interact(player)
-
 func alt_interact(player: Node3D):
 	if not data: return
 	if not data.is_furniture and not data is RecipeData: return
 
 	if $MeshAnchor.get_child_count() > 0:
 		var skin = $MeshAnchor.get_child(0)
-		if skin.has_method("alt_interact"):
-			skin.alt_interact(player)
-		elif skin.has_method("interact"):
+		if skin.has_method("interact"):
 			skin.interact(player)
-
-func get_interaction_text() -> String:
-	if $MeshAnchor.get_child_count() > 0:
-		var skin = $MeshAnchor.get_child(0)
-		if skin.has_method("get_interaction_text"):
-			return skin.get_interaction_text()
-	return ""
 
 func get_alt_interaction_text() -> String:
 	if $MeshAnchor.get_child_count() > 0:

@@ -92,18 +92,6 @@ func _on_grid_draw():
 				grid_container.draw_polygon(PackedVector2Array([end_offset, p1, p2]), PackedColorArray([LINE_COLOR]))
 
 
-var local_player: Node = null
-
-func get_local_player() -> Node:
-	if local_player and is_instance_valid(local_player):
-		return local_player
-	var players = get_tree().get_nodes_in_group("players")
-	for p in players:
-		if p.is_multiplayer_authority():
-			local_player = p
-			return local_player
-	return null
-
 func handle_milestone_event(action: String, item_data: ItemData = null, artifact_data: ArtifactData = null):
 	var updated = false
 	for data in all_milestones:
@@ -133,9 +121,8 @@ func handle_milestone_event(action: String, item_data: ItemData = null, artifact
 			if state.current_count >= data.target_count:
 				state.current_count = data.target_count
 				state.is_completed = true
-				var p = get_local_player()
-				if p and p.has_node("PlayerUI/NotificationArea"):
-					p.get_node("PlayerUI/NotificationArea").display_message("Milestone Completed: " + data.title)
+				if owner and owner.has_node("PlayerUI/NotificationArea"):
+					owner.get_node("PlayerUI/NotificationArea").display_message("Milestone Completed: " + data.title)
 
 				# Unlocking might affect other milestones
 				_update_all_locks()
@@ -185,9 +172,8 @@ func _on_claim_reward(milestone_id: String):
 		update_main_gui_milestones()
 
 func update_main_gui_milestones():
-	var p = get_local_player()
-	if not p or not p.has_node("PlayerUI/MainMilestonesContainer"): return
-	var main_container = p.get_node("PlayerUI/MainMilestonesContainer")
+	if not owner or not owner.has_node("PlayerUI/MainMilestonesContainer"): return
+	var main_container = owner.get_node("PlayerUI/MainMilestonesContainer")
 
 	for child in main_container.get_children():
 		child.queue_free()
@@ -209,9 +195,8 @@ func update_main_gui_milestones():
 		ui_elem.set_is_main_gui(true)
 
 func get_save_path() -> String:
-	var p = get_local_player()
-	if p and p.has_method("get_save_path"):
-		var base_path = p.get_save_path()
+	if owner and owner.has_method("get_save_path"):
+		var base_path = owner.get_save_path()
 		return base_path.replace(".save", "_milestones.json")
 	return "user://milestones.json"
 

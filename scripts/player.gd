@@ -1237,16 +1237,16 @@ func update_action_ui():
 					var alt_txt = potential_item.get_alt_interaction_text()
 					if alt_txt != "":
 						target_text += " " + alt_txt
+			elif potential_item.has_method("get_interaction_text"):
+				target_text = potential_item.get_interaction_text()
 			elif potential_item.has_method("deposit_item"):
 				target_text = "[E] Open Storage"
-			elif potential_item.has_method("get_interaction_text") and potential_item.get_interaction_text() != "":
-				target_text = potential_item.get_interaction_text()
 			elif potential_item.has_method("interact"):
 				target_text = "[E] Interact"
 
-			# For scroll reading when on ground
-			if potential_item is Item and potential_item.data and potential_item.data is RecipeData:
-				target_text = "[E] Take " + potential_item.display_name + " / [R] Read"
+				# For scroll reading when on ground
+				if potential_item is Item and potential_item.data and potential_item.data is RecipeData:
+					target_text = "[E] Take / [R] Read recipe"
 
 			elif potential_item.has_meta("is_cart_handle"):
 				var cart_node = potential_item.get_meta("cart_node")

@@ -41,18 +41,6 @@ func init_tasks():
 
 	update_main_gui_tasks()
 
-var local_player: Node = null
-
-func get_local_player() -> Node:
-	if local_player and is_instance_valid(local_player):
-		return local_player
-	var players = get_tree().get_nodes_in_group("players")
-	for p in players:
-		if p.is_multiplayer_authority():
-			local_player = p
-			return local_player
-	return null
-
 func handle_task_event(action: String, item_data: ItemData):
 	var updated = false
 	for task_data in default_tasks:
@@ -78,9 +66,8 @@ func handle_task_event(action: String, item_data: ItemData):
 			if state.current_count >= task_data.target_count:
 				state.current_count = task_data.target_count
 				state.is_completed = true
-				var p = get_local_player()
-				if p and p.has_node("PlayerUI/NotificationArea"):
-					p.get_node("PlayerUI/NotificationArea").display_message("Task Completed!")
+				if owner and owner.has_node("PlayerUI/NotificationArea"):
+					owner.get_node("PlayerUI/NotificationArea").display_message("Task Completed!")
 
 			if task_elements.has(task_data.id):
 				task_elements[task_data.id].update_ui()
@@ -133,16 +120,15 @@ func _on_claim_reward(task_id: String, reward_money: int):
 		if task_elements.has(task_id):
 			task_elements[task_id].update_ui()
 
-		var p = get_local_player()
-		if p and p.has_method("receive_money"):
-			p.receive_money(reward_money)
+		if owner and owner.has_method("receive_money"):
+			# we assume owner is player.gd
+			owner.receive_money(reward_money)
 		save_tasks()
 		update_main_gui_tasks()
 
 func update_main_gui_tasks():
-	var p = get_local_player()
-	if not p or not p.has_node("PlayerUI/MainTasksContainer"): return
-	var main_container = p.get_node("PlayerUI/MainTasksContainer")
+	if not owner or not owner.has_node("PlayerUI/MainTasksContainer"): return
+	var main_container = owner.get_node("PlayerUI/MainTasksContainer")
 
 	# Clear existing
 	for child in main_container.get_children():
@@ -186,9 +172,8 @@ func update_main_gui_tasks():
 			ui_elem.set_is_main_gui(true)
 
 func get_save_path() -> String:
-	var p = get_local_player()
-	if p and p.has_method("get_save_path"):
-		var base_path = p.get_save_path()
+	if owner and owner.has_method("get_save_path"):
+		var base_path = owner.get_save_path()
 		return base_path.replace(".save", "_tasks.json")
 	return "user://tasks.json"
 
