@@ -28,9 +28,21 @@ func _read_recipe(player: Node3D):
 		item_node = item_node.get_parent()
 
 	if data is RecipeData and data.target_recipe:
-		player.learn_recipe(data.target_recipe)
-		if item_node.has_method("destroy_item"):
-			item_node.destroy_item.rpc()
+		var recipe = data.target_recipe
+		var already_known = false
+		if "recipes_unlocked" in player:
+			already_known = player.recipes_unlocked.has(recipe.resource_path)
+
+		if already_known:
+			if player.has_node("PlayerUI/NotificationArea"):
+				var display_name = recipe.recipe_name
+				if recipe.result_item and recipe.result_item.display_name != "":
+					display_name = recipe.result_item.display_name
+				player.get_node("PlayerUI/NotificationArea").display_message("You already know how to make " + display_name)
 		else:
-			if multiplayer.is_server():
-				item_node.queue_free()
+			player.learn_recipe(recipe)
+			if item_node.has_method("destroy_item"):
+				item_node.destroy_item.rpc()
+			else:
+				if multiplayer.is_server():
+					item_node.queue_free()
