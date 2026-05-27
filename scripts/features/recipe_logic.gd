@@ -16,13 +16,21 @@ func apply_item(item: Node3D) -> bool:
 	return false
 
 func _read_recipe(player: Node3D):
-	if player.has_method("learn_recipe") and get_parent() and get_parent().get_parent() and "data" in get_parent().get_parent():
-		var data = get_parent().get_parent().data
-		if data is RecipeData and data.target_recipe:
-			player.learn_recipe(data.target_recipe)
-			var item_node = get_parent().get_parent()
-			if item_node.has_method("destroy_item"):
-				item_node.destroy_item.rpc()
-			else:
-				if multiplayer.is_server():
-					item_node.queue_free()
+	if not player.has_method("learn_recipe"):
+		return
+
+	var item_node = self
+	var data = null
+	while item_node != null:
+		if "data" in item_node and item_node.data != null:
+			data = item_node.data
+			break
+		item_node = item_node.get_parent()
+
+	if data is RecipeData and data.target_recipe:
+		player.learn_recipe(data.target_recipe)
+		if item_node.has_method("destroy_item"):
+			item_node.destroy_item.rpc()
+		else:
+			if multiplayer.is_server():
+				item_node.queue_free()

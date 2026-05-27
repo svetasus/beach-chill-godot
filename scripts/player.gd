@@ -438,10 +438,10 @@ func _input(event):
 	if event.is_action_pressed("ui_cancel"): # 'ui_cancel' is usually the Esc key
 		if $PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible:
 			toggle_collection()
-		elif $PlayerUI/ProgressionUI != null and $PlayerUI/ProgressionUI.visible:
-			if $PlayerUI/ProgressionUI.current_tab == "Tasks":
+		elif get_node_or_null("PlayerUI/ProgressionUI") != null and get_node_or_null("PlayerUI/ProgressionUI").visible:
+			if get_node_or_null("PlayerUI/ProgressionUI").current_tab == "Tasks":
 				toggle_tasks()
-			elif $PlayerUI/ProgressionUI.current_tab == "Recipes":
+			elif get_node_or_null("PlayerUI/ProgressionUI").current_tab == "Recipes":
 				toggle_recipes()
 			else:
 				toggle_milestones()
@@ -451,7 +451,7 @@ func _input(event):
 	# If I click the screen, grab the mouse again
 	if event is InputEventMouseButton and event.pressed:
 		if is_multiplayer_authority():
-			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible) or ($PlayerUI/ProgressionUI != null and $PlayerUI/ProgressionUI.visible)
+			var is_ui_open = (current_ui != null and is_instance_valid(current_ui)) or ($PlayerUI/CollectionUI != null and $PlayerUI/CollectionUI.visible) or (get_node_or_null("PlayerUI/ProgressionUI") != null and get_node_or_null("PlayerUI/ProgressionUI").visible)
 			if not is_ui_open:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -1246,7 +1246,7 @@ func update_action_ui():
 
 				# For scroll reading when on ground
 				if potential_item is Item and potential_item.data and potential_item.data is RecipeData:
-					target_text = "[E] Take / [R] Read recipe"
+					target_text = "[E] Take " + potential_item.display_name + " / [R] Read"
 
 			elif potential_item.has_meta("is_cart_handle"):
 				var cart_node = potential_item.get_meta("cart_node")
@@ -1591,7 +1591,7 @@ func milestone_craft_rpc(data_path: String):
 	if not is_multiplayer_authority(): return
 	var data = load(data_path)
 	if data and data is ArtifactData:
-		var milestones_ui = $PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI
+		var milestones_ui = get_node_or_null("PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI")
 		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
 			milestones_ui.handle_milestone_event("craft", null, data)
 
