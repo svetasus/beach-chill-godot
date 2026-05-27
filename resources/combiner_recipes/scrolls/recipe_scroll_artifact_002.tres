@@ -8,7 +8,8 @@
 script = ExtResource("1_xyz12")
 target_recipe = ExtResource("3_yza57")
 name = "recipe_scroll_artifact_002"
-display_name = "Recipe Scroll: Magic Pot"
+display_name = "Recipe Scroll: Battery"
+particle_color = Color(1, 1, 1, 1)
 scene = ExtResource("2_wxy34")
 mass = 1.0
 collision_size = Vector3(0.2, 0.2, 0.2)
