@@ -1995,7 +1995,10 @@ func learn_recipe_rpc(recipe_path: String):
 			save_recipes()
 			var recipe = load(recipe_path)
 			if recipe and has_node("PlayerUI/NotificationArea"):
-				$PlayerUI/NotificationArea.display_message("Recipe Learned: " + recipe.recipe_name + "!")
+				var display_name = recipe.recipe_name
+				if recipe.result_item and recipe.result_item.display_name != "":
+					display_name = recipe.result_item.display_name
+				$PlayerUI/NotificationArea.display_message("Recipe for " + display_name + " learned!")
 			var recipes_ui = get_node_or_null("PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/RecipeListUI")
 			if recipes_ui and recipes_ui.has_method("refresh_ui"):
 				recipes_ui.refresh_ui()
