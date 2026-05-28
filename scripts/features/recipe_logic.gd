@@ -38,7 +38,8 @@ func _read_recipe(player: Node3D):
 				var display_name = recipe.recipe_name
 				if recipe.result_item and recipe.result_item.display_name != "":
 					display_name = recipe.result_item.display_name
-				player.get_node("PlayerUI/NotificationArea").display_message("You already know how to make " + display_name)
+				if player.get_node("PlayerUI/NotificationArea").has_method("display_message"):
+					player.get_node("PlayerUI/NotificationArea").display_message("You already know how to make " + display_name)
 		else:
 			player.learn_recipe(recipe)
 			if item_node.has_method("destroy_item"):
