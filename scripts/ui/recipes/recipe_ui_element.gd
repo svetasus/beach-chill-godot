@@ -17,13 +17,6 @@ func _ready():
 	add_theme_stylebox_override("panel", normal_style)
 
 func setup(recipe: ArtifactData, is_unlocked: bool, is_crafted: bool, items_held: Dictionary):
-	if not is_unlocked:
-		main_hbox.hide()
-		locked_panel.show()
-		name_label.text = "???"
-		tooltip_text = "Locked Recipe"
-		return
-
 	main_hbox.show()
 	locked_panel.hide()
 
@@ -32,19 +25,21 @@ func setup(recipe: ArtifactData, is_unlocked: bool, is_crafted: bool, items_held
 		if recipe.result_item:
 			r_name = recipe.result_item.display_name
 
-	if not is_crafted:
+	if not is_unlocked:
 		name_label.text = "???"
+		tooltip_text = "Locked Recipe"
 	else:
-		name_label.text = r_name
-
-	if r_name:
-		tooltip_text = r_name
+		name_label.text = r_name if r_name else "???"
+		if r_name:
+			tooltip_text = r_name
 
 	# Create icons for ingredients
 	for i in range(recipe.required_parts.size()):
 		var part = recipe.required_parts[i]
 		if part and part.item_icon:
-			var is_discovered = items_held.has(part.name)
+			var is_discovered = false
+			if is_unlocked:
+				is_discovered = items_held.has(part.name)
 			_add_icon(part.item_icon, not is_discovered, part.display_name if is_discovered else "???")
 		else:
 			_add_icon(null, false, "Unknown Part")
@@ -57,7 +52,10 @@ func setup(recipe: ArtifactData, is_unlocked: bool, is_crafted: bool, items_held
 
 	# Add result icon
 	if recipe.result_item and recipe.result_item.item_icon:
-		_add_icon(recipe.result_item.item_icon, not is_crafted, recipe.result_item.display_name if is_crafted else "???")
+		var result_discovered = false
+		if is_unlocked:
+			result_discovered = is_crafted
+		_add_icon(recipe.result_item.item_icon, not result_discovered, recipe.result_item.display_name if result_discovered else "???")
 
 func _add_icon(tex: Texture2D, is_silhouette: bool, tip: String):
 	var rect = TextureRect.new()
