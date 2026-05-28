@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" uid="uid://br1tax2c554el" path="res://scenes/features/UI/milestones/milestone_list_ui.tscn" id="18_milestonelist"]
 [ext_resource type="PackedScene" uid="uid://cxab321300000" path="res://scenes/features/UI/progression_ui.tscn" id="19_progression_ui"]
 [ext_resource type="Script" uid="uid://8q8iefh84k0c" path="res://scripts/hotkey_hints.gd" id="hotkey_hints_script"]
+[ext_resource type="Script" uid="uid://ck2hp6el2v8jf" path="res://scripts/ui/notification_area.gd" id="notif_area_script"]
+[ext_resource type="PackedScene" uid="uid://c1yiyhtvd41gy" path="res://scenes/features/UI/userNotifPop.tscn" id="notif_prefab"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
 albedo_color = Color(0.731745, 0.926235, 0.904053, 1)
@@ -306,6 +308,8 @@ theme_override_font_sizes/font_size = 32
 text = "Money: $0"
 
 [node name="NotificationArea" type="VBoxContainer" parent="PlayerUI"]
+notification_prefab = ExtResource("notif_prefab")
+script = ExtResource("notif_area_script")
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
