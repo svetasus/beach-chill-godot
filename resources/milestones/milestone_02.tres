@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://ee8c7fo13mh7" path="res://textures/icons/battery_icon.png" id="1_10mtt"]
 [ext_resource type="Script" uid="uid://bgue0sfbadrh6" path="res://scripts/milestones/milestone_data.gd" id="2_it083"]
+[ext_resource type="Resource" uid="uid://cusbt0rh2tqm3" path="res://resources/combiner_recipes/recipes/artifact_001_recipe.tres" id="3_recipe1"]
 [ext_resource type="Resource" uid="uid://cltfy4e7wtlgg" path="res://resources/combiner_recipes/recipes/artifact_002_recipe.tres" id="3_v7p14"]
 
 [resource]
@@ -9,7 +10,9 @@ script = ExtResource("2_it083")
 id = "2"
 title = "Milestone Title"
 description = "Milestone Description"
-reward_description = "Reward details"
+reward_description = "Recipe: Bear Statue"
+reward_type = "recipe"
+reward_recipe = ExtResource("3_recipe1")
 icon = ExtResource("1_10mtt")
 action = "craft"
 any_item = false

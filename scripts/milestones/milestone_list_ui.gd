@@ -180,7 +180,23 @@ func _on_claim_reward(milestone_id: String):
 		if milestone_elements.has(milestone_id):
 			milestone_elements[milestone_id].update_ui()
 
-		# Actually grant reward logic here in the future
+		# Grant reward logic
+		var data = null
+		for m in all_milestones:
+			if m and m.id == milestone_id:
+				data = m
+				break
+
+		if data:
+			var p = get_local_player()
+			if p:
+				if data.reward_type == "money" and data.reward_money > 0:
+					p.receive_money(data.reward_money)
+				elif data.reward_type == "recipe" and data.reward_recipe:
+					p.learn_recipe(data.reward_recipe)
+				elif data.reward_type == "item" and data.reward_item:
+					if p.has_method("grant_item"):
+						p.grant_item(data.reward_item)
 
 		save_milestones()
 		update_main_gui_milestones()
