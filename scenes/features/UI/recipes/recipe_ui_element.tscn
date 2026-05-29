@@ -39,7 +39,7 @@ visible = false
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="QuestionMark" type="Label" parent="MarginContainer/LockedPanel"]
+[node name="QuestionMark" type="Label" parent="MarginContainer/VBoxContainer/LockedPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
