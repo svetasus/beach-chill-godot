@@ -3,6 +3,7 @@ extends PanelContainer
 @onready var name_label = $MarginContainer/VBoxContainer/NameLabel
 @onready var main_hbox = $MarginContainer/VBoxContainer/MainHBox
 @onready var locked_panel = $MarginContainer/VBoxContainer/LockedPanel
+@onready var question_mark_label = $MarginContainer/VBoxContainer/LockedPanel/QuestionMark if has_node("MarginContainer/VBoxContainer/LockedPanel/QuestionMark") else $MarginContainer/LockedPanel/QuestionMark
 
 var plus_texture = preload("res://textures/icons/plus.png")
 var equals_texture = preload("res://textures/icons/ravno.png")
@@ -29,12 +30,14 @@ func setup(recipe: ArtifactData, is_unlocked: bool, is_crafted: bool, items_held
 	if not is_unlocked:
 		main_hbox.hide()
 		locked_panel.show()
-		locked_panel.get_node("QuestionMark").text = "Locked"
+		if question_mark_label:
+			question_mark_label.text = "Locked"
 		return
 
 	main_hbox.show()
 	locked_panel.hide()
-	locked_panel.get_node("QuestionMark").text = ""
+	if question_mark_label:
+		question_mark_label.text = ""
 
 	# Create icons for ingredients
 	for i in range(recipe.required_parts.size()):
