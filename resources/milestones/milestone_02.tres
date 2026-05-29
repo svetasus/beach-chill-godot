@@ -16,6 +16,6 @@ any_item = false
 item_type = 0
 specific_artifact = ExtResource("3_v7p14")
 target_count = 1
-grid_position = Vector2i(0, 3)
+grid_position = Vector2i(1, 2)
 prerequisites = Array[String](["1"])
 metadata/_custom_type_script = "uid://bgue0sfbadrh6"

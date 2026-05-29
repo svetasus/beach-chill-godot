@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://br1tax2c554el"]
+[gd_scene load_steps=7 format=3 uid="uid://br1tax2c554el"]
 
 [ext_resource type="Script" uid="uid://82xh4tj4d4nm" path="res://scripts/milestones/milestone_list_ui.gd" id="1_milestone_list_ui"]
 [ext_resource type="PackedScene" uid="uid://cwpfrcxhgv2gf" path="res://scenes/features/UI/milestones/milestone_ui_element.tscn" id="2_milestone_ui_element"]

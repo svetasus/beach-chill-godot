@@ -10,5 +10,5 @@
 script = ExtResource("5_2cx2e")
 result_item = ExtResource("4_6003m")
 required_parts = Array[ExtResource("1_xu3fk")]([ExtResource("2_ypekx"), ExtResource("3_67s10")])
-recipe_name = "bear_statue"
+recipe_name = "Bear Statue"
 metadata/_custom_type_script = "uid://b671fh65ycwbf"
