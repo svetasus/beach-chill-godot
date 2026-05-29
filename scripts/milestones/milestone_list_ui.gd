@@ -88,17 +88,17 @@ func _on_grid_draw():
 		if not data or not milestone_elements.has(data.id): continue
 
 		var target_elem = milestone_elements[data.id]
-		var target_pos = target_elem.position + target_elem.custom_minimum_size / 2.0
+		var target_pos = target_elem.position + target_elem.size / 2.0
 
 		for prereq_id in data.prerequisites:
 			if milestone_elements.has(prereq_id):
 				var prereq_elem = milestone_elements[prereq_id]
-				var prereq_pos = prereq_elem.position + prereq_elem.custom_minimum_size / 2.0
+				var prereq_pos = prereq_elem.position + prereq_elem.size / 2.0
 
 				# Adjust start/end slightly to not overlap the card fully
 				var dir = (target_pos - prereq_pos).normalized()
-				var start_offset = prereq_pos + _get_border_offset(dir, prereq_elem.custom_minimum_size)
-				var end_offset = target_pos - _get_border_offset(dir, target_elem.custom_minimum_size)
+				var start_offset = prereq_pos + _get_border_offset(dir, prereq_elem.size)
+				var end_offset = target_pos - _get_border_offset(dir, target_elem.size)
 
 				grid_container.draw_line(start_offset, end_offset, LINE_COLOR, LINE_THICKNESS, true)
 
