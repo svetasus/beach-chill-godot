@@ -87,6 +87,15 @@ func init_tasks():
 				var t_data = prioritized_available[i]
 				s_state.active_task_ids.append(t_data.id)
 
+				# Ensure that the newly picked tasks have their progress completely reset,
+				# just in case this specific task was also picked in a previous cycle
+				if task_states.has(t_data.id):
+					var ts = task_states[t_data.id]
+					ts.current_count = 0
+					ts.is_completed = false
+					ts.reward_claimed = false
+					ts.is_pinned = false
+
 		# Create UI header
 		if section_header_prefab:
 			var header = section_header_prefab.instantiate()
