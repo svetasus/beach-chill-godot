@@ -5,6 +5,11 @@ class_name MilestoneData
 @export var title: String = "Milestone Title"
 @export var description: String = "Milestone Description"
 @export var reward_description: String = "Reward details"
+@export_enum("none", "money", "recipe", "item") var reward_type: String = "none"
+@export var reward_money: int = 0
+@export var reward_recipe: ArtifactData
+@export var reward_item: ItemData
+
 @export var icon: Texture2D
 
 @export_enum("gather", "sell", "craft") var action: String = "gather"

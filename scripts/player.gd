@@ -1761,6 +1761,55 @@ func receive_money(amount: int):
 	show_floating_money(amount)
 
 
+func grant_item(item_data: ItemData):
+	if not is_multiplayer_authority(): return
+
+	if not multiplayer.is_server():
+		rpc_id(1, "_rpc_grant_item", item_data.resource_path)
+		return
+
+	_rpc_grant_item(item_data.resource_path)
+
+@rpc("any_peer", "call_local")
+func _rpc_grant_item(item_data_path: String):
+	if not multiplayer.is_server(): return
+
+	var item_data = load(item_data_path) as ItemData
+	if not item_data: return
+
+	var base_item_scene = load("res://scenes/features/baseItem.tscn")
+	var new_item = base_item_scene.instantiate()
+	new_item.name = "GrantedItem_" + str(randi())
+	new_item.data = item_data
+	new_item.global_position = global_position + Vector3(0, 1.5, 0) + global_transform.basis.z * -1.0
+
+	var items_container = get_node_or_null(Global.ITEMS_CONTAINER_PATH)
+	if not items_container:
+		items_container = get_tree().root.get_node_or_null(Global.ITEMS_CONTAINER_PATH)
+
+	if items_container:
+		items_container.add_child(new_item, true)
+	else:
+		get_tree().root.add_child(new_item, true)
+
+	# Tell client to pick it up if they can
+	var peer_id = multiplayer.get_remote_sender_id()
+	if peer_id == 0:
+		peer_id = 1
+
+	# Delay slightly so it syncs to client before picking up
+	await get_tree().create_timer(0.5).timeout
+
+	rpc_id(peer_id, "_rpc_try_pick_up_granted", new_item.get_path())
+
+@rpc("any_peer", "call_local")
+func _rpc_try_pick_up_granted(item_path: NodePath):
+	if not is_multiplayer_authority(): return
+
+	var item = get_node_or_null(item_path)
+	if item and item is RigidBody3D:
+		pick_up(item)
+
 @rpc("any_peer", "call_local")
 func emit_task_event(action: String, item_data_or_path):
 	if not is_multiplayer_authority(): return
