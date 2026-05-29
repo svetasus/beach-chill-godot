@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TaskSectionData" load_steps=2 format=3 uid="uid://w2weekly_section"]
+
+[ext_resource type="Script" path="res://scripts/data/task_section_data.gd" id="1_sec_data"]
+[ext_resource type="Resource" uid="uid://e7f8g9h0i1j2" path="res://resources/tasks/task5.tres" id="2_task5"]
+
+[resource]
+script = ExtResource("1_sec_data")
+section_name = "Weekly"
+has_timer = true
+timer_duration_seconds = 604800
+num_slots = 1
+available_tasks = Array[Resource("res://scripts/data/task_data.gd")]([ExtResource("2_task5")])

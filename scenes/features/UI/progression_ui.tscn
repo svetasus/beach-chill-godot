@@ -9,6 +9,10 @@
 [ext_resource type="Resource" uid="uid://8j6h17wm1eik" path="res://resources/tasks/task3.tres" id="13_task3"]
 [ext_resource type="Resource" uid="uid://bn8hv33260ge0" path="res://resources/tasks/task4.tres" id="9_f4yut"]
 [ext_resource type="Resource" uid="uid://dsefjue6qb4lq" path="res://resources/tasks/task5.tres" id="12_vlnj5"]
+[ext_resource type="PackedScene" uid="uid://d3xx_section_header" path="res://scenes/features/UI/tasks/task_section_header.tscn" id="14_sectionheader"]
+[ext_resource type="Script" path="res://scripts/data/task_section_data.gd" id="15_sec_data"]
+[ext_resource type="Resource" uid="uid://d1daily_section" path="res://resources/tasks/sections/daily.tres" id="16_daily"]
+[ext_resource type="Resource" uid="uid://w2weekly_section" path="res://resources/tasks/sections/weekly.tres" id="17_weekly"]
 [ext_resource type="PackedScene" uid="uid://br1tax2c554el" path="res://scenes/features/UI/milestones/milestone_list_ui.tscn" id="18_milestonelist"]
 [ext_resource type="PackedScene" uid="uid://df6o8m2p5q3xx" path="res://scenes/features/UI/recipes/recipe_list_ui.tscn" id="19_recipelist"]
 [ext_resource type="PackedScene" uid="uid://df6o8m2p5q3zz" path="res://scenes/features/UI/recipes/recipe_ui_element.tscn" id="20_recipe_ui_elem"]
@@ -61,7 +65,8 @@ size_flags_vertical = 3
 [node name="TaskListUI" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("7_tasklist")]
 layout_mode = 1
 task_prefab = ExtResource("8_taskelem")
-default_tasks = Array[ExtResource("2_task_data")]([ExtResource("10_task1"), ExtResource("11_task2"), ExtResource("13_task3"), ExtResource("9_f4yut"), ExtResource("12_vlnj5")])
+section_header_prefab = ExtResource("14_sectionheader")
+sections = Array[ExtResource("15_sec_data")]([ExtResource("16_daily"), ExtResource("17_weekly")])
 
 [node name="MilestoneListUI" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("18_milestonelist")]
 layout_mode = 1

@@ -1,10 +1,12 @@
 extends Control
 
 @export var task_prefab: PackedScene
-@export var default_tasks: Array[TaskData] = []
+@export var section_header_prefab: PackedScene
+@export var sections: Array[TaskSectionData] = []
 
 var task_states: Dictionary = {} # task_id -> TaskState
 var task_elements: Dictionary = {} # task_id -> TaskUIElement
+var section_states: Dictionary = {} # section_name -> TaskSectionState
 
 @onready var tasks_container = $PanelContainer/VBoxContainer/ScrollContainer/TasksContainer
 
@@ -17,27 +19,106 @@ func init_tasks():
 		child.queue_free()
 	task_elements.clear()
 
-	for task_data in default_tasks:
-		if not task_data: continue
+	var current_time = Time.get_unix_time_from_system()
 
-		# Give it a random ID if it doesn't have one (for new tasks)
-		if task_data.id == "":
-			task_data.id = str(randi())
+	for section_data in sections:
+		if not section_data: continue
 
-		var state: TaskState
-		if task_states.has(task_data.id):
-			state = task_states[task_data.id]
+		# Make sure we have a state for this section
+		var s_state: TaskSectionState
+		if section_states.has(section_data.section_name):
+			s_state = section_states[section_data.section_name]
 		else:
-			state = TaskState.new()
-			state.task_id = task_data.id
-			task_states[task_data.id] = state
+			s_state = TaskSectionState.new()
+			s_state.section_name = section_data.section_name
+			section_states[section_data.section_name] = s_state
 
-		var ui_elem = task_prefab.instantiate()
-		tasks_container.add_child(ui_elem)
-		ui_elem.setup(task_data, state)
-		ui_elem.claim_reward.connect(_on_claim_reward)
-		ui_elem.toggle_pin.connect(_on_toggle_pin)
-		task_elements[task_data.id] = ui_elem
+		# Check if we need to refresh tasks
+		var needs_refresh = false
+		if section_data.has_timer:
+			if current_time >= s_state.next_refresh_time:
+				needs_refresh = true
+				s_state.next_refresh_time = current_time + section_data.timer_duration_seconds
+		else:
+			# If no timer, we only populate if empty
+			if s_state.active_task_ids.is_empty():
+				needs_refresh = true
+
+		if needs_refresh:
+			# Get old active ids to avoid picking them again if possible
+			var old_active_ids = s_state.active_task_ids.duplicate()
+
+			# Reset progress of old active tasks
+			for old_id in s_state.active_task_ids:
+				if task_states.has(old_id):
+					var ts = task_states[old_id]
+					ts.current_count = 0
+					ts.is_completed = false
+					ts.reward_claimed = false
+					# Note: we can keep pin state if we want, or reset it. Let's reset it too.
+					ts.is_pinned = false
+
+			s_state.active_task_ids.clear()
+
+			# Ensure IDs exist on all available tasks before processing
+			for t_data in section_data.available_tasks:
+				if t_data and t_data.id == "":
+					t_data.id = str(randi())
+
+			var available = section_data.available_tasks.duplicate()
+
+			# Separate tasks into ones we didn't just have, and ones we did
+			var unpicked_tasks = []
+			var recently_picked_tasks = []
+			for t_data in available:
+				if not t_data: continue
+				if old_active_ids.has(t_data.id):
+					recently_picked_tasks.append(t_data)
+				else:
+					unpicked_tasks.append(t_data)
+
+			unpicked_tasks.shuffle()
+			recently_picked_tasks.shuffle()
+
+			# Prioritize unpicked tasks
+			var prioritized_available = unpicked_tasks + recently_picked_tasks
+
+			for i in range(min(section_data.num_slots, prioritized_available.size())):
+				var t_data = prioritized_available[i]
+				s_state.active_task_ids.append(t_data.id)
+
+		# Create UI header
+		if section_header_prefab:
+			var header = section_header_prefab.instantiate()
+			tasks_container.add_child(header)
+			header.setup(section_data, s_state)
+
+		# Create UI elements for active tasks in this section
+		for t_data in section_data.available_tasks:
+			if not t_data: continue
+
+			# Assign random ID if not set
+			if t_data.id == "":
+				t_data.id = str(randi())
+
+			# Skip if not active in this section
+			if not s_state.active_task_ids.has(t_data.id):
+				continue
+
+			var state: TaskState
+			if task_states.has(t_data.id):
+				state = task_states[t_data.id]
+			else:
+				state = TaskState.new()
+				state.task_id = t_data.id
+				task_states[t_data.id] = state
+
+			var ui_elem = task_prefab.instantiate()
+			tasks_container.add_child(ui_elem)
+			ui_elem.setup(t_data, state)
+			ui_elem.claim_reward.connect(_on_claim_reward)
+			ui_elem.toggle_pin.connect(_on_toggle_pin)
+			task_elements[t_data.id] = ui_elem
 
 	update_main_gui_tasks()
 
@@ -53,12 +134,38 @@ func get_local_player() -> Node:
 			return local_player
 	return null
 
+func _process(_delta):
+	# Periodically check if any section timer expired while UI is open or running
+	if visible:
+		var current_time = Time.get_unix_time_from_system()
+		var should_reinit = false
+		for section_data in sections:
+			if not section_data or not section_data.has_timer: continue
+			var s_state = section_states.get(section_data.section_name)
+			if s_state and current_time >= s_state.next_refresh_time:
+				should_reinit = true
+				break
+		if should_reinit:
+			init_tasks()
+
+func get_all_active_task_data() -> Array[TaskData]:
+	var result: Array[TaskData] = []
+	for section_data in sections:
+		if not section_data: continue
+		var s_state = section_states.get(section_data.section_name)
+		if not s_state: continue
+
+		for t_data in section_data.available_tasks:
+			if not t_data: continue
+			if s_state.active_task_ids.has(t_data.id):
+				result.append(t_data)
+	return result
 
 func handle_task_event(action: String, item_data: ItemData):
 	var updated = false
-	for task_data in default_tasks:
-		if not task_data: continue
+	var active_tasks = get_all_active_task_data()
 
+	for task_data in active_tasks:
 		var state = task_states.get(task_data.id)
 		if not state or state.is_completed:
 			continue
@@ -151,8 +258,9 @@ func update_main_gui_tasks():
 
 	# Filter active tasks (not reward claimed)
 	var active_tasks = []
-	for task_data in default_tasks:
-		if not task_data: continue
+	var all_active_data = get_all_active_task_data()
+
+	for task_data in all_active_data:
 		var state = task_states.get(task_data.id)
 		if state and not state.reward_claimed:
 			active_tasks.append({"data": task_data, "state": state})
@@ -195,8 +303,16 @@ func get_save_path() -> String:
 
 func save_tasks():
 	var save_dict = {}
+	var states_dict = {}
 	for id in task_states:
-		save_dict[id] = task_states[id].to_dict()
+		states_dict[id] = task_states[id].to_dict()
+
+	var sections_dict = {}
+	for sec_name in section_states:
+		sections_dict[sec_name] = section_states[sec_name].to_dict()
+
+	save_dict["tasks"] = states_dict
+	save_dict["sections"] = sections_dict
 
 	var file = FileAccess.open(get_save_path(), FileAccess.WRITE)
 	if file:
@@ -211,9 +327,24 @@ func load_tasks():
 			var content = file.get_as_text()
 			var parsed = JSON.parse_string(content)
 			if parsed is Dictionary:
-				for id in parsed:
-					var state = TaskState.new()
-					state.from_dict(parsed[id])
-					task_states[id] = state
+				# Backward compatibility with old save format
+				if not parsed.has("tasks") and not parsed.has("sections"):
+					for id in parsed:
+						var state = TaskState.new()
+						state.from_dict(parsed[id])
+						task_states[id] = state
+				else:
+					var tasks_dict = parsed.get("tasks", {})
+					for id in tasks_dict:
+						var state = TaskState.new()
+						state.from_dict(tasks_dict[id])
+						task_states[id] = state
+
+					var sections_dict = parsed.get("sections", {})
+					for sec_name in sections_dict:
+						var s_state = TaskSectionState.new()
+						s_state.from_dict(sections_dict[sec_name])
+						section_states[sec_name] = s_state
+
 			file.close()
 	init_tasks()
