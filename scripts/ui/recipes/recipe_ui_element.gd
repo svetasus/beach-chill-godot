@@ -17,28 +17,28 @@ func _ready():
 	add_theme_stylebox_override("panel", normal_style)
 
 func setup(recipe: ArtifactData, is_unlocked: bool, is_crafted: bool, items_held: Dictionary):
-	if not is_unlocked:
-		main_hbox.hide()
-		locked_panel.show()
-		name_label.text = "???"
-		tooltip_text = "Locked Recipe"
-		return
-
-	main_hbox.show()
-	locked_panel.hide()
-
 	var r_name = recipe.recipe_name
 	if not r_name or r_name == "":
 		if recipe.result_item:
 			r_name = recipe.result_item.display_name
 
-	if not is_crafted:
-		name_label.text = "???"
-	else:
-		name_label.text = r_name
-
+	name_label.text = r_name if r_name else "???"
 	if r_name:
 		tooltip_text = r_name
+
+	if not is_unlocked:
+		main_hbox.hide()
+		locked_panel.show()
+		var qm = locked_panel.get_node_or_null("QuestionMark")
+		if qm:
+			qm.text = "Locked"
+		return
+
+	main_hbox.show()
+	locked_panel.hide()
+	var qm = locked_panel.get_node_or_null("QuestionMark")
+	if qm:
+		qm.text = ""
 
 	# Create icons for ingredients
 	for i in range(recipe.required_parts.size()):

@@ -37,8 +37,9 @@ alignment = 1
 [node name="LockedPanel" type="Control" parent="MarginContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="QuestionMark" type="Label" parent="MarginContainer/LockedPanel"]
+[node name="QuestionMark" type="Label" parent="MarginContainer/VBoxContainer/LockedPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -47,6 +48,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
 theme_override_font_sizes/font_size = 40
-text = "?"
+text = "Locked"
 horizontal_alignment = 1
 vertical_alignment = 1
