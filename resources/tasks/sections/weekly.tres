@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="TaskSectionData" load_steps=2 format=3 uid="uid://w2weekly_section"]
+[gd_resource type="Resource" script_class="TaskSectionData" load_steps=5 format=3 uid="uid://fmuxbgku0tom"]
 
-[ext_resource type="Script" path="res://scripts/data/task_section_data.gd" id="1_sec_data"]
-[ext_resource type="Resource" uid="uid://e7f8g9h0i1j2" path="res://resources/tasks/task5.tres" id="2_task5"]
+[ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/data/task_data.gd" id="1_hfj5r"]
+[ext_resource type="Script" uid="uid://utopw7r8nmel" path="res://scripts/data/task_section_data.gd" id="1_sec_data"]
+[ext_resource type="Resource" uid="uid://dsefjue6qb4lq" path="res://resources/tasks/task5.tres" id="2_task5"]
+[ext_resource type="Resource" uid="uid://bn8hv33260ge0" path="res://resources/tasks/task4.tres" id="3_nxo32"]
 
 [resource]
 script = ExtResource("1_sec_data")
@@ -9,4 +11,4 @@ section_name = "Weekly"
 has_timer = true
 timer_duration_seconds = 604800
 num_slots = 1
-available_tasks = Array[Resource("res://scripts/data/task_data.gd")]([ExtResource("2_task5")])
+available_tasks = Array[ExtResource("1_hfj5r")]([ExtResource("2_task5"), ExtResource("3_nxo32")])
