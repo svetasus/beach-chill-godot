@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="MilestoneData" load_steps=4 format=3 uid="uid://ccymgno15rqj8"]
+[gd_resource type="Resource" script_class="MilestoneData" load_steps=5 format=3 uid="uid://ccymgno15rqj8"]
 
 [ext_resource type="Texture2D" uid="uid://ee8c7fo13mh7" path="res://textures/icons/battery_icon.png" id="1_10mtt"]
 [ext_resource type="Script" uid="uid://bgue0sfbadrh6" path="res://scripts/milestones/milestone_data.gd" id="2_it083"]
@@ -8,10 +8,11 @@
 [resource]
 script = ExtResource("2_it083")
 id = "2"
-title = "Milestone Title"
-description = "Milestone Description"
+title = "Craft battery"
+description = "Please"
 reward_description = "Recipe: Bear Statue"
 reward_type = "recipe"
+reward_money = 0
 reward_recipe = ExtResource("3_recipe1")
 icon = ExtResource("1_10mtt")
 action = "craft"

@@ -7,13 +7,13 @@
 [resource]
 script = ExtResource("1_ycet4")
 id = "1"
-title = "Milestone Title"
-description = "Milestone Description"
+title = "Sell armchair"
+description = "You should sell it"
 reward_description = "100 Money"
 reward_type = "money"
 reward_money = 100
 icon = ExtResource("1_h1suj")
-action = "craft"
+action = "sell"
 any_item = false
 item_type = 0
 specific_item = ExtResource("3_3p4u2")
