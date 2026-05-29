@@ -29,10 +29,12 @@ func setup(recipe: ArtifactData, is_unlocked: bool, is_crafted: bool, items_held
 	if not is_unlocked:
 		main_hbox.hide()
 		locked_panel.show()
+		locked_panel.get_node("QuestionMark").text = "Locked"
 		return
 
 	main_hbox.show()
 	locked_panel.hide()
+	locked_panel.get_node("QuestionMark").text = ""
 
 	# Create icons for ingredients
 	for i in range(recipe.required_parts.size()):
