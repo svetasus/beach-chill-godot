@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="TaskSectionData" load_steps=2 format=3 uid="uid://d1daily_section"]
+
+[ext_resource type="Script" path="res://scripts/data/task_section_data.gd" id="1_sec_data"]
+[ext_resource type="Resource" uid="uid://d3x1234568aaa" path="res://resources/tasks/task1.tres" id="2_task1"]
+[ext_resource type="Resource" uid="uid://c6y7u8i9o0p1" path="res://resources/tasks/task2.tres" id="3_task2"]
+[ext_resource type="Resource" uid="uid://b5a4z3x2c1v0" path="res://resources/tasks/task3.tres" id="4_task3"]
+[ext_resource type="Resource" uid="uid://a1b2c3d4e5f6" path="res://resources/tasks/task4.tres" id="5_task4"]
+
+[resource]
+script = ExtResource("1_sec_data")
+section_name = "Daily"
+has_timer = true
+timer_duration_seconds = 86400
+num_slots = 2
+available_tasks = Array[Resource("res://scripts/data/task_data.gd")]([ExtResource("2_task1"), ExtResource("3_task2"), ExtResource("4_task3"), ExtResource("5_task4")])

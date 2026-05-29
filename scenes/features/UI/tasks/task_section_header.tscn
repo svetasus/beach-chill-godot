@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3xx_section_header"]
+
+[ext_resource type="Script" uid="uid://c8sectionheader_script" path="res://scripts/ui/task_section_header.gd" id="1_header"]
+
+[node name="TaskSectionHeader" type="MarginContainer"]
+offset_right = 300.0
+offset_bottom = 40.0
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 5
+script = ExtResource("1_header")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="SectionNameLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "Section Name"
+
+[node name="TimerLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+text = "15m 20s"
+horizontal_alignment = 2
