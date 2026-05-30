@@ -1,6 +1,7 @@
-[gd_scene load_steps=26 format=3 uid="uid://b4v64l3u3emau"]
+[gd_scene load_steps=27 format=3 uid="uid://b4v64l3u3emau"]
 
 [ext_resource type="Script" uid="uid://bop6eska7b3tl" path="res://scripts/player.gd" id="1_3vyb7"]
+[ext_resource type="Theme" uid="uid://d3x8y7m2q1r" path="res://scenes/features/UI/main_theme.tres" id="main_theme"]
 [ext_resource type="Script" uid="uid://dj5bfal8jddbw" path="res://scripts/ui/collection_ui.gd" id="3_g2els"]
 [ext_resource type="PackedScene" uid="uid://cbcwb7nuw340m" path="res://ui/collectionSlot.tscn" id="4_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://chvj7t3x3a3f5" path="res://scenes/features/UI/inventoryHUD.tscn" id="14_invhud"]
@@ -253,6 +254,7 @@ theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 50
 
 [node name="CollectionUI" type="Control" parent="PlayerUI"]
+theme = ExtResource("main_theme")
 layout_mode = 3
 anchors_preset = 0
 offset_left = 350.0
