@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cxab321300000"]
+[gd_scene load_steps=3 format=3 uid="uid://cxab321300000"]
 
+[ext_resource type="Theme" uid="uid://d3x8y7m2q1r" path="res://scenes/features/UI/main_theme.tres" id="main_theme"]
 [ext_resource type="Script" uid="uid://c14rysvf0vpb2" path="res://scripts/ui/progression_ui.gd" id="1_progression_ui"]
 [ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="7_tasklist"]
 [ext_resource type="PackedScene" uid="uid://d25l6qnea1x1n" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="8_taskelem"]
@@ -18,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://df6o8m2p5q3zz" path="res://scenes/features/UI/recipes/recipe_ui_element.tscn" id="20_recipe_ui_elem"]
 
 [node name="ProgressionUI" type="Control"]
+theme = ExtResource("main_theme")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
