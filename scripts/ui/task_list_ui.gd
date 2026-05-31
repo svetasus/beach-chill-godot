@@ -170,7 +170,7 @@ func get_all_active_task_data() -> Array[TaskData]:
 				result.append(t_data)
 	return result
 
-func handle_task_event(action: String, item_data: ItemData):
+func handle_task_event(action: String, item_data: ItemData = null, artifact_data: ArtifactData = null):
 	var updated = false
 	var active_tasks = get_all_active_task_data()
 
@@ -183,12 +183,18 @@ func handle_task_event(action: String, item_data: ItemData):
 			continue
 
 		var match_item = false
-		if task_data.any_item:
-			match_item = true
-		elif task_data.specific_item != null:
-			match_item = (task_data.specific_item.resource_path == item_data.resource_path)
-		else:
-			match_item = (task_data.item_type == item_data.item_value_type)
+		if action == "craft" and artifact_data:
+			if task_data.specific_artifact and task_data.specific_artifact.resource_path == artifact_data.resource_path:
+				match_item = true
+			elif not task_data.specific_artifact:
+				match_item = true # any artifact
+		elif item_data:
+			if task_data.any_item:
+				match_item = true
+			elif task_data.specific_item != null:
+				match_item = (task_data.specific_item.resource_path == item_data.resource_path)
+			else:
+				match_item = (task_data.item_type == item_data.item_value_type)
 
 		if match_item:
 			state.current_count += 1

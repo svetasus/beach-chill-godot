@@ -55,9 +55,19 @@ func setup(data: TaskData, state: TaskState):
 	var action_str = "Gather"
 	if task_data.action == "sell":
 		action_str = "Sell"
+	elif task_data.action == "craft":
+		action_str = "Craft"
 
 	var item_str = ""
-	if task_data.specific_item:
+	if task_data.action == "craft":
+		if task_data.specific_artifact:
+			if task_data.specific_artifact.result_item and task_data.specific_artifact.result_item.display_name != "":
+				item_str = task_data.specific_artifact.result_item.display_name
+			else:
+				item_str = task_data.specific_artifact.recipe_name
+		else:
+			item_str = "any artifact"
+	elif task_data.specific_item:
 		item_str = task_data.specific_item.display_name
 	elif task_data.any_item:
 		item_str = "any item"
