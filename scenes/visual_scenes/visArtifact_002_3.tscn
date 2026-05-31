@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnshok281lbln"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sxltk"]
+albedo_color = Color(0.541176, 0.247059, 0.92549, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_t4koj"]
+material = SubResource("StandardMaterial3D_sxltk")
+height = 0.4
+
+[node name="VisArtifact0023" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_t4koj")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://cpma84kvn1yej"]
+
+[ext_resource type="PackedScene" uid="uid://bhq5jcl6w7wss" path="res://scenes/visual_scenes/visArtifact_002.tscn" id="1_3trxc"]
+[ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/data/item_data.gd" id="1_80edk"]
+
+[resource]
+script = ExtResource("1_80edk")
+name = "stone_tower"
+display_name = "Stone Tower"
+particle_color = Color(1, 0.192157, 1, 1)
+scene = ExtResource("1_3trxc")
+mass = 1.0
+collision_size = Vector3(0.2, 0.2, 0.2)
+is_tool = false
+is_collectible = true
+is_furniture = false
+item_value_type = 3
+metadata/_custom_type_script = "uid://cslspwbckibw1"

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TreasureProfile" load_steps=8 format=3 uid="uid://d22djgxra57mn"]
+[gd_resource type="Resource" script_class="TreasureProfile" load_steps=11 format=3 uid="uid://d22djgxra57mn"]
 
 [ext_resource type="PackedScene" uid="uid://dprek8xvxjxor" path="res://scenes/features/baseItem.tscn" id="1_t3d6j"]
 [ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/data/item_data.gd" id="2_ufpv0"]
@@ -6,11 +6,14 @@
 [ext_resource type="Resource" uid="uid://cyl06wi3q4t82" path="res://resources/items/artifact_001_1_data.tres" id="3_xx73n"]
 [ext_resource type="Resource" uid="uid://cmku0tmbr3t7v" path="res://resources/items/artifact_001_2_data.tres" id="4_q0cei"]
 [ext_resource type="Script" uid="uid://c24oob03n5h4j" path="res://scripts/data/treasure_profile.gd" id="4_xx73n"]
+[ext_resource type="Resource" uid="uid://dutpthcgknute" path="res://resources/items/artifact_002_1_data.tres" id="5_h38lg"]
 [ext_resource type="PackedScene" uid="uid://b4vfdesnosjey" path="res://scenes/features/treasurePoint.tscn" id="5_q0cei"]
+[ext_resource type="Resource" uid="uid://v6lliife1qgc" path="res://resources/items/artifact_002_2_data.tres" id="6_f847c"]
+[ext_resource type="Resource" uid="uid://dboy77ylbhrw7" path="res://resources/items/artifact_002_3_data.tres" id="7_qfnki"]
 
 [resource]
 script = ExtResource("4_xx73n")
-loot_table = Array[ExtResource("2_ufpv0")]([ExtResource("3_xx73n"), ExtResource("4_q0cei")])
+loot_table = Array[ExtResource("2_ufpv0")]([ExtResource("3_xx73n"), ExtResource("4_q0cei"), ExtResource("5_h38lg"), ExtResource("6_f847c"), ExtResource("7_qfnki")])
 base_item_scene = ExtResource("1_t3d6j")
 sand_particles = ExtResource("3_iqw0t")
 treasure_scene = ExtResource("5_q0cei")

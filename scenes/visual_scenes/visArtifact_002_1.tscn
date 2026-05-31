@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://t5xxnqb5faot"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_on3ej"]
+albedo_color = Color(0.845892, 0.383953, 0.85047, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_nhkm8"]
+material = SubResource("StandardMaterial3D_on3ej")
+radius = 0.3
+height = 0.4
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5yrdp"]
+size = Vector3(0.5, 0.4, 0.5)
+
+[node name="VisArtifact0021" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_nhkm8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_5yrdp")

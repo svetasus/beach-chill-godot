@@ -1,15 +1,15 @@
-[gd_resource type="Resource" script_class="ArtifactData" load_steps=7 format=3 uid="uid://cltfy4e7wtlgg"]
+[gd_resource type="Resource" script_class="ArtifactData" load_steps=7 format=3 uid="uid://swbqdldeetic"]
 
 [ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/data/item_data.gd" id="1_sf2gs"]
-[ext_resource type="Resource" uid="uid://k81noy3tielt" path="res://resources/items/shell_001_data.tres" id="2_0q2i8"]
 [ext_resource type="Script" uid="uid://b671fh65ycwbf" path="res://scripts/data/artifact_data.gd" id="2_d82jg"]
-[ext_resource type="Resource" uid="uid://dqqv0qpqsbk76" path="res://resources/items/shell_002_data.tres" id="3_wmuk0"]
-[ext_resource type="Resource" uid="uid://jq3hqufu1vc6" path="res://resources/items/shell_003_data.tres" id="4_kstup"]
-[ext_resource type="Resource" uid="uid://bkpvjoexlwll8" path="res://resources/items/detector_battery_data.tres" id="5_hvhyj"]
+[ext_resource type="Resource" uid="uid://dutpthcgknute" path="res://resources/items/artifact_002_1_data.tres" id="2_qrv0h"]
+[ext_resource type="Resource" uid="uid://v6lliife1qgc" path="res://resources/items/artifact_002_2_data.tres" id="3_mbfol"]
+[ext_resource type="Resource" uid="uid://dboy77ylbhrw7" path="res://resources/items/artifact_002_3_data.tres" id="4_k0sdh"]
+[ext_resource type="Resource" uid="uid://cpma84kvn1yej" path="res://resources/items/artifact_002_data.tres" id="5_40s02"]
 
 [resource]
 script = ExtResource("2_d82jg")
-result_item = ExtResource("5_hvhyj")
-required_parts = Array[ExtResource("1_sf2gs")]([ExtResource("2_0q2i8"), ExtResource("3_wmuk0"), ExtResource("4_kstup")])
-recipe_name = "Battery"
+result_item = ExtResource("5_40s02")
+required_parts = Array[ExtResource("1_sf2gs")]([ExtResource("2_qrv0h"), ExtResource("3_mbfol"), ExtResource("4_k0sdh")])
+recipe_name = "Stone Tower"
 metadata/_custom_type_script = "uid://b671fh65ycwbf"

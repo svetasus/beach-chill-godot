@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://v6lliife1qgc"]
+
+[ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/data/item_data.gd" id="1_blkey"]
+[ext_resource type="PackedScene" uid="uid://cw6vy1u6qro37" path="res://scenes/visual_scenes/visArtifact_002_2.tscn" id="1_ouo3s"]
+
+[resource]
+script = ExtResource("1_blkey")
+name = "artifact_002_2"
+display_name = "Stone Tower Part 2"
+particle_color = Color(1, 1, 1, 1)
+scene = ExtResource("1_ouo3s")
+mass = 1.0
+collision_size = Vector3(0.2, 0.2, 0.2)
+is_tool = false
+is_collectible = true
+is_furniture = false
+item_value_type = 0
+metadata/_custom_type_script = "uid://cslspwbckibw1"

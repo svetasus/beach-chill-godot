@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource("1_qe3uv")
-description = "Task description"
+description = "Sell anything"
 action = "sell"
 any_item = true
 item_type = 0
-target_count = 1
-reward_money = 10
+target_count = 3
+reward_money = 30
 task_priority = 2
 id = ""
 metadata/_custom_type_script = "uid://deunliagk8ke1"

@@ -1,17 +1,17 @@
 [gd_resource type="Resource" script_class="TaskData" load_steps=3 format=3 uid="uid://dsefjue6qb4lq"]
 
 [ext_resource type="Script" uid="uid://deunliagk8ke1" path="res://scripts/data/task_data.gd" id="1_dx0ck"]
-[ext_resource type="Resource" uid="uid://k81noy3tielt" path="res://resources/items/shell_001_data.tres" id="2_jpx8h"]
+[ext_resource type="Resource" uid="uid://dqqv0qpqsbk76" path="res://resources/items/shell_002_data.tres" id="2_jpx8h"]
 
 [resource]
 script = ExtResource("1_dx0ck")
-description = "Task description"
+description = "Gather blue shells"
 action = "gather"
 any_item = false
 item_type = 0
 specific_item = ExtResource("2_jpx8h")
-target_count = 3
-reward_money = 10
+target_count = 5
+reward_money = 20
 task_priority = 3
 id = ""
 metadata/_custom_type_script = "uid://deunliagk8ke1"
