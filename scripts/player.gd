@@ -1616,7 +1616,7 @@ func add_to_artifacts_crafted_rpc(data_path: String):
 			recipes_ui.refresh_ui()
 
 @rpc("any_peer", "call_local")
-func milestone_craft_rpc(data_path: String):
+func progression_craft_rpc(data_path: String):
 	if multiplayer.get_remote_sender_id() != 1 and multiplayer.get_remote_sender_id() != 0: return
 	if not is_multiplayer_authority(): return
 	var data = load(data_path)
@@ -1624,6 +1624,10 @@ func milestone_craft_rpc(data_path: String):
 		var milestones_ui = get_node_or_null("PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/MilestoneListUI")
 		if milestones_ui and milestones_ui.has_method("handle_milestone_event"):
 			milestones_ui.handle_milestone_event("craft", null, data)
+
+		var tasks_ui = get_node_or_null("PlayerUI/ProgressionUI/PanelContainer/VBoxContainer/ContentContainer/TaskListUI")
+		if tasks_ui and tasks_ui.has_method("handle_task_event"):
+			tasks_ui.handle_task_event("craft", null, data)
 
 func add_to_collection(data: ItemData):
 	var n = data.name

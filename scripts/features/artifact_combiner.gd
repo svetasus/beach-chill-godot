@@ -141,5 +141,5 @@ func _combine(recipe: ArtifactData):
 		player_node.rpc_id(crafter_id, "add_to_artifacts_crafted_rpc", recipe.result_item.resource_path)
 	if player_node and player_node.has_method("add_to_collection_rpc"):
 		player_node.rpc_id(crafter_id, "add_to_collection_rpc", recipe.result_item.resource_path)
-		if player_node.has_method("milestone_craft_rpc"):
-			player_node.rpc_id(crafter_id, "milestone_craft_rpc", recipe.resource_path)
+		if player_node.has_method("progression_craft_rpc"):
+			player_node.rpc_id(crafter_id, "progression_craft_rpc", recipe.resource_path)
