@@ -11,31 +11,32 @@ _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.2, 0.1), 0.0, 0.0, 0, 0, Vecto
 point_count = 7
 
 [sub_resource type="Gradient" id="Gradient_moon_color"]
-colors = PackedColorArray(0.5, 0.6, 0.8, 1, 0.5, 0.6, 0.8, 1)
+colors = PackedColorArray(0.6, 0.7, 0.9, 1, 0.6, 0.7, 0.9, 1)
 
 [sub_resource type="Curve" id="Curve_moon_intensity"]
-_data = [Vector2(0, 0.5), 0.0, 0.0, 0, 0, Vector2(0.2, 0.1), 0.0, 0.0, 0, 0, Vector2(0.3, 0), 0.0, 0.0, 0, 0, Vector2(0.7, 0), 0.0, 0.0, 0, 0, Vector2(0.8, 0.1), 0.0, 0.0, 0, 0, Vector2(1, 0.5), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0.8), 0.0, 0.0, 0, 0, Vector2(0.2, 0.2), 0.0, 0.0, 0, 0, Vector2(0.3, 0), 0.0, 0.0, 0, 0, Vector2(0.7, 0), 0.0, 0.0, 0, 0, Vector2(0.8, 0.2), 0.0, 0.0, 0, 0, Vector2(1, 0.8), 0.0, 0.0, 0, 0]
 point_count = 6
 
 [sub_resource type="Gradient" id="Gradient_sky_top"]
 offsets = PackedFloat32Array(0, 0.2, 0.3, 0.5, 0.7, 0.8, 1)
-colors = PackedColorArray(0.02, 0.02, 0.05, 1, 0.2, 0.3, 0.5, 1, 0.1, 0.4, 0.8, 1, 0, 0.635, 1, 1, 0.1, 0.4, 0.8, 1, 0.2, 0.3, 0.5, 1, 0.02, 0.02, 0.05, 1)
+colors = PackedColorArray(0.05, 0.05, 0.15, 1, 0.2, 0.3, 0.5, 1, 0.1, 0.4, 0.8, 1, 0, 0.635, 1, 1, 0.1, 0.4, 0.8, 1, 0.2, 0.3, 0.5, 1, 0.05, 0.05, 0.15, 1)
 
 [sub_resource type="Gradient" id="Gradient_sky_horizon"]
 offsets = PackedFloat32Array(0, 0.2, 0.3, 0.5, 0.7, 0.8, 1)
-colors = PackedColorArray(0.05, 0.05, 0.1, 1, 0.8, 0.4, 0.2, 1, 0.4, 0.7, 0.9, 1, 0.631, 0.941, 1, 1, 0.4, 0.7, 0.9, 1, 0.8, 0.4, 0.2, 1, 0.05, 0.05, 0.1, 1)
+colors = PackedColorArray(0.1, 0.1, 0.25, 1, 0.8, 0.4, 0.2, 1, 0.4, 0.7, 0.9, 1, 0.631, 0.941, 1, 1, 0.4, 0.7, 0.9, 1, 0.8, 0.4, 0.2, 1, 0.1, 0.1, 0.25, 1)
 
 [sub_resource type="Gradient" id="Gradient_ambient"]
 offsets = PackedFloat32Array(0, 0.2, 0.3, 0.5, 0.7, 0.8, 1)
-colors = PackedColorArray(0.05, 0.05, 0.1, 1, 0.3, 0.2, 0.3, 1, 0.4, 0.5, 0.6, 1, 0.6, 0.7, 0.8, 1, 0.4, 0.5, 0.6, 1, 0.3, 0.2, 0.3, 1, 0.05, 0.05, 0.1, 1)
+colors = PackedColorArray(0.15, 0.15, 0.25, 1, 0.3, 0.2, 0.3, 1, 0.4, 0.5, 0.6, 1, 0.6, 0.7, 0.8, 1, 0.4, 0.5, 0.6, 1, 0.3, 0.2, 0.3, 1, 0.15, 0.15, 0.25, 1)
 
 [sub_resource type="Gradient" id="Gradient_fog"]
 offsets = PackedFloat32Array(0, 0.2, 0.3, 0.5, 0.7, 0.8, 1)
-colors = PackedColorArray(0.05, 0.05, 0.1, 1, 0.6, 0.3, 0.2, 1, 0.3, 0.5, 0.7, 1, 0.447, 0.647, 0.91, 1, 0.3, 0.5, 0.7, 1, 0.6, 0.3, 0.2, 1, 0.05, 0.05, 0.1, 1)
+colors = PackedColorArray(0.1, 0.1, 0.2, 1, 0.6, 0.3, 0.2, 1, 0.3, 0.5, 0.7, 1, 0.447, 0.647, 0.91, 1, 0.3, 0.5, 0.7, 1, 0.6, 0.3, 0.2, 1, 0.1, 0.1, 0.2, 1)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r84l6"]
 sky_top_color = Color(0, 0.635294, 1, 1)
 sky_horizon_color = Color(0.631373, 0.941176, 1, 1)
+sun_curve = 0.05
 
 [sub_resource type="Sky" id="Sky_muwu5"]
 sky_material = SubResource("ProceduralSkyMaterial_r84l6")
@@ -62,6 +63,7 @@ fog_density = 0.005
 adjustment_enabled = true
 adjustment_brightness = 0.9
 adjustment_contrast = 1.1
+adjustment_saturation = 1.5
 
 [node name="DayNightCycle" type="Node3D"]
 script = ExtResource("1_dnc")
@@ -75,11 +77,13 @@ ambient_color = SubResource("Gradient_ambient")
 fog_color = SubResource("Gradient_fog")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
+
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 30, 0)
 shadow_enabled = true
 shadow_opacity = 0.5
 
 [node name="Moon" type="DirectionalLight3D" parent="."]
+
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -30, 0)
 shadow_enabled = true
 shadow_opacity = 0.2

@@ -37,7 +37,10 @@ func _process(delta):
 
 func _update_time_of_day():
 	# Update Sun and Moon rotation
-	var sun_angle = time * TAU - PI / 2.0
+	# At time = 0.25 (6am), sun_angle = 0 (horizon)
+	# At time = 0.50 (noon), sun_angle = -PI/2 (overhead)
+	# At time = 0.75 (6pm), sun_angle = -PI (horizon)
+	var sun_angle = time * -TAU + (PI / 2.0)
 	sun.rotation.x = sun_angle
 	moon.rotation.x = sun_angle + PI
 
