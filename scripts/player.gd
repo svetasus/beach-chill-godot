@@ -1586,6 +1586,7 @@ func add_to_artifacts_crafted_rpc(data_path: String):
 		if recipes_ui and recipes_ui.has_method("refresh_ui"):
 			recipes_ui.refresh_ui()
 
+@rpc("any_peer", "call_local")
 func milestone_craft_rpc(data_path: String):
 	if multiplayer.get_remote_sender_id() != 1 and multiplayer.get_remote_sender_id() != 0: return
 	if not is_multiplayer_authority(): return
