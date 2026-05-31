@@ -1,10 +1,10 @@
 extends Control
 
 @onready var slots = [
+	$Slot3,
 	$HBoxContainer/Slot0,
 	$HBoxContainer/Slot1,
-	$HBoxContainer/Slot2,
-	$Slot3
+	$HBoxContainer/Slot2
 ]
 
 var active_slot_color = Color(0.0, 0.0, 0.0, 1.0)
@@ -47,7 +47,7 @@ func _update_slot(index: int, item: Node, is_active: bool):
 			icon.texture = null
 			icon.hide()
 	else:
-		if index == 3:
+		if index == 0:
 			label.text = "No Tool"
 		else:
 			label.text = "Empty"

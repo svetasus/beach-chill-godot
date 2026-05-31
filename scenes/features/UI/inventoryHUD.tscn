@@ -71,7 +71,7 @@ offset_left = 5.0
 offset_top = 5.0
 offset_right = 15.0
 offset_bottom = 28.0
-text = "1"
+text = "2"
 
 [node name="Slot1" type="Control" parent="HBoxContainer"]
 layout_mode = 2
@@ -111,7 +111,7 @@ offset_left = 5.0
 offset_top = 5.0
 offset_right = 15.0
 offset_bottom = 28.0
-text = "2"
+text = "3"
 
 [node name="Slot2" type="Control" parent="HBoxContainer"]
 layout_mode = 2
@@ -151,7 +151,7 @@ offset_left = 5.0
 offset_top = 5.0
 offset_right = 15.0
 offset_bottom = 28.0
-text = "3"
+text = "4"
 
 [node name="Slot3" type="Control" parent="."]
 layout_mode = 1
@@ -196,4 +196,4 @@ offset_left = 5.0
 offset_top = 5.0
 offset_right = 15.0
 offset_bottom = 28.0
-text = "T"
+text = "1"

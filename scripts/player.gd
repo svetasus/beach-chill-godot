@@ -475,7 +475,7 @@ func _input(event):
 			switch_slot(1)
 		elif event.keycode == KEY_3:
 			switch_slot(2)
-		elif event.keycode == KEY_T:
+		elif event.keycode == KEY_4:
 			switch_slot(3)
 
 	if event.is_action_pressed("inventory"):
@@ -690,7 +690,7 @@ func pick_up(item):
 			is_tool = true
 
 		if is_tool:
-			if is_instance_valid(carried_items[3]):
+			if is_instance_valid(carried_items[0]):
 				$PlayerUI/NotificationArea.display_message("You can't pick up another tool")
 
 				# Give up authority, restore state
@@ -698,9 +698,9 @@ func pick_up(item):
 				return
 			else:
 				if carried_item == null:
-					switch_slot(3)
+					switch_slot(0)
 				else:
-					carried_items[3] = item
+					carried_items[0] = item
 					var item_node = item
 					item_node.visible = false
 					if item_node.has_method("set_ghost_appearance"):
@@ -729,9 +729,38 @@ func pick_up(item):
 						item.is_autospawned = false
 					return
 		else:
-			if current_slot_index == 3:
-				$PlayerUI/NotificationArea.display_message("You can't pick up a non-tool into the tool slot")
-				item.sync_authority.rpc(1, false, Vector3.ZERO, item.global_position, item.global_rotation.y)
+			if current_slot_index == 0:
+				var found_slot = -1
+				for i in range(1, 4):
+					if not is_instance_valid(carried_items[i]):
+						found_slot = i
+						break
+
+				if found_slot == -1:
+					$PlayerUI/NotificationArea.display_message("All item slots are full!")
+					item.sync_authority.rpc(1, false, Vector3.ZERO, item.global_position, item.global_rotation.y)
+					return
+
+				carried_items[found_slot] = item
+				var item_node = item
+				item_node.visible = false
+				if item_node.has_method("set_ghost_appearance"):
+					item_node.set_ghost_appearance(false)
+
+				inventory_slots_updated.emit(carried_items, current_slot_index)
+				placement_ray.add_exception(item)
+				if "data" in item and item.data != null:
+					emit_task_event("gather", item.data)
+					var is_artifact = false
+					if "item_value_type" in item.data:
+						is_artifact = (item.data.item_value_type == ItemData.ItemValueType.ARTIFACT)
+					if not is_artifact:
+						var n = item.data.name
+						if not items_held.has(n):
+							items_held[n] = {"resource": item.data, "count": 1}
+							collection_updated.emit({"items": items_held, "artifacts": artifacts_crafted})
+				if "is_autospawned" in item:
+					item.is_autospawned = false
 				return
 
 		carried_item = item
