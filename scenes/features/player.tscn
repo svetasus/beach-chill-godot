@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" uid="uid://c1yiyhtvd41gy" path="res://scenes/features/UI/userNotifPop.tscn" id="21_notif_pop"]
 [ext_resource type="Script" uid="uid://8q8iefh84k0c" path="res://scripts/hotkey_hints.gd" id="hotkey_hints_script"]
 [ext_resource type="Theme" uid="uid://d3x8y7m2q1r" path="res://scenes/features/UI/main_theme.tres" id="main_theme"]
+[ext_resource type="PackedScene" uid="uid://8928714c9ff04ec49e2227bbfdbefc84" path="res://scenes/features/components/player_ui.tscn" id="1_player_ui"]
+[ext_resource type="PackedScene" uid="uid://a5b43f52580a455b84988e0316ad6bb3" path="res://scenes/features/components/player_visuals.tscn" id="2_player_visuals"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4flbx"]
 albedo_color = Color(0.731745, 0.926235, 0.904053, 1)
@@ -207,147 +209,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.11225, 0)
 billboard = 1
 text = "PLAYER"
 
-[node name="PlayerUI" type="CanvasLayer" parent="."]
-
-[node name="VisionFilter" type="ColorRect" parent="PlayerUI"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(1, 1, 1, 0)
-
-[node name="InventoryHUD" parent="PlayerUI" instance=ExtResource("14_invhud")]
-
-[node name="HintLabel" type="Label" parent="PlayerUI"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -200.0
-offset_right = 300.0
-offset_bottom = -150.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 30
-horizontal_alignment = 1
-
-[node name="ActionLabel" type="Label" parent="PlayerUI"]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -160.0
-offset_top = -180.0
-offset_right = 543.0
-offset_bottom = -80.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 10
-theme_override_font_sizes/font_size = 50
-
-[node name="CollectionUI" type="Control" parent="PlayerUI"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 350.0
-offset_top = 150.0
-offset_right = 1550.0
-offset_bottom = 872.0
-theme = ExtResource("main_theme")
-script = ExtResource("3_g2els")
-slot_prefab = ExtResource("4_qhqgy")
-
-[node name="PanelContainer" type="PanelContainer" parent="PlayerUI/CollectionUI"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PlayerUI/CollectionUI/PanelContainer"]
-layout_mode = 2
-
-[node name="TabContainer" type="HBoxContainer" parent="PlayerUI/CollectionUI/PanelContainer/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="ArtifactsTab" type="Button" parent="PlayerUI/CollectionUI/PanelContainer/VBoxContainer/TabContainer"]
-layout_mode = 2
-text = "Artifacts"
-
-[node name="ItemsTab" type="Button" parent="PlayerUI/CollectionUI/PanelContainer/VBoxContainer/TabContainer"]
-layout_mode = 2
-text = "Items"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="PlayerUI/CollectionUI/PanelContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ItemList" type="HBoxContainer" parent="PlayerUI/CollectionUI/PanelContainer/VBoxContainer/ScrollContainer"]
-layout_mode = 2
-
-[node name="MoneyLabel" type="Label" parent="PlayerUI"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -287.0
-offset_top = 121.0
-offset_right = -17.0
-offset_bottom = 171.0
-grow_horizontal = 0
-theme_override_font_sizes/font_size = 32
-text = "Money: $0"
-
-[node name="NotificationArea" type="VBoxContainer" parent="PlayerUI"]
-anchors_preset = 10
-anchor_right = 1.0
-grow_horizontal = 2
-size_flags_horizontal = 4
-script = ExtResource("20_notif_area")
-notification_prefab = ExtResource("21_notif_pop")
-
-[node name="MainTasksContainer" type="VBoxContainer" parent="PlayerUI"]
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 210.0
-offset_right = 320.0
-offset_bottom = -394.0
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="MainMilestonesContainer" type="HBoxContainer" parent="PlayerUI"]
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 60.0
-offset_bottom = 160.0
-grow_horizontal = 2
-mouse_filter = 2
-alignment = 1
-
-[node name="ProgressionUI" parent="PlayerUI" instance=ExtResource("19_progression_ui")]
-visible = false
-
-[node name="HotkeyHints" type="VBoxContainer" parent="PlayerUI"]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -150.0
-offset_right = 320.0
-offset_bottom = -20.0
-grow_vertical = 0
-mouse_filter = 2
-script = ExtResource("hotkey_hints_script")
-
 [node name="ZoneDetector" type="Area3D" parent="."]
 collision_layer = 0
 collision_mask = 8
@@ -356,86 +217,14 @@ collision_mask = 8
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.587262, -0.0429578)
 shape = SubResource("CylinderShape3D_t4epb")
 
-[node name="State_Sit" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.057386, 0)
-
-[node name="Belly" type="MeshInstance3D" parent="State_Sit"]
-transform = Transform3D(1, 0, 0, 0, 0.721705, 0, 0, 0, 1, 0, 0.225628, 0)
-mesh = SubResource("CapsuleMesh_t4epb")
-
-[node name="Leg1" type="MeshInstance3D" parent="State_Sit"]
-transform = Transform3D(1.99001, 0, 0, 0, 0.470535, -1.82351, 0, 0.882381, 0.972395, -0.191183, 0.0774873, -0.485799)
-mesh = SubResource("CapsuleMesh_k03tp")
-
-[node name="Leg2" type="MeshInstance3D" parent="State_Sit"]
-transform = Transform3D(1.99001, 0, 0, 0, 0.470535, -1.82351, 0, 0.882381, 0.972395, 0.191, 0.0773659, -0.486135)
-mesh = SubResource("CapsuleMesh_k03tp")
-
-[node name="Belly2" type="MeshInstance3D" parent="State_Sit"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.0947106, -0.336148)
-mesh = SubResource("CylinderMesh_sbhj3")
-
-[node name="State_Swim" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.057386, 0)
-
-[node name="Belly" type="MeshInstance3D" parent="State_Swim"]
-transform = Transform3D(1, 0, 0, 0, 0.703868, 0.220953, 0, -0.159463, 0.975284, 0, 0.176268, 0.0961602)
-mesh = SubResource("CapsuleMesh_t4epb")
-
-[node name="Leg1" type="MeshInstance3D" parent="State_Swim"]
-transform = Transform3D(1.99001, 0, 0, 0, 0.280381, 1.98368, 0, -0.959889, 0.579432, -0.191183, -0.192443, 0.471406)
-mesh = SubResource("CapsuleMesh_k03tp")
-
-[node name="Leg2" type="MeshInstance3D" parent="State_Swim"]
-transform = Transform3D(1.99001, 0, 0, 0, 0.280381, 1.98368, 0, -0.959889, 0.579432, 0.191, -0.192591, 0.471731)
-mesh = SubResource("CapsuleMesh_k03tp")
-
-[node name="Belly2" type="MeshInstance3D" parent="State_Swim"]
-transform = Transform3D(1, 0, 0, 0, 0.699065, 0.715059, 0, -0.715059, 0.699065, 0, -0.100143, 0.285619)
-mesh = SubResource("CylinderMesh_sbhj3")
-
-[node name="Hand1" type="MeshInstance3D" parent="State_Swim"]
-transform = Transform3D(0.707107, -0.707107, 0, -3.09086e-08, -3.09086e-08, -1, 0.707107, 0.707107, -4.37114e-08, 0.267561, 0.402452, -0.215389)
-mesh = SubResource("CapsuleMesh_sbhj3")
-
-[node name="Hand2" type="MeshInstance3D" parent="State_Swim"]
-transform = Transform3D(0.707107, 0.707107, -3.09086e-08, 0, -4.37114e-08, -1, -0.707107, 0.707107, -3.09086e-08, -0.268, 0.402, -0.215)
-mesh = SubResource("CapsuleMesh_sbhj3")
-
-[node name="State_Stand" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.057386, 0)
-
-[node name="Belly" type="MeshInstance3D" parent="State_Stand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22502, 0)
-mesh = SubResource("CapsuleMesh_t4epb")
-
-[node name="Leg1" type="MeshInstance3D" parent="State_Stand"]
-transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, -0.191183, -0.279983, -0.125949)
-mesh = SubResource("CapsuleMesh_k03tp")
-
-[node name="Leg2" type="MeshInstance3D" parent="State_Stand"]
-transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, 0.191, -0.280336, -0.126)
-mesh = SubResource("CapsuleMesh_k03tp")
-
-[node name="State_Run" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0.057386, 0)
-visible = false
-
-[node name="Belly" type="MeshInstance3D" parent="State_Run"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.165162, 0.164459)
-mesh = SubResource("CapsuleMesh_t4epb")
-
-[node name="Leg1" type="MeshInstance3D" parent="State_Run"]
-transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, -0.191183, -0.339841, 0.0385097)
-mesh = SubResource("CapsuleMesh_k03tp")
-
-[node name="Leg2" type="MeshInstance3D" parent="State_Run"]
-transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, 0.191, -0.340194, 0.0384587)
-mesh = SubResource("CapsuleMesh_k03tp")
-
 [node name="WalkAudioPlayer" type="AudioStreamPlayer3D" parent="."]
 bus = &"SFX"
 
 [node name="InteractAudioPlayer" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("17_dpg8g")
 bus = &"SFX"
+
+
+[node name="PlayerUI" parent="." instance=ExtResource("1_player_ui")]
+
+[node name="PlayerVisuals" parent="." instance=ExtResource("2_player_visuals")]

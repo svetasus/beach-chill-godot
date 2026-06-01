@@ -1,0 +1,144 @@
+[gd_scene load_steps=2 format=3 uid="uid://uid://8928714c9ff04ec49e2227bbfdbefc84"]
+
+[ext_resource type="Script" uid="uid://uid://839d65ddc5a54014aaade59f893ccae1" path="res://scripts/components/player_ui.gd" id="1_script"]
+
+[node name="PlayerUI" type="CanvasLayer" script=ExtResource("1_script")]
+
+[node name="VisionFilter" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
+[node name="InventoryHUD" parent="." instance=ExtResource("14_invhud")]
+
+[node name="HintLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = -150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+
+[node name="ActionLabel" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -180.0
+offset_right = 543.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 50
+
+[node name="CollectionUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 350.0
+offset_top = 150.0
+offset_right = 1550.0
+offset_bottom = 872.0
+theme = ExtResource("main_theme")
+script = ExtResource("3_g2els")
+slot_prefab = ExtResource("4_qhqgy")
+
+[node name="PanelContainer" type="PanelContainer" parent="CollectionUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CollectionUI/PanelContainer"]
+layout_mode = 2
+
+[node name="TabContainer" type="HBoxContainer" parent="CollectionUI/PanelContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ArtifactsTab" type="Button" parent="CollectionUI/PanelContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+text = "Artifacts"
+
+[node name="ItemsTab" type="Button" parent="CollectionUI/PanelContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+text = "Items"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CollectionUI/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemList" type="HBoxContainer" parent="CollectionUI/PanelContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+
+[node name="MoneyLabel" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -287.0
+offset_top = 121.0
+offset_right = -17.0
+offset_bottom = 171.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 32
+text = "Money: $0"
+
+[node name="NotificationArea" type="VBoxContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+script = ExtResource("20_notif_area")
+notification_prefab = ExtResource("21_notif_pop")
+
+[node name="MainTasksContainer" type="VBoxContainer" parent="."]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 210.0
+offset_right = 320.0
+offset_bottom = -394.0
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MainMilestonesContainer" type="HBoxContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 60.0
+offset_bottom = 160.0
+grow_horizontal = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="ProgressionUI" parent="." instance=ExtResource("19_progression_ui")]
+visible = false
+
+[node name="HotkeyHints" type="VBoxContainer" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -150.0
+offset_right = 320.0
+offset_bottom = -20.0
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("hotkey_hints_script")

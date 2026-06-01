@@ -21,10 +21,10 @@ const DIG_DIST = 1.5
 @onready var action_label = $PlayerUI/ActionLabel
 @onready var hint_label = $PlayerUI/HintLabel
 @onready var placement_ray = $Body/Head/Camera3D/PlacementRay
-@onready var state_run = $State_Run
-@onready var state_sit = $State_Sit
-@onready var state_stand = $State_Stand
-@onready var state_swim = $State_Swim
+@onready var state_run = $PlayerVisuals/State_Run
+@onready var state_sit = $PlayerVisuals/State_Sit
+@onready var state_stand = $PlayerVisuals/State_Stand
+@onready var state_swim = $PlayerVisuals/State_Swim
 
 @onready var tp_camera = $Body/SpringArm3D/ThirdPersonCamera
 @onready var tp_spring_arm = $Body/SpringArm3D
