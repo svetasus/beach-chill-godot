@@ -156,7 +156,7 @@ collision_mask = 5
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, -0.1)
 
 [node name="GlassesMarker" type="Marker3D" parent="Body/Head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.616102)
 
 [node name="Eye" type="MeshInstance3D" parent="Body/Head"]
 transform = Transform3D(1.61753, 0, 0, 0, 2.47911, 0, 0, 0, 1.5336, 0.140898, 0.183214, -0.48394)

@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://dboy77ylbhrw7"]
+[gd_resource type="Resource" script_class="ItemData" load_steps=4 format=3 uid="uid://dboy77ylbhrw7"]
 
+[ext_resource type="Texture2D" uid="uid://8a4l8v1b55el" path="res://textures/icons/artifact_002_3.png" id="1_4d6p8"]
 [ext_resource type="PackedScene" uid="uid://dnshok281lbln" path="res://scenes/visual_scenes/visArtifact_002_3.tscn" id="1_254ge"]
 [ext_resource type="Script" uid="uid://cslspwbckibw1" path="res://scripts/data/item_data.gd" id="1_ltotn"]
 
@@ -7,6 +8,7 @@
 script = ExtResource("1_ltotn")
 name = "artifact_002_3"
 display_name = "Stone Tower Part 3"
+item_icon = ExtResource("1_4d6p8")
 particle_color = Color(1, 1, 1, 1)
 scene = ExtResource("1_254ge")
 mass = 1.0

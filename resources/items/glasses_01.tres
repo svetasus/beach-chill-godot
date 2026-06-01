@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ClothingData" load_steps=4 format=3 uid="uid://cekdu62ytwv6"]
+
+[ext_resource type="Script" uid="uid://cysoaq258rw2w" path="res://scripts/clothing_data.gd" id="1_4u5vr"]
+[ext_resource type="Texture2D" uid="uid://dv70p63qo7th8" path="res://textures/icons/glasses_01_icon.png" id="1_50amj"]
+[ext_resource type="PackedScene" uid="uid://vm1dwr8et815" path="res://scenes/visual_scenes/visGlasses_01.tscn" id="2_igjrq"]
+
+[resource]
+script = ExtResource("1_4u5vr")
+clothing_type = 3
+worn_scene = ExtResource("2_igjrq")
+vision_color = Color(0.827451, 0.258824, 0.258824, 0.278431)
+name = "glasses_01"
+display_name = "Glasses"
+item_icon = ExtResource("1_50amj")
+particle_color = Color(1, 1, 1, 1)
+scene = ExtResource("2_igjrq")
+mass = 1.0
+collision_size = Vector3(0.2, 0.2, 0.2)
+is_tool = false
+is_collectible = true
+is_furniture = false
+item_value_type = 0
+metadata/_custom_type_script = "uid://cysoaq258rw2w"

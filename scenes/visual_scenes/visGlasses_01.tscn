@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://vm1dwr8et815"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jybh4"]
+size = Vector3(0.1, 0.1, 0.3)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ysfwj"]
+top_radius = 0.05
+bottom_radius = 0.05
+height = 0.05
+
+[sub_resource type="BoxMesh" id="BoxMesh_j62wc"]
+size = Vector3(0.02, 0.02, 0.2)
+
+[node name="VisGlasses01" type="Node3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+shape = SubResource("BoxShape3D_jybh4")
+
+[node name="Model" type="Node3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0.1)
+mesh = SubResource("CylinderMesh_ysfwj")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, -0.1)
+mesh = SubResource("CylinderMesh_ysfwj")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Model"]
+mesh = SubResource("BoxMesh_j62wc")
+skeleton = NodePath("../..")

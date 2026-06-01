@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cxab321300000"]
+[gd_scene load_steps=6 format=3 uid="uid://cxab321300000"]
 
 [ext_resource type="Script" uid="uid://c14rysvf0vpb2" path="res://scripts/ui/progression_ui.gd" id="1_progression_ui"]
 [ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="7_tasklist"]
