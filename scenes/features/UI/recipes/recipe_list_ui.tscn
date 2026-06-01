@@ -1,6 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://df6o8m2p5q3xx"]
 
 [ext_resource type="Script" uid="uid://cx6o8m2p5q3yy" path="res://scripts/ui/recipes/recipe_list_ui.gd" id="1_recipe_list_ui"]
+[ext_resource type="PackedScene" uid="uid://df6o8m2p5q300" path="res://scenes/features/UI/recipes/recipe_ui_element.tscn" id="2_recipe_ui_elem"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p0"]
 
@@ -13,6 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_recipe_list_ui")
+recipe_prefab = ExtResource("2_recipe_ui_elem")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1

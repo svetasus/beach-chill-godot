@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="7_tasklist"]
 [ext_resource type="PackedScene" uid="uid://br1tax2c554el" path="res://scenes/features/UI/milestones/milestone_list_ui.tscn" id="18_milestonelist"]
 [ext_resource type="PackedScene" uid="uid://df6o8m2p5q3xx" path="res://scenes/features/UI/recipes/recipe_list_ui.tscn" id="19_recipelist"]
-[ext_resource type="PackedScene" uid="uid://df6o8m2p5q300" path="res://scenes/features/UI/recipes/recipe_ui_element.tscn" id="20_recipe_ui_elem"]
 [ext_resource type="Theme" uid="uid://d3x8y7m2q1r" path="res://scenes/features/UI/main_theme.tres" id="main_theme"]
 
 [node name="ProgressionUI" type="Control"]
@@ -60,4 +59,3 @@ layout_mode = 1
 
 [node name="RecipeListUI" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("19_recipelist")]
 layout_mode = 1
-recipe_prefab = ExtResource("20_recipe_ui_elem")
