@@ -1,6 +1,7 @@
-[gd_scene load_steps=27 format=3 uid="uid://b4v64l3u3emau"]
+[gd_scene load_steps=28 format=3 uid="uid://b4v64l3u3emau"]
 
 [ext_resource type="Script" uid="uid://bop6eska7b3tl" path="res://scripts/player.gd" id="1_3vyb7"]
+[ext_resource type="Script" uid="uid://d8dbb7dad0d34bf1b3e093c90579d23d" path="res://scripts/components/player_movement.gd" id="2_mov"]
 [ext_resource type="Script" uid="uid://dj5bfal8jddbw" path="res://scripts/ui/collection_ui.gd" id="3_g2els"]
 [ext_resource type="PackedScene" uid="uid://cbcwb7nuw340m" path="res://ui/collectionSlot.tscn" id="4_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://chvj7t3x3a3f5" path="res://scenes/features/UI/inventoryHUD.tscn" id="14_invhud"]
@@ -228,3 +229,5 @@ bus = &"SFX"
 [node name="PlayerUI" parent="." instance=ExtResource("1_player_ui")]
 
 [node name="PlayerVisuals" parent="." instance=ExtResource("2_player_visuals")]
+[node name="PlayerMovement" type="Node" parent="."]
+script = ExtResource("2_mov")

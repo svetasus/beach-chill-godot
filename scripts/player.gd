@@ -1,13 +1,6 @@
 extends CharacterBody3D
 
-var footstep_timer: float = 0.0
-const FOOTSTEP_INTERVAL: float = 0.3 # time between steps
-
-
-
-const SPEED = 5.0
 @export var RUN_SPEED: float = 8.0
-const JUMP_VELOCITY = 4.5
 const THROW_FORCE = 16.0
 const DIG_DIST = 1.5
 
@@ -106,13 +99,10 @@ var last_hovered_item = null
 var nearby_treasures: Array[Node3D] = [] # Change current_treasure to an Array
 var current_treasure = null # This will now be the NEAREST one
 var can_dig = false
-var jump_queued = false
 var can_place = true
 var current_furniture = null
 var _highlighted_node = null
 
-var water_areas_count: int = 0
-var current_water_surface_height: float = 0.0
 
 # Stores item names and their counts: {"Pink Shell": 3, "Old Coin": 1}
 var collection = {}
@@ -257,21 +247,17 @@ func _ready():
 
 
 func enter_water(surface_height: float):
-	water_areas_count += 1
-	current_water_surface_height = max(current_water_surface_height, surface_height)
+	$PlayerMovement.enter_water(surface_height)
 	if state_swim: state_swim.show()
 	if state_stand: state_stand.hide()
 	if state_run: state_run.hide()
 
 func exit_water():
-	water_areas_count -= 1
-	if water_areas_count <= 0:
-		water_areas_count = 0
-		current_water_surface_height = 0.0
-		
+	$PlayerMovement.exit_water()
 	
-	if state_swim: state_swim.hide()
-	_update_run_visuals.rpc(is_running)
+	if $PlayerMovement.water_areas_count <= 0:
+		if state_swim: state_swim.hide()
+		_update_run_visuals.rpc(is_running)
 
 func _apply_camera_mode():
 	# Update camera
@@ -288,120 +274,9 @@ func _apply_camera_mode():
 			crosshair.visible = not is_third_person
 
 func _physics_process(delta: float) -> void:
+	$PlayerMovement.process_movement(delta)
 	
-	if not is_multiplayer_authority() or is_typing: return
-	
-	# Snap the SpringArm to the player (plus an offset) so it follows them but doesn't inherit rotation
-	if tp_spring_arm.top_level:
-		tp_spring_arm.global_position = global_position + Vector3(0, 1.0, 0)
 
-	if current_furniture != null and is_instance_valid(current_furniture):
-		# Snap to the furniture's position
-		global_position = current_furniture.global_position + Vector3(0, 0.5, 0)
-		# Face the same way as the furniture (or opposite, depending on model)
-		# global_rotation.y = current_furniture.global_rotation.y
-		velocity = Vector3.ZERO
-		move_and_slide()
-		return
-
-	# Determine if we're actually deep enough to be "swimming"
-	# WATER_FLOAT_OFFSET is negative (e.g. -0.5), so we add it to the surface height to get the float line.
-	var float_line = current_water_surface_height + WATER_FLOAT_OFFSET
-	# Only start swimming if we're not on the floor, fulfilling the constraint "if player still in the ground, they shouldn't start to swim"
-	var is_swimming = water_areas_count > 0 and global_position.y <= float_line and not is_on_floor()
-
-	# Always add the gravity unless perfectly resting on the floor.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-
-	if is_swimming:
-		# Apply buoyancy as an acceleration that fights gravity
-		# If the player is below the float line, buoyancy pushes them up.
-		var depth = float_line - global_position.y
-		# Gravity is pulling down, so buoyancy pushes up with enough force to counteract it plus push towards surface
-		var buoyancy_acceleration = depth * 20.0
-		var water_drag = 2.0 # How much the water slows vertical movement
-
-		velocity.y += buoyancy_acceleration * delta
-		velocity.y -= velocity.y * water_drag * delta
-
-	# Handle jump.
-	if jump_queued:
-		jump_queued = false
-		if is_on_floor():
-			velocity.y = JUMP_VELOCITY
-		elif is_swimming:
-			# When jumping in water, we set the velocity so the player shoots up.
-			# Because buoyancy is now an acceleration (adding force) rather than a rigid lerp,
-			# the player will actually move upwards out of the water.
-			velocity.y = WATER_JUMP_VELOCITY
-
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
-
-	var direction := Vector3.ZERO
-	if is_third_person:
-		# Direction is based on the SpringArm's orientation
-		var cam_basis = tp_spring_arm.global_transform.basis
-		direction = (cam_basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-		# Flatten the direction
-		direction.y = 0
-		direction = direction.normalized()
-
-		# Rotate the player body to face the movement direction
-		if direction != Vector3.ZERO:
-			var target_rot = atan2(-direction.x, -direction.z)
-			rotation.y = lerp_angle(rotation.y, target_rot, 10.0 * delta)
-	else:
-		direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-
-	var was_running = is_running
-	is_running = not is_swimming and is_on_floor() and direction != Vector3.ZERO and Input.is_action_pressed("run")
-	if is_running != was_running:
-		_update_run_visuals.rpc(is_running)
-	var current_speed = SWIM_SPEED if is_swimming else (RUN_SPEED if is_running else SPEED)
-
-	if direction:
-		velocity.x = direction.x * current_speed
-		velocity.z = direction.z * current_speed
-	else:
-		velocity.x = move_toward(velocity.x, 0, current_speed)
-		velocity.z = move_toward(velocity.z, 0, current_speed)
-		
-
-	if is_on_floor() and direction != Vector3.ZERO:
-		footstep_timer += delta
-		if footstep_timer >= FOOTSTEP_INTERVAL / (current_speed / SPEED):
-			_play_footstep_sound()
-			footstep_timer = 0.0
-	else:
-		footstep_timer = 0.0
-
-	move_and_slide()
-
-	# Stair-stepping logic (like the cart's floor checking)
-	if direction != Vector3.ZERO and is_on_floor():
-		var space_state = get_world_3d().direct_space_state
-		# Raycast from 0.4 units high (knee height), looking down 0.5 units,
-		# positioned slightly ahead of the player in their movement direction
-		var forward_offset = direction * 0.5
-		var ray_origin = global_position + forward_offset + Vector3(0, 0.4, 0)
-		var ray_end = ray_origin + Vector3(0, -0.5, 0)
-
-		var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
-		query.exclude = [self.get_rid()]
-		query.collision_mask = 1 # Only hit environment
-
-		var result = space_state.intersect_ray(query)
-		if result:
-			var step_height = result.position.y - global_position.y
-			# If the ground ahead is slightly higher than our current feet (between 0.05 and 0.4 units high)
-			if step_height > 0.05 and step_height <= 0.4:
-				# Smoothly slide the player up the step
-				global_position.y = lerp(global_position.y, result.position.y, 15.0 * delta)
-	
-	
 func _unhandled_input(event):
 	
 	# IF THIS IS NOT MY CHARACTER, DO NOT MOVE THE CAMERA/LASER
@@ -460,7 +335,7 @@ func _input(event):
 		_apply_camera_mode()
 
 	if event.is_action_pressed("jump") and not is_typing:
-		jump_queued = true
+		$PlayerMovement.jump_queued = true
 	
 	if event.is_action_pressed("toggle_tasks") and not is_typing:
 		toggle_tasks()
