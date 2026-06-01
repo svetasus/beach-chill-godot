@@ -1,0 +1,100 @@
+[gd_scene load_steps=6 format=3 uid="uid://a5b43f52580a455b84988e0316ad6bb3"]
+
+[ext_resource type="Script" uid="uid://3f6eeee3648a48148b02a9077f2ce0b1" path="res://scripts/components/player_visuals.gd" id="1_script"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_k03tp"]
+radius = 0.05
+height = 0.2
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_t4epb"]
+radius = 0.28
+height = 1.15
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_sbhj3"]
+radius = 0.1
+height = 0.4
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_sbhj3"]
+top_radius = 0.3
+bottom_radius = 0.3
+height = 0.2
+
+
+[node name="PlayerVisuals" type="Node3D" script=ExtResource("1_script")]
+
+[node name="State_Sit" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.057386, 0)
+
+[node name="Belly" type="MeshInstance3D" parent="State_Sit"]
+transform = Transform3D(1, 0, 0, 0, 0.721705, 0, 0, 0, 1, 0, 0.225628, 0)
+mesh = SubResource("CapsuleMesh_t4epb")
+
+[node name="Leg1" type="MeshInstance3D" parent="State_Sit"]
+transform = Transform3D(1.99001, 0, 0, 0, 0.470535, -1.82351, 0, 0.882381, 0.972395, -0.191183, 0.0774873, -0.485799)
+mesh = SubResource("CapsuleMesh_k03tp")
+
+[node name="Leg2" type="MeshInstance3D" parent="State_Sit"]
+transform = Transform3D(1.99001, 0, 0, 0, 0.470535, -1.82351, 0, 0.882381, 0.972395, 0.191, 0.0773659, -0.486135)
+mesh = SubResource("CapsuleMesh_k03tp")
+
+[node name="Belly2" type="MeshInstance3D" parent="State_Sit"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.0947106, -0.336148)
+mesh = SubResource("CylinderMesh_sbhj3")
+
+[node name="State_Swim" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.057386, 0)
+
+[node name="Belly" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(1, 0, 0, 0, 0.703868, 0.220953, 0, -0.159463, 0.975284, 0, 0.176268, 0.0961602)
+mesh = SubResource("CapsuleMesh_t4epb")
+
+[node name="Leg1" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(1.99001, 0, 0, 0, 0.280381, 1.98368, 0, -0.959889, 0.579432, -0.191183, -0.192443, 0.471406)
+mesh = SubResource("CapsuleMesh_k03tp")
+
+[node name="Leg2" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(1.99001, 0, 0, 0, 0.280381, 1.98368, 0, -0.959889, 0.579432, 0.191, -0.192591, 0.471731)
+mesh = SubResource("CapsuleMesh_k03tp")
+
+[node name="Belly2" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(1, 0, 0, 0, 0.699065, 0.715059, 0, -0.715059, 0.699065, 0, -0.100143, 0.285619)
+mesh = SubResource("CylinderMesh_sbhj3")
+
+[node name="Hand1" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(0.707107, -0.707107, 0, -3.09086e-08, -3.09086e-08, -1, 0.707107, 0.707107, -4.37114e-08, 0.267561, 0.402452, -0.215389)
+mesh = SubResource("CapsuleMesh_sbhj3")
+
+[node name="Hand2" type="MeshInstance3D" parent="State_Swim"]
+transform = Transform3D(0.707107, 0.707107, -3.09086e-08, 0, -4.37114e-08, -1, -0.707107, 0.707107, -3.09086e-08, -0.268, 0.402, -0.215)
+mesh = SubResource("CapsuleMesh_sbhj3")
+
+[node name="State_Stand" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.057386, 0)
+
+[node name="Belly" type="MeshInstance3D" parent="State_Stand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22502, 0)
+mesh = SubResource("CapsuleMesh_t4epb")
+
+[node name="Leg1" type="MeshInstance3D" parent="State_Stand"]
+transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, -0.191183, -0.279983, -0.125949)
+mesh = SubResource("CapsuleMesh_k03tp")
+
+[node name="Leg2" type="MeshInstance3D" parent="State_Stand"]
+transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, 0.191, -0.280336, -0.126)
+mesh = SubResource("CapsuleMesh_k03tp")
+
+[node name="State_Run" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0.057386, 0)
+visible = false
+
+[node name="Belly" type="MeshInstance3D" parent="State_Run"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.165162, 0.164459)
+mesh = SubResource("CapsuleMesh_t4epb")
+
+[node name="Leg1" type="MeshInstance3D" parent="State_Run"]
+transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, -0.191183, -0.339841, 0.0385097)
+mesh = SubResource("CapsuleMesh_k03tp")
+
+[node name="Leg2" type="MeshInstance3D" parent="State_Run"]
+transform = Transform3D(1.99001, 0, 0, 0, 1, 0, 0, 0, 2.06658, 0.191, -0.340194, 0.0384587)
+mesh = SubResource("CapsuleMesh_k03tp")
