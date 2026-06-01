@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://uid://a5b43f52580a455b84988e0316ad6bb3"]
+[gd_scene load_steps=6 format=3 uid="uid://a5b43f52580a455b84988e0316ad6bb3"]
 
-[ext_resource type="Script" uid="uid://uid://3f6eeee3648a48148b02a9077f2ce0b1" path="res://scripts/components/player_visuals.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://3f6eeee3648a48148b02a9077f2ce0b1" path="res://scripts/components/player_visuals.gd" id="1_script"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_k03tp"]
 radius = 0.05
