@@ -1,6 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://df6o8m2p5q3w7"]
 
 [ext_resource type="Script" uid="uid://bnu10lfnqrhsu" path="res://scripts/ui/task_list_ui.gd" id="1_task_list_ui"]
+[ext_resource type="PackedScene" uid="uid://d25l6qnea1x1n" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="2_taskelem"]
+[ext_resource type="PackedScene" uid="uid://borecvkc7h731" path="res://scenes/features/UI/tasks/task_section_header.tscn" id="3_sectionheader"]
+[ext_resource type="Script" uid="uid://utopw7r8nmel" path="res://scripts/data/task_section_data.gd" id="4_sec_data"]
+[ext_resource type="Resource" uid="uid://wm707bcgkmpa" path="res://resources/tasks/sections/daily.tres" id="5_daily"]
+[ext_resource type="Resource" uid="uid://fmuxbgku0tom" path="res://resources/tasks/sections/weekly.tres" id="6_weekly"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p0"]
 
@@ -13,6 +18,9 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_task_list_ui")
+task_prefab = ExtResource("2_taskelem")
+section_header_prefab = ExtResource("3_sectionheader")
+sections = Array[ExtResource("4_sec_data")]([ExtResource("5_daily"), ExtResource("6_weekly")])
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1

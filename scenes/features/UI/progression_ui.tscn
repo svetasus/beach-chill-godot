@@ -2,14 +2,8 @@
 
 [ext_resource type="Script" uid="uid://c14rysvf0vpb2" path="res://scripts/ui/progression_ui.gd" id="1_progression_ui"]
 [ext_resource type="PackedScene" uid="uid://df6o8m2p5q3w7" path="res://scenes/features/UI/tasks/task_list_ui.tscn" id="7_tasklist"]
-[ext_resource type="PackedScene" uid="uid://d25l6qnea1x1n" path="res://scenes/features/UI/tasks/task_ui_element.tscn" id="8_taskelem"]
-[ext_resource type="PackedScene" uid="uid://borecvkc7h731" path="res://scenes/features/UI/tasks/task_section_header.tscn" id="14_sectionheader"]
-[ext_resource type="Script" uid="uid://utopw7r8nmel" path="res://scripts/data/task_section_data.gd" id="15_sec_data"]
-[ext_resource type="Resource" uid="uid://wm707bcgkmpa" path="res://resources/tasks/sections/daily.tres" id="16_daily"]
-[ext_resource type="Resource" uid="uid://fmuxbgku0tom" path="res://resources/tasks/sections/weekly.tres" id="17_weekly"]
 [ext_resource type="PackedScene" uid="uid://br1tax2c554el" path="res://scenes/features/UI/milestones/milestone_list_ui.tscn" id="18_milestonelist"]
 [ext_resource type="PackedScene" uid="uid://df6o8m2p5q3xx" path="res://scenes/features/UI/recipes/recipe_list_ui.tscn" id="19_recipelist"]
-[ext_resource type="PackedScene" uid="uid://df6o8m2p5q300" path="res://scenes/features/UI/recipes/recipe_ui_element.tscn" id="20_recipe_ui_elem"]
 [ext_resource type="Theme" uid="uid://d3x8y7m2q1r" path="res://scenes/features/UI/main_theme.tres" id="main_theme"]
 
 [node name="ProgressionUI" type="Control"]
@@ -59,13 +53,9 @@ size_flags_vertical = 3
 
 [node name="TaskListUI" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("7_tasklist")]
 layout_mode = 1
-task_prefab = ExtResource("8_taskelem")
-section_header_prefab = ExtResource("14_sectionheader")
-sections = Array[ExtResource("15_sec_data")]([ExtResource("16_daily"), ExtResource("17_weekly")])
 
 [node name="MilestoneListUI" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("18_milestonelist")]
 layout_mode = 1
 
 [node name="RecipeListUI" parent="PanelContainer/VBoxContainer/ContentContainer" instance=ExtResource("19_recipelist")]
 layout_mode = 1
-recipe_prefab = ExtResource("20_recipe_ui_elem")
